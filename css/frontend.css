@@ -1,0 +1,78 @@
+/* Country Code Dropdown */
+#customer_details .iti, .woocommerce-form-login .iti, .lost_reset_password .iti, .woocommerce-form-register .iti {
+    display: block;
+}
+
+.yoaa-country-code-dropdown, .yoaa-login-country-code-dropdown, .yoaa-shipping-country-code-dropdown {
+    display: inline-block;
+    position: relative;
+    width: 20%;
+    vertical-align: middle;
+}
+
+#yoaa-country-code-button, .yoaa-login-country-code-button, #yoaa-shipping-country-code-button {
+    display: flex;
+    padding: 9px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: #fff;
+    align-items: center;
+    width: 100%;
+}
+
+#yoaa-country-code-list, #yoaa-login-country-code-list, #yoaa-shipping-country-code-list {
+    display: none;
+    position: absolute;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    z-index: 1000;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.yoaa-country-option, .yoaa-login-country-option, .yoaa-shipping-country-option {
+	display: flex;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.yoaa-country-option:hover, .yoaa-login-country-option:hover, .yoaa-shipping-country-option:hover {
+    background-color: #f0f0f0;
+}
+
+.yoaa-country-option img, .yoaa-login-country-option img, .yoaa-shipping-country-option img {
+    width: 24px;
+    height: auto;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+#phone_verification_code, #reset_otp {
+    max-width: 90px;
+}
+
+.woocommerce-form-register__submit {
+    display: none;
+}
+
+.woocommerce-form-login__otp {
+    margin-left: 5px;
+    display: inline-block;
+}
+
+.otp-login-notice, #reset-password-otp-notice {
+    margin-bottom: 22px !important;
+    margin-top: 12px !important;
+}
+
+.otp-login-form input {
+    max-width: 90px;
+}
+
+.otp-login-form button {
+    margin-left: 5px;
+}

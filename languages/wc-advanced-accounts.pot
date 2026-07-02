@@ -1,0 +1,1436 @@
+# Copyright (C) 2026 YoOhw.com
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Advanced Accounts for WooCommerce 1.4.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-advanced-accounts\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-13T05:14:34+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.9.0\n"
+"X-Domain: wc-advanced-accounts\n"
+
+#. Plugin Name of the plugin
+msgid "Advanced Accounts for WooCommerce"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://yoohw.com/docs/category/woocommerce-advanced-accounts/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Upgrade My Account, email/phone verification, and login with OTP."
+msgstr ""
+
+#. Author of the plugin
+msgid "YoOhw.com"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://yoohw.com"
+msgstr ""
+
+#. translators: %s: URL to resend the confirmation email
+#: inc/backend/actions/email-verification.php:96
+msgid "Please confirm your registration to activate your account. Check your email for a verification link before logging in.<br>Didn't receive the email? <a href=\"%s\"><strong>Click here to resend verification email</strong></a>."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:116
+msgid "Thank you for registering! Please check your email inbox and click the confirmation link to activate your account."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:168
+#: inc/backend/actions/email-verification.php:214
+msgid "Confirm your registration"
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:184
+msgid "Invalid request."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:189
+#: inc/backend/actions/login-otp.php:318
+#: inc/backend/actions/reset-password.php:341
+msgid "User not found."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:194
+msgid "Your email is already verified."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:215
+msgid "Confirm your email address"
+msgstr ""
+
+#. translators: %s: the email verification link
+#: inc/backend/actions/email-verification.php:219
+msgid "Hi there,<br><br>We need to confirm your email address to complete your registration.<br><br>Please click the link below to confirm your email:<br><br><a href=\"%s\">Confirm registration</a><br><br>If you did not request this, please ignore this email.<br><br>Thank you."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:246
+msgid "Invalid email confirmation link."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:257
+msgid "Your account has been activated, please set your password."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:263
+msgid "Invalid user."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:281
+msgid "Invalid or expired email confirmation link."
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:380
+msgid "(password set during activation)"
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:382
+msgid "Welcome to our store!"
+msgstr ""
+
+#: inc/backend/actions/email-verification.php:383
+msgid "Your account is now active"
+msgstr ""
+
+#. translators: 1: Display name, 2: Phone number, 3: Password
+#: inc/backend/actions/email-verification.php:390
+msgid "Hi %1$s,<br><br>Your account has been successfully activated. You can now log in using your email address or phone number.<br><br>Phone number: %2$s<br>Password: %3$s<br><br>Thank you for registering!"
+msgstr ""
+
+#. translators: 1: Display name, 2: Username, 3: Password
+#: inc/backend/actions/email-verification.php:398
+msgid "Hi %1$s,<br><br>Your account has been successfully activated. You can now log in using your email address or username.<br><br>Username: %2$s<br>Password: %3$s<br><br>Thank you for registering!"
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:57
+#: inc/backend/actions/reset-password.php:76
+msgid "Please enter your phone number or email."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:58
+msgid "Please enter your email address."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:61
+msgid "Please enter a valid phone or email."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:62
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:70
+#: inc/backend/settings/advanced.php:79
+msgid "Login with OTP"
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:71
+#: inc/backend/actions/phone-verification.php:290
+#: inc/backend/actions/reset-password.php:104
+msgid "Code"
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:72
+#: inc/backend/actions/phone-verification.php:292
+#: inc/backend/actions/reset-password.php:105
+msgid "Verify"
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:73
+#: inc/backend/actions/phone-verification.php:104
+#: inc/backend/actions/phone-verification.php:293
+#: inc/backend/actions/reset-password.php:73
+#: inc/backend/actions/reset-password.php:106
+msgid "Resend"
+msgstr ""
+
+#. translators: %s: Remaining seconds before the user can resend an OTP.
+#: inc/backend/actions/login-otp.php:75
+msgid "Resend (%s)"
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:76
+#: inc/backend/actions/reset-password.php:74
+msgid "Resending..."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:81
+msgid "OTP sent successfully to your phone number."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:82
+#: inc/backend/actions/reset-password.php:80
+msgid "OTP resent successfully."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:83
+msgid "An error occurred while sending the OTP. Please try again."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:84
+#: inc/backend/actions/login-otp.php:291
+msgid "The OTP you entered is incorrect. Please try again."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:85
+#: inc/backend/actions/phone-verification.php:105
+msgid "Limit reached"
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:94
+#: inc/backend/actions/login-otp.php:256
+#: inc/backend/actions/phone-verification.php:120
+#: inc/backend/actions/phone-verification.php:307
+#: inc/backend/actions/reset-password.php:116
+#: inc/backend/actions/reset-password.php:299
+msgid "Session is not available. Please refresh the page and try again."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:100
+#: inc/backend/actions/reset-password.php:122
+msgid "Phone number or email address is required."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:109
+#: inc/backend/actions/reset-password.php:131
+msgid "No account found with this email address."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:115
+#: inc/backend/actions/reset-password.php:136
+msgid "No account found with this phone number."
+msgstr ""
+
+#. translators: %d: remaining seconds.
+#: inc/backend/actions/login-otp.php:130
+#: inc/backend/actions/reset-password.php:148
+msgid "Please wait %d seconds before requesting another OTP."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:146
+msgid "Your login OTP code"
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:147
+msgid "Login OTP code"
+msgstr ""
+
+#. translators: %s: OTP code.
+#: inc/backend/actions/login-otp.php:150
+msgid "Your OTP code for login is: <strong>%s</strong><br><br>If you did not request this, please ignore this email.<br><br>Thank you."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:167
+#: inc/backend/actions/reset-password.php:195
+msgid "Failed to send OTP to the email address. Please try again."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:170
+#: inc/backend/actions/reset-password.php:198
+msgid "OTP sent successfully. Please check your email."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:239
+#: inc/backend/actions/login-otp.php:246
+#: inc/backend/actions/phone-verification.php:271
+#: inc/backend/actions/phone-verification.php:276
+#: inc/backend/actions/reset-password.php:281
+#: inc/backend/actions/reset-password.php:287
+msgid "Failed to send OTP via SMS. Please try again."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:249
+#: inc/backend/actions/reset-password.php:290
+msgid "OTP sent successfully. Please check your phone."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:269
+#: inc/backend/actions/reset-password.php:309
+msgid "Please request a new OTP."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:274
+#: inc/backend/actions/reset-password.php:314
+msgid "This OTP has expired. Please request a new one."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:279
+#: inc/backend/actions/login-otp.php:288
+#: inc/backend/actions/reset-password.php:319
+#: inc/backend/actions/reset-password.php:329
+msgid "Too many failed attempts. Please request a new OTP."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:418
+msgid "You have been logged in successfully!"
+msgstr ""
+
+#: inc/backend/actions/membership/class-shortcodes.php:152
+msgid "This content is available only for guests."
+msgstr ""
+
+#. translators: %s: membership role label
+#: inc/backend/actions/membership/class-shortcodes.php:158
+msgid "This content is available only for the following membership level: %s."
+msgstr ""
+
+#: inc/backend/actions/membership/class-shortcodes.php:164
+msgid "This content is available only for logged-in users."
+msgstr ""
+
+#: inc/backend/actions/membership/class-shortcodes.php:167
+msgid "You do not have permission to view this content."
+msgstr ""
+
+#: inc/backend/actions/membership/class-shortcodes.php:197
+msgid "Login to continue"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:284
+msgid "The password you entered for the username"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:285
+msgid "username"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:285
+msgid "phone number"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:289
+#: inc/backend/actions/phone-account-username.php:290
+msgid "The username"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:289
+msgid "is not registered on this site"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:290
+msgid "The phone number"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:291
+msgid "If you are unsure of your username, try your email address instead."
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:291
+msgid "If you are unsure of your phone number, try your email address instead."
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:295
+msgid "Unknown email address"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:295
+#: inc/backend/actions/phone-account-username.php:296
+msgid "try your username"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:296
+msgid "try your phone number"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:304
+msgid "An account is already registered with"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:306
+msgid "An account is already registered with this phone number or email address. Please log in or use a different one."
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:312
+msgid "Lost your password? Please enter your phone number or email address. You will receive a link to create a new password via email."
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:318
+#: inc/backend/actions/reset-password.php:91
+msgid "Phone number or email address"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:318
+#: inc/backend/actions/phone-account-username.php:329
+#: inc/backend/actions/reset-password.php:91
+msgid "Required"
+msgstr ""
+
+#: inc/backend/actions/phone-account-username.php:329
+msgid "Phone number"
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:76
+msgid "Your account is not verified yet. Please log in with OTP to verify it or contact support for assistance."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:100
+msgid "Please enter your phone number."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:101
+msgid "An error occurred while sending the verification code. Please try again."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:102
+#: inc/backend/actions/phone-verification.php:466
+msgid "Phone number verified successfully!"
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:103
+#: inc/backend/actions/phone-verification.php:351
+msgid "Verification failed. Please check the code and try again."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:106
+#: inc/backend/actions/phone-verification.php:156
+msgid "You have reached the maximum number of resend attempts."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:107
+msgid "A new verification code has been sent."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:108
+msgid "Please enter the verification code."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:124
+#: inc/backend/actions/phone-verification.php:130
+msgid "Phone number is required."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:135
+#: inc/backend/actions/phone-verification.php:507
+msgid "This phone number is already registered. Please use a different one."
+msgstr ""
+
+#. translators: %d: remaining seconds.
+#: inc/backend/actions/phone-verification.php:146
+msgid "Please wait %d seconds before requesting another verification code."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:182
+msgid "Verification code sent successfully."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:289
+msgid "Verification code"
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:291
+#: inc/backend/actions/reset-password.php:101
+msgid "Send code"
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:311
+msgid "Verification code is required."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:323
+msgid "Please request a new verification code."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:328
+msgid "Verification failed. Please try again."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:333
+msgid "This verification code has expired. Please request a new one."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:338
+#: inc/backend/actions/phone-verification.php:348
+msgid "Too many failed attempts. Please request a new verification code."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:473
+#: inc/backend/settings/membership-add-remove-user-role.php:84
+#: inc/backend/settings/membership-add-remove-user-role.php:95
+msgid "Nonce verification failed. Please try again."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:481
+msgid "You must verify your phone number before registering."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:489
+#: inc/backend/actions/phone-verification.php:494
+msgid "Invalid nonce."
+msgstr ""
+
+#: inc/backend/actions/phone-verification.php:499
+msgid "Invalid username."
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:75
+msgid "Resend limit reached"
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:77
+msgid "Please enter a valid phone number or email."
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:78
+msgid "Failed to send OTP. Please try again."
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:79
+#: inc/backend/actions/reset-password.php:332
+msgid "Invalid OTP. Please try again."
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:158
+msgid "You have reached the maximum resend attempts. Please try again later."
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:178
+msgid "Your password reset OTP code"
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:179
+msgid "Reset password by OTP"
+msgstr ""
+
+#. translators: %s: OTP code
+#: inc/backend/actions/reset-password.php:182
+msgid "Your OTP code for resetting your password is: <strong>%s</strong><br><br>If you did not request this, please ignore this email.<br><br>Thank you."
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:365
+msgid "Forgot your password? Enter your email address or phone number to receive a verification code to reset your password."
+msgstr ""
+
+#: inc/backend/settings.php:29
+#: inc/backend/settings.php:37
+#: inc/backend/settings/endpoints.php:183
+msgid "Available in Premium"
+msgstr ""
+
+#: inc/backend/settings.php:30
+msgid "These features are optional and are not required to use the free plugin."
+msgstr ""
+
+#: inc/backend/settings.php:32
+msgid "View Premium features"
+msgstr ""
+
+#: inc/backend/settings.php:56
+msgid "Accounts & Membership"
+msgstr ""
+
+#: inc/backend/settings.php:63
+msgid "Advanced"
+msgstr ""
+
+#: inc/backend/settings.php:64
+msgid "Profile"
+msgstr ""
+
+#: inc/backend/settings.php:65
+#: inc/backend/settings/membership-add-remove-user-role.php:224
+#: inc/backend/settings/membership-add-remove-user-role.php:267
+#: inc/backend/settings/membership.php:111
+msgid "Membership"
+msgstr ""
+
+#: inc/backend/settings.php:66
+msgid "Endpoints"
+msgstr ""
+
+#: inc/backend/settings.php:67
+#: inc/backend/settings/tools.php:22
+msgid "Tools"
+msgstr ""
+
+#: inc/backend/settings.php:147
+msgid "History logs"
+msgstr ""
+
+#: inc/backend/settings.php:148
+msgid "Purchase Yo Credits"
+msgstr ""
+
+#: inc/backend/settings.php:149
+msgid "Copy"
+msgstr ""
+
+#: inc/backend/settings.php:150
+msgid "Copied!"
+msgstr ""
+
+#: inc/backend/settings.php:151
+msgid "How it works?"
+msgstr ""
+
+#: inc/backend/settings.php:152
+msgid "Use this key when you purchase Yo Credits."
+msgstr ""
+
+#: inc/backend/settings.php:153
+msgid "SMS Quota"
+msgstr ""
+
+#: inc/backend/settings.php:154
+msgid "USD credits remaining."
+msgstr ""
+
+#: inc/backend/settings.php:155
+msgid "Generate a new key to start using SMS Verification."
+msgstr ""
+
+#: inc/backend/settings.php:156
+#: inc/backend/settings.php:233
+msgid "Key generated and saved successfully."
+msgstr ""
+
+#: inc/backend/settings.php:157
+msgid "Failed to generate the key. Please try again or contact support."
+msgstr ""
+
+#: inc/backend/settings.php:168
+#: inc/backend/settings/membership-add-remove-user-role.php:80
+#: inc/backend/settings/membership-add-remove-user-role.php:91
+#: inc/backend/settings/membership-add-remove-user-role.php:104
+#: inc/backend/settings/membership-add-remove-user-role.php:185
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: inc/backend/settings.php:181
+msgid "Security check failed."
+msgstr ""
+
+#: inc/backend/settings.php:190
+msgid "Invalid or empty key provided."
+msgstr ""
+
+#: inc/backend/settings.php:214
+msgid "API call failed: "
+msgstr ""
+
+#: inc/backend/settings.php:225
+msgid "API error: "
+msgstr ""
+
+#: inc/backend/settings.php:225
+msgid "Unknown error"
+msgstr ""
+
+#: inc/backend/settings.php:237
+msgid "Failed to save the generated key. Please try again."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:12
+msgid "Advanced account"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:17
+msgid "Account creation options"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:18
+msgid "Use phone number as account login (recommend)"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:19
+msgid "If checked, your site will treat the username as the customer phone number."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:26
+msgid "Disable email requirement"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:27
+msgid "Do not require email address to create an account and checkout"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:28
+msgid "Email addresses will no longer be required for registration or at checkout, with a temporary email used instead."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:36
+msgid "Advanced account controls"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:37
+msgid "Add optional account management tools without changing the free account creation flow."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:39
+msgid "Block or unblock customer accounts from the users page."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:40
+msgid "Let customers request account erasure from My Account."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:41
+msgid "Add profile and registration fields for richer customer accounts."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:43
+msgid "View account control features"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:56
+msgid "Verifications"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:61
+msgid "Verification / OTP"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:62
+msgid "Require email verification during account registration"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:63
+msgid "New customers receive an email to activate their account and set up password."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:70
+msgid "Phone verification"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:71
+msgid "Require phone verification during account registration"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:72
+msgid "New customers receive a verification code on their phone to create an account."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:80
+msgid "Allow user to login with One-Time Password"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:81
+msgid "The user receives a passcode on their phone or email inbox to login to your site. It will use the OTP to let the user reset their password either."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:89
+msgid "Verification options"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:90
+msgid "Code length."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:91
+msgid "You may set it from 6 to 8 numbers."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:103
+msgid "Resend in seconds."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:104
+msgid "Set how many seconds that allows the customers get new code."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:115
+msgid "Time limited."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:116
+msgid "How many time the customer can request for resending."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:126
+msgid "SMS content"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:127
+msgid "Type your content, {code} is required."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:128
+msgid "Add {site_name}, {code} where you want them to appear."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:134
+msgid "SMS service"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:138
+msgid "Yo Credits"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:141
+msgid "Yo Credits is the SMS service available in the free plugin."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:144
+msgid "Yo Credits key"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:145
+msgid "Generate a key"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:146
+msgid "Do not share or public this key in any case."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:156
+msgid "Need more verification options?"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:157
+msgid "Use optional provider and account-verification controls when your store needs a more advanced workflow."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:159
+msgid "Connect Twilio or Textmagic for SMS delivery."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:160
+msgid "Verify customer phone number changes."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:161
+msgid "Exclude selected roles from verification requirements."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:163
+msgid "View verification add-ons"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:178
+msgid "Additionals"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:183
+msgid "Redirect wp-login"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:184
+msgid "Enable to redirect the wp-login to My account page"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:185
+msgid "It will redirect the user to my account page when they access to the WordPress default login page."
+msgstr ""
+
+#: inc/backend/settings/appearance.php:11
+msgid "Profile customization"
+msgstr ""
+
+#: inc/backend/settings/appearance.php:17
+msgid "Customize customer profiles"
+msgstr ""
+
+#: inc/backend/settings/appearance.php:18
+msgid "Add optional profile and registration fields when your customer account experience needs more detail."
+msgstr ""
+
+#: inc/backend/settings/appearance.php:20
+msgid "Let customers upload profile avatars."
+msgstr ""
+
+#: inc/backend/settings/appearance.php:21
+msgid "Show a preferred customer name format under the avatar."
+msgstr ""
+
+#: inc/backend/settings/appearance.php:22
+msgid "Add first name, last name, and birth date fields to registration."
+msgstr ""
+
+#: inc/backend/settings/appearance.php:23
+msgid "Use birth date requirements and age limit checks."
+msgstr ""
+
+#: inc/backend/settings/appearance.php:25
+msgid "View profile features"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:93
+msgid "Account endpoints"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:107
+msgid "Customization"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:112
+msgid "Icon position"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:116
+msgid "Left"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:117
+msgid "Right"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:121
+msgid "Choose how the endpoint icon behaves."
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:140
+msgid "Dashboard"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:141
+msgid "Orders"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:142
+msgid "Downloads"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:143
+msgid "Addresses"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:144
+msgid "Payment methods"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:145
+msgid "Account details"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:146
+msgid "Logout"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:151
+msgid "My points"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:184
+msgid "Need custom My Account tabs?"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:185
+msgid "Add new tabs and richer endpoint content when the default WooCommerce account menu is not enough."
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:187
+msgid "Add unlimited custom account endpoints."
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:188
+msgid "Edit endpoint content with custom text or shortcodes."
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:189
+msgid "Upload custom endpoint icons."
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:190
+msgid "Restrict account tabs by role or membership level."
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:192
+msgid "View endpoint features"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:199
+msgid "Label"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:200
+msgid "Endpoint Slug"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:201
+msgid "Icon"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:202
+msgid "Order"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:203
+msgid "Visible"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:228
+msgid "of"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:271
+msgid "e.g. icon-name"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:275
+msgid "Select"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:287
+msgid "Show"
+msgstr ""
+
+#: inc/backend/settings/endpoints.php:329
+msgid "Search icons…"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:218
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:225
+msgid "Add / Remove role"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:229
+msgid "Add new"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:232
+msgid "Role name"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:233
+msgid "Silver Member"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:236
+msgid "Role slug"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:238
+msgid "silver-member"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:240
+msgid "Leave empty to auto-generate from the name."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:246
+msgid "Add new role"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:248
+msgid "Remove"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:251
+#: inc/backend/settings/membership-add-remove-user-role.php:302
+msgid "Remove role"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:266
+msgid "Membership / Loyalty"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:286
+msgid "No membership-created roles found"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:296
+msgid "Only roles created by the Advanced Accounts plugin are listed here."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:311
+msgid "Please at least fill in role name fields for adding a role."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:313
+msgid "New role added successfully."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:315
+msgid "Error: The customer role does not exist."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:317
+msgid "Role removed successfully."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:319
+msgid "Failed to remove role. Certain roles cannot be removed."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:321
+msgid "You can only remove roles that were created by the Advanced Accounts plugin."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:323
+msgid "A role with this slug already exists."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:325
+msgid "Failed to add the new role. Please try again."
+msgstr ""
+
+#: inc/backend/settings/membership.php:27
+msgid "Membership roles"
+msgstr ""
+
+#: inc/backend/settings/membership.php:29
+msgid "Add new / Remove"
+msgstr ""
+
+#: inc/backend/settings/membership.php:34
+msgid "Set membership roles"
+msgstr ""
+
+#: inc/backend/settings/membership.php:36
+msgid "Leave this field empty to disable the membership feature. Select one or more roles and save your changes to enable membership."
+msgstr ""
+
+#: inc/backend/settings/membership.php:37
+msgid "Select user roles to set those are membership roles."
+msgstr ""
+
+#: inc/backend/settings/membership.php:41
+msgid "Select user roles"
+msgstr ""
+
+#: inc/backend/settings/membership.php:48
+msgid "Membership rules"
+msgstr ""
+
+#: inc/backend/settings/membership.php:55
+msgid "Build paid membership experiences"
+msgstr ""
+
+#: inc/backend/settings/membership.php:56
+msgid "Extend role-based membership into products, access rules, and member pricing when your store needs a full membership workflow."
+msgstr ""
+
+#: inc/backend/settings/membership.php:58
+msgid "Restrict posts, pages, and WooCommerce products by membership role."
+msgstr ""
+
+#: inc/backend/settings/membership.php:59
+msgid "Create a membership products page for plans and upgrades."
+msgstr ""
+
+#: inc/backend/settings/membership.php:60
+msgid "Allow customers to hold multiple membership roles."
+msgstr ""
+
+#: inc/backend/settings/membership.php:61
+msgid "Offer member-only discounts for products, categories, or tags."
+msgstr ""
+
+#: inc/backend/settings/membership.php:63
+msgid "View membership features"
+msgstr ""
+
+#: inc/backend/settings/membership.php:95
+msgid "Set at least one membership role to view the available membership shortcode examples."
+msgstr ""
+
+#: inc/backend/settings/membership.php:112
+msgid "Membership slug"
+msgstr ""
+
+#: inc/backend/settings/membership.php:113
+msgid "Shortcode"
+msgstr ""
+
+#. translators: %s: Membership shortcode documentation URL.
+#: inc/backend/settings/membership.php:131
+msgid "To learn more about the shortcodes available for different use cases, please refer to <a href=\"%s\" target=\"_blank\">this article</a>."
+msgstr ""
+
+#: inc/backend/settings/tools.php:25
+msgid "Maintenance utilities for Advanced Accounts."
+msgstr ""
+
+#: inc/backend/settings/tools.php:28
+msgid "Migrate usernames to phone numbers"
+msgstr ""
+
+#: inc/backend/settings/tools.php:34
+msgid "Need more account maintenance tools?"
+msgstr ""
+
+#: inc/backend/settings/tools.php:35
+msgid "Use extra bulk utilities when you are cleaning up imported customers or managing larger account databases."
+msgstr ""
+
+#: inc/backend/settings/tools.php:37
+msgid "Bulk mark existing users as phone or email verified."
+msgstr ""
+
+#: inc/backend/settings/tools.php:38
+msgid "Run maintenance workflows for stores that import customer accounts from another system."
+msgstr ""
+
+#: inc/backend/settings/tools.php:39
+msgid "Keep verification and account cleanup tasks in one WooCommerce settings area."
+msgstr ""
+
+#: inc/backend/settings/tools.php:41
+msgid "View maintenance tools"
+msgstr ""
+
+#: inc/backend/settings/tools.php:54
+msgid "You do not have permission to run this tool."
+msgstr ""
+
+#: inc/backend/settings/tools.php:87
+msgid "Security check failed. Please try again."
+msgstr ""
+
+#: inc/backend/settings/tools.php:124
+msgid "Local only (store sells in 1 specific country)"
+msgstr ""
+
+#: inc/backend/settings/tools.php:125
+msgid "Dial-local (use billing country dial code when possible)"
+msgstr ""
+
+#: inc/backend/settings/tools.php:127
+msgid "Convert existing customers usernames to match their phone number (billing phone by default). Always run dry-run first to preview changes and detect conflicts."
+msgstr ""
+
+#: inc/backend/settings/tools.php:128
+msgid "Detected username format:"
+msgstr ""
+
+#: inc/backend/settings/tools.php:129
+msgid "Leading \"0\" will be removed from the local number when building the new username."
+msgstr ""
+
+#: inc/backend/settings/tools.php:140
+msgid "Dry-run"
+msgstr ""
+
+#: inc/backend/settings/tools.php:140
+msgid "(preview only, do not update usernames)"
+msgstr ""
+
+#: inc/backend/settings/tools.php:147
+msgid "Only customers (role: customer)"
+msgstr ""
+
+#: inc/backend/settings/tools.php:154
+msgid "Skip users whose username already contains \"-\""
+msgstr ""
+
+#: inc/backend/settings/tools.php:159
+msgid "Limit:"
+msgstr ""
+
+#: inc/backend/settings/tools.php:164
+msgid "Offset:"
+msgstr ""
+
+#: inc/backend/settings/tools.php:170
+msgid "Limit controls how many users are processed in this run. Offset skips that many users before starting. These fields allow processing large user databases in batches to avoid server timeouts."
+msgstr ""
+
+#: inc/backend/settings/tools.php:174
+msgid "Run tool"
+msgstr ""
+
+#: inc/backend/settings/tools.php:202
+msgid "Progress"
+msgstr ""
+
+#: inc/backend/settings/tools.php:210
+msgid "Next offset"
+msgstr ""
+
+#: inc/backend/settings/tools.php:217
+msgid "Run Next Batch"
+msgstr ""
+
+#: inc/backend/settings/tools.php:242
+msgid "Please ensure you back up your database before running this tool."
+msgstr ""
+
+#. translators: %d: Number of usernames updated by the migration tool.
+#: inc/backend/settings/tools.php:251
+msgid "Migration completed successfully. %d user(s) were updated."
+msgstr ""
+
+#: inc/backend/settings/tools.php:301
+#: inc/backend/settings/tools.php:375
+msgid "Would Update"
+msgstr ""
+
+#: inc/backend/settings/tools.php:301
+#: inc/backend/settings/tools.php:374
+msgid "Updated"
+msgstr ""
+
+#: inc/backend/settings/tools.php:304
+msgid "Results"
+msgstr ""
+
+#: inc/backend/settings/tools.php:308
+msgid "Processed"
+msgstr ""
+
+#: inc/backend/settings/tools.php:316
+#: inc/backend/settings/tools.php:372
+msgid "Skipped"
+msgstr ""
+
+#: inc/backend/settings/tools.php:320
+#: inc/backend/settings/tools.php:373
+msgid "Conflicts"
+msgstr ""
+
+#: inc/backend/settings/tools.php:333
+msgid "User ID"
+msgstr ""
+
+#: inc/backend/settings/tools.php:334
+msgid "Email"
+msgstr ""
+
+#: inc/backend/settings/tools.php:335
+msgid "Old username"
+msgstr ""
+
+#: inc/backend/settings/tools.php:336
+msgid "Phone source"
+msgstr ""
+
+#: inc/backend/settings/tools.php:337
+msgid "Detected phone"
+msgstr ""
+
+#: inc/backend/settings/tools.php:338
+msgid "New username"
+msgstr ""
+
+#: inc/backend/settings/tools.php:339
+msgid "Status"
+msgstr ""
+
+#: inc/backend/settings/tools.php:340
+msgid "Reason"
+msgstr ""
+
+#: inc/backend/settings/tools.php:370
+msgid "Filter:"
+msgstr ""
+
+#: inc/backend/settings/tools.php:371
+msgid "All"
+msgstr ""
+
+#: inc/backend/settings/tools.php:506
+msgid "Username already contains \"-\"."
+msgstr ""
+
+#: inc/backend/settings/tools.php:514
+msgid "No phone found."
+msgstr ""
+
+#: inc/backend/settings/tools.php:523
+msgid "Invalid phone after normalization."
+msgstr ""
+
+#: inc/backend/settings/tools.php:549
+msgid "Could not build new username."
+msgstr ""
+
+#: inc/backend/settings/tools.php:555
+msgid "Already matches."
+msgstr ""
+
+#: inc/backend/settings/tools.php:562
+#: inc/backend/settings/tools.php:770
+msgid "Username already exists."
+msgstr ""
+
+#: inc/backend/settings/tools.php:568
+msgid "Dry-run."
+msgstr ""
+
+#: inc/backend/settings/tools.php:584
+msgid "Updated."
+msgstr ""
+
+#: inc/backend/settings/tools.php:765
+msgid "Invalid user or username."
+msgstr ""
+
+#: inc/backend/settings/tools.php:785
+msgid "Database update failed."
+msgstr ""
+
+#: inc/cores/api/sms/update-sms-quota.php:27
+msgid "SMS key is not configured."
+msgstr ""
+
+#: inc/cores/api/sms/update-sms-quota.php:38
+msgid "Too many quota update attempts. Please try again later."
+msgstr ""
+
+#: inc/cores/api/sms/update-sms-quota.php:54
+msgid "Missing quota update signature."
+msgstr ""
+
+#: inc/cores/api/sms/update-sms-quota.php:62
+msgid "Expired quota update signature."
+msgstr ""
+
+#: inc/cores/api/sms/update-sms-quota.php:73
+msgid "Invalid quota update signature."
+msgstr ""
+
+#: inc/cores/api/sms/update-sms-quota.php:87
+msgid "Invalid SMS quota value."
+msgstr ""
+
+#: inc/cores/api/sms/update-sms-quota.php:98
+msgid "Quota updated successfully."
+msgstr ""
+
+#: inc/cores/notices.php:35
+msgid "Before using Advanced Accounts for WooCommerce,"
+msgstr ""
+
+#: inc/cores/notices.php:35
+msgid "please configure your settings."
+msgstr ""
+
+#: inc/cores/notices.php:37
+msgid "Dismiss this notice"
+msgstr ""
+
+#: inc/cores/notices.php:38
+msgid "Go to the settings"
+msgstr ""
+
+#: inc/cores/notices.php:62
+msgid "Thank you for using Advanced Accounts for WooCommerce. Please support us by"
+msgstr ""
+
+#: inc/cores/notices.php:62
+msgid "leaving a review"
+msgstr ""
+
+#: inc/cores/notices.php:63
+msgid "Never show this again"
+msgstr ""
+
+#: inc/cores/notices.php:110
+#: inc/cores/notices.php:122
+msgid "You do not have permission to do this."
+msgstr ""
+
+#: inc/templates/woocommerce/checkout/form-login.php:32
+msgid "Returning customer?"
+msgstr ""
+
+#: inc/templates/woocommerce/checkout/form-login.php:33
+msgid "Click here to login"
+msgstr ""
+
+#: inc/templates/woocommerce/checkout/form-login.php:48
+msgid "If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing section."
+msgstr ""
+
+#: wc-advanced-accounts.php:44
+msgid "Settings"
+msgstr ""

@@ -1,0 +1,148 @@
+=== WooCommerce Advanced Accounts (Free version) ===
+
+= 1.4.3 (June 13, 2026) =
+* New: Added a Tools utility to migrate existing customer usernames to phone-number based usernames with dry-run previews, batch processing, progress tracking, conflict detection, and local-only or dial-local username formats.
+* Security: Hardened OTP login, phone verification, and password reset verification with server-side expiration, failed attempt limits, resend cooldowns, resend limits, and automatic OTP invalidation.
+* Security: Added stronger capability and nonce checks for settings, membership role management, endpoint saving, and checkout/account flows.
+* Security: Improved SMS quota update protection with signed requests, replay-window validation, rate limiting, and safer response data.
+* Fix: Improved phone and email input behavior on WooCommerce login, registration, and checkout forms, including phone formatting, placeholder overlap, strict-reject animation, and IME typing issues.
+* Improve: Updated intl-tel-input to 29.0.5 with bundled UI locale data and WordPress locale matching for country selector text and country names.
+* Improve: Updated WooCommerce checkout login template compatibility and declared HPOS compatibility.
+* Improve: Refreshed WordPress.org metadata, bundled library information, external service disclosures, and the translation template.
+
+= 1.4.2 (May 28, 2026) =
+* Security: Fixed OTP brute-force vulnerability on the login and verification endpoints.
+* Security: Added server-side failed attempt limiting, OTP expiration, resend cooldown, and automatic OTP invalidation.
+* Security: Increased the minimum OTP length to 6 digits and improved OTP validation security.
+* Improve: Synchronized OTP settings with Advanced verification settings.
+* Improve: Improved WooCommerce session handling and verification flow reliability.
+* Improve: Optimized and hardened the phone/email OTP verification system.
+
+= 1.4.1 (Apr 16, 2026) =
+* Improve: Optimized and cleaned the code.
+* Improve: WooCommerce 10.7 compatibility.
+
+= 1.4 (Mar 13, 2026) =
+* New: Membership Roles - Added a Membership Roles system to define membership levels using WordPress roles.
+* New: Membership Roles - Added a membership roles management interface inside plugin settings.
+* New: Shortcodes - Added [yoaa_membership] shortcode to control content visibility based on membership roles.
+* New: Shortcodes - Supports conditions for specific membership level (single), logged-in users, or guests.
+* Improve: WooCommerce 10.6 compatibility.
+
+= 1.3.8 (Feb 15, 2026) =
+* Improve: WooCommerce 10.5 compatibility.
+* Improve: Minor improvements.
+
+= 1.3.7 (Jan 5, 2026) =
+* Update: Optimized and cleaned the code.
+* Improve: WooCommerce 10.4 compatibility.
+
+= 1.3.6 (Dec 4, 2025) =
+* Fix: Font Awesome icons url issue at the endpoints settings.
+* Improve: Reused the self-hosted Font Awesome icons, and already optimized for better performance.
+
+= 1.3.5 (Nov 13, 2025) =
+* Improve: Replace self-hosted font awesome by their CDN endpoints instead.
+* Improve: Optimized and removed some unnecessary code.
+* Improve: WooCommerce 10.3 compatibility.
+
+= 1.3.4 (July 27, 2025) =
+* Update: Do not force to logged out if the user already verified after checkout.
+* Improve: Allow the login by OTP functions affect to sitewide.
+* Improve: Make sure `WC()->session` is not either empty or the customer‐session cookie never back to the browser.
+
+= 1.3.3 (July 17, 2025) =
+* Fix: Corrected the billing phone number format in the order data.
+* Improve: WooCommerce compatibility.
+
+= 1.3.2 (Jun 12, 2025) =
+* Update: Excluded administrators from verifivation requirement.
+* Fix: Correct the JavaScript files to run on the right places.
+* Improve: Set all endpoints settings are 'Show' for the first time installer.
+
+= 1.3.1 (Jun 4, 2025) =
+* Fix: Login form template overrided on the checkout page.
+
+= 1.3 (May 28, 2025) =
+* New: Added Customize my account page - Can change labels, slugs; adding icons; reorder positions; and show/hide endpoints.
+* New: Integrated the WooCommerce Loyalty Program plugin.
+* Update: Blacklist Manager integration - Also verified user when `create account` during verified checkout.
+* Fix: Error if registering when the disabled email requirement option is enabled.
+* Fix: Invalid username when creating an account on the checkout page.
+* Fix: Verified the account by phone number during create an account via checkout.
+* Improve: The plugin can now work with the custom endpoints.
+* Improve: If a phone number is not verified, then avoid to log in and display error notice.
+* Improve: Log in form displaying on the order received and checkout pages.
+* Improve: Display the correct error message in case empty phone number with a dial code.
+
+= 1.2.4 (May 8, 2025) =
+* Fix: Blacklist Manager integration logic.
+* Improve: Picked up by the field `name` rather than ID to support the form display multiple places on one page.
+
+= 1.2.3 (May 3, 2025) =
+* Update: Get the visitor IP instead of the hosting IP for the default dial code.
+* Fix: The login field and the register field won’t clobber each other.
+* Fix: Missing save button on the reset password page.
+* Fix: Error notice display when the phone number field is empty or incorrect.
+* Improve: Disabled the buttons after clicking on the my account page.
+
+= 1.2.2 (Apr 21, 2025) =
+* New: Added the verified column to the users page.
+* New: Added option to redirect wp-login to my account page.
+* Fix: Mismatched JavaScript version.
+
+= 1.2.1 (Mar 24, 2025) =
+* Update: Add the phone dial code to verification list on WCBM integration.
+* Improve: Auto adding billing phone as username if it is numeric.
+* Improve: Remove unnecessary code.
+
+= 1.2.0 (Mar 9, 2025) =
+* New: Brand new country dropdown selection, faster, smoother, and better.
+* New: Phone number format for each country.
+* Update: Added country dropdown for the shipping phone.
+* Update: Hide the country dropdown if an email is typed in the username field.
+* Fix: Conflict the country dropdown of username and billing phone fields on the checkout page.
+* Fix: Did not hide the default field and button of the reset password form.
+* Improve: Disable reset password by code if use phone number as account login option is disabled.
+* Improve: Failed notice for failure to generate a new key.
+
+= 1.1.2 (Feb 22, 2025) =
+* Fix: JavaScript error of login with OTP.
+* Fix: Display the country code dropdown on the site selling to single country.
+* Improve: Allow to users receive an email to set up their password.
+
+= 1.1.1 (Feb 20, 2025) =
+* New: Added the country code dropdown for shipping phone on the checkout page.
+* New: Added the country code dropdown for the reset password page.
+* Improve: Upgrade the IP Geo function.
+* Improve: Separated the code for the country that has multiple codes.
+
+= 1.1.0 (Feb 10, 2025) =
+* New: Fully supported the site selling to multiple countries.
+* Fix: Email address verification error.
+* Fix: Reset password button does not display.
+* Improve: Added the resend the verification email action.
+* Improve: Verified the account via log-in by OTP.
+* Improve: Auto log out after the customer creates an account during checkout.
+* Improve: Auto-fill the phone number on the checkout page for the newly registered user.
+* Improve: Added country code selection on the checkout page.
+* Improve: Auto-register after verifying successfully.
+* Improve: A bunch of other improvements.
+
+= 1.0.3 (Jan 25, 2025) =
+* Fix: Cannot Generate a SMS key.
+* Improve: Force the account creation options are disabled if the phone options are enabled.
+
+= 1.0.2 (Dec 21, 2024) =
+* Fix: Conflict with our other plugin.
+* Fix: Login form did not work if added multiple areas (ex: popups etc)
+* Improve: Avoid to send register code if the phone is already registered.
+
+= 1.0.1 (Dec 14, 2024) =
+* New: Reset password using OTP for both phone and email.
+* New: Login with OTP for email address.
+* Fix: Phone country code trigger for site is selling in a single country.
+* Improve: The notices will only display for administrators.
+
+= 1.0.0 (Dec 11, 2024) =
+* First released.

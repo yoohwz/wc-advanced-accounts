@@ -1,0 +1,70 @@
+.yoaa-sms-options {
+    padding: 0 10px !important;
+}
+
+.yoaa-sms-options-first {
+    padding-bottom: 6px !important;
+}
+
+#verified {
+    width: 2ch;
+}
+
+.column-label, .column-slug {
+    width: 12% !important;
+}
+
+.column-icon {
+    width: 22%;
+}
+.column-order {
+    width: 7%;
+}
+
+.column-visible {
+    width: 6.5ch !important;
+}
+
+.column-remove {
+    width: 2ch;
+}
+
+.yoaa-upgrade-panel {
+    max-width: 760px;
+    box-sizing: border-box;
+    margin: 4px 0 10px;
+    padding: 16px 18px;
+    border: 1px solid #dcdcde;
+    border-left: 4px solid #2271b1;
+    background: #fff;
+    border-radius: 2px;
+}
+
+.yoaa-upgrade-panel h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.yoaa-upgrade-panel p {
+    margin: 0 0 10px;
+    color: #50575e;
+}
+
+.yoaa-upgrade-panel ul {
+    margin: 0 0 12px 18px;
+    list-style: disc;
+}
+
+.yoaa-upgrade-panel li {
+    margin: 0 0 4px;
+}
+
+.yoaa-upgrade-eyebrow {
+    margin-bottom: 4px !important;
+    color: #646970 !important;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+}
