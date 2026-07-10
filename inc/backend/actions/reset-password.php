@@ -58,7 +58,7 @@ class YOAA_WC_Advanced_Accounts_Reset_Password_OTP {
                 'yoaa-wc-reset-password-otp',
                 plugin_dir_url(__FILE__) . '../../../js/reset-password.js',
                 ['jquery'],
-                '1.4.3',
+				YOAA_WC_ADVANCED_ACCOUNTS_VERSION,
                 true
             );
 
@@ -117,6 +117,7 @@ class YOAA_WC_Advanced_Accounts_Reset_Password_OTP {
 			}
 		
 			$identifier = isset($_POST['identifier']) ? sanitize_text_field(wp_unslash($_POST['identifier'])) : '';
+			$submitted_identifier = $identifier;
 
 		if (empty($identifier)) {
 			wp_send_json_error(__('Phone number or email address is required.', 'wc-advanced-accounts'));
@@ -131,10 +132,14 @@ class YOAA_WC_Advanced_Accounts_Reset_Password_OTP {
 				wp_send_json_error(__('No account found with this email address.', 'wc-advanced-accounts'));
 			}
 		} else {
-			$user = get_user_by('login', $identifier);
+			$user = class_exists( 'YOAA_Phone_Username_Helper' )
+				? YOAA_Phone_Username_Helper::find_user_by_identifier( $identifier )
+				: get_user_by('login', $identifier);
 			if (!$user) {
 				wp_send_json_error(__('No account found with this phone number.', 'wc-advanced-accounts'));
 			}
+
+			$identifier = $user->user_login;
 		}
 	
 			$resend_cooldown = max( 60, absint( get_option( 'yoaa_wc_phone_verification_resend', self::RESEND_COOLDOWN ) ) );
@@ -197,57 +202,9 @@ class YOAA_WC_Advanced_Accounts_Reset_Password_OTP {
 	
 			wp_send_json_success(__('OTP sent successfully. Please check your email.', 'wc-advanced-accounts'));
 		} else {
-			$phone_number = $identifier;
-		
-			// Extract the country code and phone number
-			if (strpos($phone_number, '-') !== false) {
-				list($country_code, $local_number) = explode('-', $phone_number, 2);
-	
-				// Remove any non-numeric characters
-				$country_code = preg_replace('/\D/', '', $country_code);
-				$local_number = preg_replace('/\D/', '', $local_number);
-	
-				// Reformat the phone number as +{country_code}{local_number}
-				$phone_number = '+' . $country_code . $local_number;
-			} else {
-				// No '-' in the phone number, fetch the default country code
-				$allowed_countries = get_option('woocommerce_specific_allowed_countries', '');
-	
-				if (!empty($allowed_countries)) {
-					// Parse the serialized data into an array
-					$allowed_countries = maybe_unserialize($allowed_countries);
-	
-					// Get the first country in the list
-					$default_country = is_array($allowed_countries) && !empty($allowed_countries) ? reset($allowed_countries) : '';
-	
-					if (!empty($default_country)) {
-						// Load the country codes from the configuration file
-						$phone_country_codes_file = plugin_dir_path(__FILE__) . 'data/phone_country_codes.conf';
-						$phone_country_codes = [];
-						if (file_exists($phone_country_codes_file)) {
-							$lines = file($phone_country_codes_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-							foreach ($lines as $line) {
-								list($country, $code) = explode(':', $line);
-								$phone_country_codes[trim($country)] = trim($code);
-							}
-						}
-	
-						// Get the phone country code for the default country
-						$country_code = isset($phone_country_codes[$default_country]) ? $phone_country_codes[$default_country] : '';
-	
-						if (!empty($country_code)) {
-							// Remove any non-numeric characters from the phone number
-							$local_number = preg_replace('/\D/', '', $phone_number);
-	
-							// Remove leading '0' from the local number
-							$local_number = ltrim($local_number, '0');
-	
-							// Reformat the phone number as +{country_code}{local_number}
-							$phone_number = '+' . $country_code . $local_number;
-						}
-					}
-				}
-			}
+			$phone_number = class_exists( 'YOAA_Phone_Username_Helper' )
+				? YOAA_Phone_Username_Helper::get_user_sms_phone( $user, $submitted_identifier )
+				: $submitted_identifier;
 
 			// Send the OTP via SMS
 			$sms_key = get_option('yoohw_phone_verification_sms_key', '');
@@ -334,7 +291,7 @@ class YOAA_WC_Advanced_Accounts_Reset_Password_OTP {
 		
 			$user = filter_var($identifier, FILTER_VALIDATE_EMAIL)
 				? get_user_by('email', $identifier)
-				: get_user_by('login', $identifier);
+				: ( class_exists( 'YOAA_Phone_Username_Helper' ) ? YOAA_Phone_Username_Helper::find_user_by_identifier( $identifier ) : get_user_by('login', $identifier) );
 		
 			if (!$user) {
 				$this->clear_reset_otp_session();

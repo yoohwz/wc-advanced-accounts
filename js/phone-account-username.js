@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (!billingPhone) {
 				return ''; // If no phone number, return empty string
 			}
-            billingPhone = billingPhone.replace(/[^0-9]/g, '');
+			billingPhone = billingPhone.replace(/[^0-9]/g, '').replace(/^0+/, '');
 
 			if (countryCode && countryCode.startsWith('+')) {
 				countryCode = countryCode.replace('+', ''); // Remove '+' (Convert +X to X)

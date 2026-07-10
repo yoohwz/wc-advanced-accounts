@@ -45,7 +45,7 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 			'phone-login-otp',
 			plugin_dir_url( __FILE__ ) . '../../../js/phone-login-otp.js',
 			[ 'jquery' ],
-			'1.4.3',
+			YOAA_WC_ADVANCED_ACCOUNTS_VERSION,
 			true
 		);
 
@@ -95,6 +95,7 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 		}
 
 		$identifier = isset( $_POST['identifier'] ) ? sanitize_text_field( wp_unslash( $_POST['identifier'] ) ) : '';
+		$submitted_identifier = $identifier;
 
 		if ( empty( $identifier ) ) {
 			wp_send_json_error( __( 'Phone number or email address is required.', 'wc-advanced-accounts' ) );
@@ -109,11 +110,15 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 				wp_send_json_error( __( 'No account found with this email address.', 'wc-advanced-accounts' ) );
 			}
 		} else {
-			$user = get_user_by( 'login', $identifier );
+			$user = class_exists( 'YOAA_Phone_Username_Helper' )
+				? YOAA_Phone_Username_Helper::find_user_by_identifier( $identifier )
+				: get_user_by( 'login', $identifier );
 
 			if ( ! $user ) {
 				wp_send_json_error( __( 'No account found with this phone number.', 'wc-advanced-accounts' ) );
 			}
+
+			$identifier = $user->user_login;
 		}
 
 		WC()->session->set_customer_session_cookie( true );
@@ -170,44 +175,9 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 			wp_send_json_success( __( 'OTP sent successfully. Please check your email.', 'wc-advanced-accounts' ) );
 		}
 
-		$phone_number = $identifier;
-
-		if ( strpos( $phone_number, '-' ) !== false ) {
-			list( $country_code, $local_number ) = explode( '-', $phone_number, 2 );
-
-			$country_code = preg_replace( '/\D/', '', $country_code );
-			$local_number = preg_replace( '/\D/', '', $local_number );
-			$phone_number = '+' . $country_code . $local_number;
-		} else {
-			$allowed_countries = get_option( 'woocommerce_specific_allowed_countries', '' );
-
-			if ( ! empty( $allowed_countries ) ) {
-				$allowed_countries = maybe_unserialize( $allowed_countries );
-				$default_country   = is_array( $allowed_countries ) && ! empty( $allowed_countries ) ? reset( $allowed_countries ) : '';
-
-				if ( ! empty( $default_country ) ) {
-					$phone_country_codes_file = plugin_dir_path( __FILE__ ) . 'data/phone_country_codes.conf';
-					$phone_country_codes      = [];
-
-					if ( file_exists( $phone_country_codes_file ) ) {
-						$lines = file( $phone_country_codes_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
-
-						foreach ( $lines as $line ) {
-							list( $country, $code ) = explode( ':', $line );
-							$phone_country_codes[ trim( $country ) ] = trim( $code );
-						}
-					}
-
-					$country_code = isset( $phone_country_codes[ $default_country ] ) ? $phone_country_codes[ $default_country ] : '';
-
-					if ( ! empty( $country_code ) ) {
-						$local_number = preg_replace( '/\D/', '', $phone_number );
-						$local_number = ltrim( $local_number, '0' );
-						$phone_number = '+' . $country_code . $local_number;
-					}
-				}
-			}
-		}
+		$phone_number = class_exists( 'YOAA_Phone_Username_Helper' )
+			? YOAA_Phone_Username_Helper::get_user_sms_phone( $user, $submitted_identifier )
+			: $submitted_identifier;
 
 		$sms_key          = get_option( 'yoohw_phone_verification_sms_key', '' );
 		$message_template = get_option( 'yoaa_wc_phone_verification_message', '' );
@@ -301,16 +271,12 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 			$lookup_type  = 'email';
 			$lookup_value = $identifier;
 		} else {
-			$user        = get_user_by( 'login', $identifier );
+			$user        = class_exists( 'YOAA_Phone_Username_Helper' )
+				? YOAA_Phone_Username_Helper::find_user_by_identifier( $identifier )
+				: get_user_by( 'login', $identifier );
 			$meta_key    = 'phone_verification';
 			$lookup_type = 'phone';
-
-			if ( strpos( $identifier, '-' ) !== false ) {
-				list( $cc, $num ) = explode( '-', $identifier, 2 );
-				$lookup_value     = '+' . preg_replace( '/\D+/', '', (string) $cc . (string) $num );
-			} else {
-				$lookup_value = preg_replace( '/\D+/', '', $identifier );
-			}
+			$lookup_value = '';
 		}
 
 		if ( ! $user ) {
@@ -319,6 +285,12 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 		}
 
 		$user_id = (int) $user->ID;
+
+		if ( ! is_email( $identifier ) ) {
+			$lookup_value = class_exists( 'YOAA_Phone_Username_Helper' )
+				? YOAA_Phone_Username_Helper::get_user_sms_phone( $user, $identifier )
+				: preg_replace( '/\D+/', '', $identifier );
+		}
 
 		if ( '1' !== get_user_meta( $user_id, $meta_key, true ) ) {
 			update_user_meta( $user_id, $meta_key, '1' );

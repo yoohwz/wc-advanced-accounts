@@ -371,7 +371,9 @@ class YOAA_WC_Advanced_Accounts_Register_Email_Verification {
 		$email = $user->user_email;
 		$user_login = $user->user_login;
 
-		if ( preg_match( '/^\d+-\d+$/', $user_login ) ) {
+		if ( class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+			$phone = YOAA_Phone_Username_Helper::get_user_sms_phone( $user, $user_login );
+		} elseif ( preg_match( '/^\d+-\d+$/', $user_login ) ) {
 			$phone = '+' . str_replace( '-', '', $user_login );
 		} else {
 			$phone = $user_login;

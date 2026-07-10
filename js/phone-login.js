@@ -106,19 +106,26 @@ document.addEventListener('DOMContentLoaded', function() {
           if (acceptsTextInput && hasTextCharacters(raw)) {
             setCountrySelectorVisible(false);
             hiddenInput.value = raw;
-          } else {
-            setCountrySelectorVisible(true);
-            let digits = raw.replace(/\D/g, '');
-            if (digits.charAt(0) === '0') digits = digits.slice(1);
-            const code = dialCodeInput.value.replace(/^\+/, '');
-            hiddenInput.value = code + '-' + digits;
-          }
-        }
+		  } else {
+		    setCountrySelectorVisible(true);
+		    let digits = raw.replace(/\D/g, '');
+		    digits = digits.replace(/^0+/, '');
+		    const code = dialCodeInput.value.replace(/^\+/, '');
+		    hiddenInput.value = code ? code + '-' + digits : digits;
+		  }
+		}
   
-        if (skipCountryCode) {
-          holderInput.addEventListener('input', () => {
-            if (hiddenInput) hiddenInput.value = holderInput.value.trim();
-          });
+		if (skipCountryCode) {
+		  holderInput.addEventListener('input', () => {
+		    const raw = holderInput.value.trim();
+		    if (hiddenInput) {
+		      if (acceptsTextInput && hasTextCharacters(raw)) {
+		        hiddenInput.value = raw;
+		      } else {
+		        hiddenInput.value = raw.replace(/\D/g, '').replace(/^0+/, '');
+		      }
+		    }
+		  });
         } else {
           // initialize intl-tel-input scoped to this holderInput
           const iti = window.intlTelInput(holderInput, getIntlTelInputOptions(acceptsTextInput));

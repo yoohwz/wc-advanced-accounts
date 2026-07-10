@@ -5,7 +5,7 @@ Requires at least: 6.3
 Tested up to: 7.0
 WC tested up to: 10.8
 Requires PHP: 7.4
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -175,22 +175,12 @@ No visitor IP geolocation, product-news subscription, or catalog feed request is
 
 == Changelog ==
 
-= 1.4.3 (June 13, 2026) =
-* New: Added a Tools utility to migrate existing customer usernames to phone-number based usernames with dry-run previews, batch processing, progress tracking, conflict detection, and local-only or dial-local username formats.
-* Security: Hardened OTP login, phone verification, and password reset verification with server-side expiration, failed attempt limits, resend cooldowns, resend limits, and automatic OTP invalidation.
-* Security: Added stronger capability and nonce checks for settings, membership role management, endpoint saving, and checkout/account flows.
-* Security: Improved SMS quota update protection with signed requests, replay-window validation, rate limiting, and safer response data.
-* Fix: Improved phone and email input behavior on WooCommerce login, registration, and checkout forms, including phone formatting, placeholder overlap, strict-reject animation, and IME typing issues.
-* Improve: Updated intl-tel-input to 29.0.5 with bundled UI locale data and WordPress locale matching for country selector text and country names.
-* Improve: Updated WooCommerce checkout login template compatibility and declared HPOS compatibility.
-* Improve: Refreshed WordPress.org metadata, bundled library information, external service disclosures, and the translation template.
-
-= 1.4.2 (May 28, 2026) =
-* Security: Hardened OTP login, phone verification, and password reset verification.
-* Security: Added server-side OTP expiration, failed attempt limits, resend cooldown, resend limits, and automatic OTP invalidation.
-* Security: Increased OTP length to 6 digits and improved OTP validation.
-* Improve: Updated WooCommerce checkout login template compatibility.
-* Improve: Added WooCommerce HPOS compatibility declaration.
-* Improve: Cleaned WordPress.org package metadata, readme disclosures, and bundled library information.
+= 1.4.4 (Jul 10, 2026) =
+* Fix: Corrected phone username generation so single-country stores use local numbers and multi-country stores use dial-local usernames consistently.
+* Fix: Preserved login, login OTP, reset password OTP, and phone verification compatibility for existing users with legacy phone username formats.
+* Improve: Added canonical phone username lookup and alias metadata so migrated users can still use previous phone usernames.
+* Improve: Updated the username migration tool to use the shared phone normalization logic, store old usernames as aliases, and sync normalized phone metadata.
+* Improve: Added searchable, filterable, paginated migration result tables for safer inspection on stores with larger user databases.
+* Fix: Checkout and login phone username JavaScript now removes leading local trunk zeros consistently and avoids malformed hidden usernames.
 
 For previous releases, see `changelog.txt`.

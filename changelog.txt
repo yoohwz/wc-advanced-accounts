@@ -1,5 +1,13 @@
 === WooCommerce Advanced Accounts (Free version) ===
 
+= 1.4.4 (Jul 10, 2026) =
+* Fix: Corrected phone username generation so single-country stores use local numbers and multi-country stores use dial-local usernames consistently.
+* Fix: Preserved login, login OTP, reset password OTP, and phone verification compatibility for existing users with legacy phone username formats.
+* Improve: Added canonical phone username lookup and alias metadata so migrated users can still use previous phone usernames.
+* Improve: Updated the username migration tool to use the shared phone normalization logic, store old usernames as aliases, and sync normalized phone metadata.
+* Improve: Added searchable, filterable, paginated migration result tables for safer inspection on stores with larger user databases.
+* Fix: Checkout and login phone username JavaScript now removes leading local trunk zeros consistently and avoids malformed hidden usernames.
+
 = 1.4.3 (June 13, 2026) =
 * New: Added a Tools utility to migrate existing customer usernames to phone-number based usernames with dry-run previews, batch processing, progress tracking, conflict detection, and local-only or dial-local username formats.
 * Security: Hardened OTP login, phone verification, and password reset verification with server-side expiration, failed attempt limits, resend cooldowns, resend limits, and automatic OTP invalidation.

@@ -14,6 +14,9 @@ class YOAA_WC_Advanced_Accounts_Phone_Account_Username {
 			add_filter( 'woocommerce_locate_template', [$this, 'yoaa_overrite_template'], 10, 3 );
 			add_filter('login_errors', [$this, 'login_error_message']);
 			add_filter('woocommerce_add_error', [$this, 'override_registration_email_exists_error'], 10, 1);
+			add_filter( 'woocommerce_registration_errors', array( $this, 'validate_canonical_phone_username' ), 20, 3 );
+			add_filter( 'woocommerce_new_customer_data', array( $this, 'canonicalize_new_customer_username' ), 20, 1 );
+			add_action( 'woocommerce_created_customer', array( $this, 'sync_created_customer_phone_username_meta' ), 20, 1 );
 			if (get_option('yoaa_wc_enable_phone_login_with_otp') !== 'yes') {
 				add_filter('woocommerce_lost_password_message', [$this, 'lost_password_message']);
 			}
@@ -30,8 +33,8 @@ class YOAA_WC_Advanced_Accounts_Phone_Account_Username {
 			wp_enqueue_style( 'intl-tel-input-css', plugin_dir_url( __FILE__ ) . '../../../css/intl-tel-input/intlTelInput.min.css', array(), self::INTL_TEL_INPUT_VERSION );
 			wp_enqueue_script( 'intl-tel-input', plugin_dir_url( __FILE__ ) . '../../../js/intl-tel-input/intlTelInputWithUtils.min.js', array(), self::INTL_TEL_INPUT_VERSION, true );
 			wp_enqueue_script( 'intl-tel-input-locale-data', plugin_dir_url( __FILE__ ) . '../../../js/intl-tel-input/locale-data.js', array( 'intl-tel-input' ), self::INTL_TEL_INPUT_VERSION, true );
-			wp_enqueue_script('yoaa-phone-username', plugins_url('../../../js/phone-account-username.js', __FILE__), ['jquery', 'intl-tel-input', 'intl-tel-input-locale-data'], '1.3.2', true);
-			wp_enqueue_script('yoaa-phone-login', plugins_url('../../../js/phone-login.js', __FILE__), ['jquery', 'yoaa-phone-username'], '1.3.4', true);
+			wp_enqueue_script('yoaa-phone-username', plugins_url('../../../js/phone-account-username.js', __FILE__), ['jquery', 'intl-tel-input', 'intl-tel-input-locale-data'], YOAA_WC_ADVANCED_ACCOUNTS_VERSION, true);
+			wp_enqueue_script('yoaa-phone-login', plugins_url('../../../js/phone-login.js', __FILE__), ['jquery', 'yoaa-phone-username'], YOAA_WC_ADVANCED_ACCOUNTS_VERSION, true);
 		}
 
 			$allowed_countries_option = get_option('woocommerce_allowed_countries', 'all');
@@ -307,6 +310,102 @@ class YOAA_WC_Advanced_Accounts_Phone_Account_Username {
 		}
 		return $message;
 	}
+
+	public function validate_canonical_phone_username( $errors, $username, $email ) {
+		if ( ! class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+			return $errors;
+		}
+
+		$phone = $this->get_new_customer_phone_identifier( $username );
+
+		if ( '' === $phone || is_email( $phone ) ) {
+			return $errors;
+		}
+
+		$canonical = YOAA_Phone_Username_Helper::build_username(
+			$phone,
+			$this->get_new_customer_dial_code(),
+			$this->get_new_customer_country()
+		);
+
+		if ( '' === $canonical ) {
+			return $errors;
+		}
+
+		$existing_user = YOAA_Phone_Username_Helper::find_user_by_identifier( $canonical );
+
+		if ( $existing_user ) {
+			$errors->add(
+				'registration-error-phone-exists',
+				__( 'This phone number is already registered. Please use a different one.', 'wc-advanced-accounts' )
+			);
+		}
+
+		return $errors;
+	}
+
+	public function canonicalize_new_customer_username( $data ) {
+		if ( ! is_array( $data ) || ! class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+			return $data;
+		}
+
+		$current_login = isset( $data['user_login'] ) ? (string) $data['user_login'] : '';
+		$phone         = $this->get_new_customer_phone_identifier( $current_login );
+
+		if ( '' === $phone || is_email( $phone ) ) {
+			return $data;
+		}
+
+		$canonical = YOAA_Phone_Username_Helper::build_username(
+			$phone,
+			$this->get_new_customer_dial_code(),
+			$this->get_new_customer_country()
+		);
+
+		if ( '' !== $canonical ) {
+			$data['user_login'] = $canonical;
+		}
+
+		return $data;
+	}
+
+	public function sync_created_customer_phone_username_meta( $customer_id ) {
+		$customer_id = absint( $customer_id );
+
+		if ( $customer_id <= 0 || ! class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+			return;
+		}
+
+		$user = get_userdata( $customer_id );
+		if ( ! $user ) {
+			return;
+		}
+
+		$dial_code = $this->get_new_customer_dial_code();
+		$country   = $this->get_new_customer_country();
+		$phone     = $this->get_new_customer_phone_identifier( $user->user_login );
+
+		if ( '' === $phone ) {
+			$phone = $user->user_login;
+		}
+
+		YOAA_Phone_Username_Helper::sync_user_phone_meta( $customer_id, $phone, $dial_code, $country );
+
+		foreach ( array( 'username', 'account_username', 'reg_username_holder', 'username_holder', 'billing_phone' ) as $key ) {
+			$value = $this->get_request_value( $_POST, $key );
+
+			if ( '' === $value || is_email( $value ) ) {
+				continue;
+			}
+
+			YOAA_Phone_Username_Helper::add_username_alias( $customer_id, $value );
+
+			$canonical = YOAA_Phone_Username_Helper::build_username( $value, $dial_code, $country );
+			if ( '' !== $canonical ) {
+				YOAA_Phone_Username_Helper::add_username_alias( $customer_id, $canonical );
+			}
+		}
+	}
 	
 	public function lost_password_message($message) {
 		return __('Lost your password? Please enter your phone number or email address. You will receive a link to create a new password via email.', 'wc-advanced-accounts');
@@ -392,6 +491,57 @@ class YOAA_WC_Advanced_Accounts_Phone_Account_Username {
 				$order->set_shipping_phone( $shipping_phone );
 			}
 		}
+	}
+
+	private function get_new_customer_phone_identifier( $fallback = '' ) {
+		foreach ( array( 'account_username', 'username', 'reg_username_holder', 'username_holder', 'billing_phone' ) as $key ) {
+			$value = $this->get_request_value( $_POST, $key );
+
+			if ( '' === $value || is_email( $value ) ) {
+				continue;
+			}
+
+			if ( preg_match( '/\d/', $value ) ) {
+				return $value;
+			}
+		}
+
+		$fallback = trim( (string) $fallback );
+		if ( '' !== $fallback && ! is_email( $fallback ) && preg_match( '/\d/', $fallback ) ) {
+			return $fallback;
+		}
+
+		return '';
+	}
+
+	private function get_new_customer_dial_code() {
+		foreach ( array( 'username_holder_dial_code', 'reg_username_holder_dial_code', 'billing_dial_code' ) as $key ) {
+			$value = $this->get_request_value( $_POST, $key );
+			if ( '' !== $value ) {
+				return $value;
+			}
+		}
+
+		return '';
+	}
+
+	private function get_new_customer_country() {
+		foreach ( array( 'billing_country', 'shipping_country' ) as $key ) {
+			$value = $this->get_request_value( $_POST, $key );
+			if ( '' !== $value ) {
+				return $value;
+			}
+		}
+
+		return '';
+	}
+
+	private function get_request_value( $source, $key ) {
+		if ( is_array( $source ) && isset( $source[ $key ] ) ) {
+			return sanitize_text_field( wp_unslash( $source[ $key ] ) );
+		}
+
+		return '';
 	}
 }
 

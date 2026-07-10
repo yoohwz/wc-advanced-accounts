@@ -16,6 +16,8 @@ class YOAA_WC_Advanced_Accounts_Backend {
 	}
 
 	public function includes() {
+		include_once plugin_dir_path(__FILE__) . '../backend/helpers/phone-username-helper.php';
+
 		include_once plugin_dir_path(__FILE__) . '../backend/settings.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/users/users-page.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/phone-account-username.php';
@@ -23,6 +25,7 @@ class YOAA_WC_Advanced_Accounts_Backend {
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/email-verification.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/phone-verification.php';
 			include_once plugin_dir_path(__FILE__) . '../backend/actions/login-otp.php';
+			include_once plugin_dir_path(__FILE__) . '../backend/actions/login-alias.php';
 			include_once plugin_dir_path(__FILE__) . '../backend/actions/reset-password.php';
 			include_once plugin_dir_path(__FILE__) . '../backend/actions/redirect-wp-login.php';
 			include_once plugin_dir_path(__FILE__) . 'api/sms/update-sms-quota.php';

@@ -292,176 +292,281 @@ class YOAA_WC_Advanced_Accounts_Tools {
 	}
 
 	private static function render_results( array $results, $dry_run ) {
-		$processed = (int) ( $results['processed'] ?? 0 );
-		$updated   = (int) ( $results['updated'] ?? 0 );
-		$skipped   = (int) ( $results['skipped'] ?? 0 );
-		$conflicts = (int) ( $results['conflicts'] ?? 0 );
-
 		$updated_status = $dry_run ? 'would_update' : 'updated';
-		$updated_label  = $dry_run ? __( 'Would Update', 'wc-advanced-accounts' ) : __( 'Updated', 'wc-advanced-accounts' );
 
-		echo '<div class="yoaa-tools-results" style="margin-top:14px;">';
-		echo '<h4 style="margin:0 0 8px;">' . esc_html__( 'Results', 'wc-advanced-accounts' ) . '</h4>';
+		self::render_results_table(
+			array(
+				'wrap_class'  => 'yoaa-tools-results',
+				'table_class' => 'yoaa-results-table',
+				'dry_run'     => $dry_run,
+				'metrics'     => array(
+					array( 'filter' => 'all', 'label' => __( 'Processed', 'wc-advanced-accounts' ), 'count' => (int) ( $results['processed'] ?? 0 ) ),
+					array( 'filter' => $updated_status, 'label' => $dry_run ? __( 'Would update', 'wc-advanced-accounts' ) : __( 'Updated', 'wc-advanced-accounts' ), 'count' => (int) ( $results['updated'] ?? 0 ) ),
+					array( 'filter' => 'skipped', 'label' => __( 'Skipped', 'wc-advanced-accounts' ), 'count' => (int) ( $results['skipped'] ?? 0 ) ),
+					array( 'filter' => 'conflict', 'label' => __( 'Conflicts', 'wc-advanced-accounts' ), 'count' => (int) ( $results['conflicts'] ?? 0 ) ),
+				),
+				'columns'     => array(
+					array( 'key' => 'user_id', 'label' => __( 'User ID', 'wc-advanced-accounts' ), 'class' => 'yoaa-col-id' ),
+					array( 'key' => 'email', 'label' => __( 'Email', 'wc-advanced-accounts' ), 'class' => 'yoaa-col-email' ),
+					array( 'key' => 'old_username', 'label' => __( 'Old username', 'wc-advanced-accounts' ) ),
+					array( 'key' => 'phone_source', 'label' => __( 'Phone source', 'wc-advanced-accounts' ) ),
+					array( 'key' => 'detected_phone', 'label' => __( 'Detected phone', 'wc-advanced-accounts' ) ),
+					array( 'key' => 'new_username', 'label' => __( 'New username', 'wc-advanced-accounts' ) ),
+					array( 'key' => 'status', 'label' => __( 'Status', 'wc-advanced-accounts' ), 'class' => 'yoaa-col-status' ),
+					array( 'key' => 'reason', 'label' => __( 'Reason', 'wc-advanced-accounts' ), 'class' => 'yoaa-col-reason' ),
+				),
+				'rows'        => $results['rows'] ?? array(),
+			)
+		);
+	}
 
-		echo '<p style="margin:0 0 10px;">';
-		echo '<a href="#" class="yoaa-result-filter" data-filter="all" style="text-decoration:none;font-weight:600;">' .
-			esc_html__( 'Processed', 'wc-advanced-accounts' ) . ': ' . esc_html( $processed ) .
-		'</a>';
-		echo ' | ';
-		echo '<a href="#" class="yoaa-result-filter" data-filter="' . esc_attr( $updated_status ) . '" style="text-decoration:none;font-weight:600;">' .
-			esc_html( $updated_label ) . ': ' . esc_html( $updated ) .
-		'</a>';
-		echo ' | ';
-		echo '<a href="#" class="yoaa-result-filter" data-filter="skipped" style="text-decoration:none;font-weight:600;">' .
-			esc_html__( 'Skipped', 'wc-advanced-accounts' ) . ': ' . esc_html( $skipped ) .
-		'</a>';
-		echo ' | ';
-		echo '<a href="#" class="yoaa-result-filter" data-filter="conflict" style="text-decoration:none;font-weight:600;">' .
-			esc_html__( 'Conflicts', 'wc-advanced-accounts' ) . ': ' . esc_html( $conflicts ) .
-		'</a>';
-		echo '</p>';
+	private static function render_results_table( array $args ) {
+		$wrap_class  = sanitize_html_class( $args['wrap_class'] ?? 'yoaa-tools-results' );
+		$table_class = sanitize_html_class( $args['table_class'] ?? 'yoaa-results-table' );
+		$metrics     = isset( $args['metrics'] ) && is_array( $args['metrics'] ) ? $args['metrics'] : array();
+		$columns     = isset( $args['columns'] ) && is_array( $args['columns'] ) ? $args['columns'] : array();
+		$rows        = isset( $args['rows'] ) && is_array( $args['rows'] ) ? array_values( $args['rows'] ) : array();
+		$dry_run     = ! empty( $args['dry_run'] );
 
-		echo '<p class="yoaa-filter-label" style="margin:0 0 10px;color:#646970;"></p>';
+		self::render_results_assets();
 
-		if ( empty( $results['rows'] ) || ! is_array( $results['rows'] ) ) {
+		echo '<div class="' . esc_attr( $wrap_class ) . ' yoaa-tool-results" data-all-label="' . esc_attr__( 'All', 'wc-advanced-accounts' ) . '" data-no-results="' . esc_attr__( 'No rows match the current filters.', 'wc-advanced-accounts' ) . '">';
+		echo '<div class="yoaa-results-header">';
+		echo '<div>';
+		echo '<h4>' . esc_html__( 'Results', 'wc-advanced-accounts' ) . '</h4>';
+		echo '<p>' . esc_html__( 'Showing the current processed batch. Use pagination, filters, and search to inspect rows without overloading the page.', 'wc-advanced-accounts' ) . '</p>';
+		echo '</div>';
+		echo '<span class="yoaa-results-mode ' . ( $dry_run ? 'is-dry-run' : 'is-live-run' ) . '">' . esc_html( $dry_run ? __( 'Dry-run', 'wc-advanced-accounts' ) : __( 'Live run', 'wc-advanced-accounts' ) ) . '</span>';
+		echo '</div>';
+
+		if ( ! empty( $metrics ) ) {
+			echo '<div class="yoaa-results-metrics" role="list">';
+			foreach ( $metrics as $index => $metric ) {
+				$filter = sanitize_key( $metric['filter'] ?? 'all' );
+				$label  = (string) ( $metric['label'] ?? '' );
+				$count  = (int) ( $metric['count'] ?? 0 );
+				echo '<button type="button" class="yoaa-result-filter' . ( 0 === (int) $index ? ' is-active' : '' ) . '" data-filter="' . esc_attr( $filter ) . '" data-label="' . esc_attr( $label ) . '">';
+				echo '<span>' . esc_html( $label ) . '</span>';
+				echo '<strong>' . esc_html( $count ) . '</strong>';
+				echo '</button>';
+			}
+			echo '</div>';
+		}
+
+		if ( empty( $rows ) || empty( $columns ) ) {
+			echo '<div class="yoaa-results-empty">' . esc_html__( 'No rows returned for this run.', 'wc-advanced-accounts' ) . '</div>';
 			echo '</div>';
 			return;
 		}
 
-		echo '<table class="widefat striped yoaa-results-table" style="max-width:1200px;">';
+		echo '<div class="yoaa-results-toolbar">';
+		echo '<p class="yoaa-filter-label"></p>';
+		echo '<label class="yoaa-result-search-label"><span>' . esc_html__( 'Search', 'wc-advanced-accounts' ) . '</span><input type="search" class="yoaa-result-search" placeholder="' . esc_attr__( 'User ID, email, status, reason...', 'wc-advanced-accounts' ) . '" /></label>';
+		echo '<label class="yoaa-result-page-size-label"><span>' . esc_html__( 'Rows per page', 'wc-advanced-accounts' ) . '</span><select class="yoaa-result-page-size">';
+		foreach ( array( 25, 50, 100, 200 ) as $per_page ) {
+			echo '<option value="' . esc_attr( $per_page ) . '"' . selected( $per_page, 50, false ) . '>' . esc_html( $per_page ) . '</option>';
+		}
+		echo '</select></label>';
+		echo '</div>';
+
+		echo '<div class="yoaa-results-table-wrap">';
+		echo '<table class="widefat striped ' . esc_attr( $table_class ) . ' yoaa-results-table">';
 		echo '<thead><tr>';
-		echo '<th>' . esc_html__( 'User ID', 'wc-advanced-accounts' ) . '</th>';
-		echo '<th>' . esc_html__( 'Email', 'wc-advanced-accounts' ) . '</th>';
-		echo '<th>' . esc_html__( 'Old username', 'wc-advanced-accounts' ) . '</th>';
-		echo '<th>' . esc_html__( 'Phone source', 'wc-advanced-accounts' ) . '</th>';
-		echo '<th>' . esc_html__( 'Detected phone', 'wc-advanced-accounts' ) . '</th>';
-		echo '<th>' . esc_html__( 'New username', 'wc-advanced-accounts' ) . '</th>';
-		echo '<th>' . esc_html__( 'Status', 'wc-advanced-accounts' ) . '</th>';
-		echo '<th>' . esc_html__( 'Reason', 'wc-advanced-accounts' ) . '</th>';
+		foreach ( $columns as $column ) {
+			$column_class = ! empty( $column['class'] ) ? ' class="' . esc_attr( sanitize_html_class( $column['class'] ) ) . '"' : '';
+			echo '<th' . $column_class . '>' . esc_html( $column['label'] ?? '' ) . '</th>';
+		}
 		echo '</tr></thead><tbody>';
 
-		foreach ( $results['rows'] as $r ) {
-			$status      = isset( $r['status'] ) ? (string) $r['status'] : '';
-			$status_attr = '' !== $status ? $status : 'unknown';
-			$user_id     = isset( $r['user_id'] ) ? (int) $r['user_id'] : 0;
-			$edit_link   = $user_id > 0 ? admin_url( 'user-edit.php?user_id=' . $user_id ) : '';
+		foreach ( $rows as $row ) {
+			$row    = is_array( $row ) ? $row : array();
+			$status = sanitize_key( (string) ( $row['status'] ?? 'unknown' ) );
+			$status = '' !== $status ? $status : 'unknown';
 
-			echo '<tr data-status="' . esc_attr( $status_attr ) . '">';
-			echo '<td>';
-			if ( $edit_link ) {
-				echo '<a href="' . esc_url( $edit_link ) . '" target="_blank" rel="noopener noreferrer" style="font-weight:600;">' . esc_html( $user_id ) . '</a>';
-			} else {
-				echo esc_html( $user_id );
+			$search_values = array();
+			foreach ( $columns as $column ) {
+				$key             = (string) ( $column['key'] ?? '' );
+				$search_values[] = isset( $row[ $key ] ) ? (string) $row[ $key ] : '';
 			}
-			echo '</td>';
-			echo '<td>' . esc_html( $r['email'] ?? '' ) . '</td>';
-			echo '<td>' . esc_html( $r['old_username'] ?? '' ) . '</td>';
-			echo '<td>' . esc_html( $r['phone_source'] ?? '' ) . '</td>';
-			echo '<td>' . esc_html( $r['detected_phone'] ?? '' ) . '</td>';
-			echo '<td>' . esc_html( $r['new_username'] ?? '' ) . '</td>';
-			echo '<td>' . esc_html( $status_attr ) . '</td>';
-			echo '<td>' . esc_html( $r['reason'] ?? '' ) . '</td>';
+
+			echo '<tr data-status="' . esc_attr( $status ) . '" data-search="' . esc_attr( strtolower( implode( ' ', $search_values ) ) ) . '">';
+			foreach ( $columns as $column ) {
+				$key        = (string) ( $column['key'] ?? '' );
+				$value      = isset( $row[ $key ] ) ? (string) $row[ $key ] : '';
+				$cell_class = ! empty( $column['class'] ) ? ' class="' . esc_attr( sanitize_html_class( $column['class'] ) ) . '"' : '';
+
+				echo '<td' . $cell_class . '>';
+
+				if ( 'user_id' === $key ) {
+					$user_id   = absint( $value );
+					$edit_link = $user_id > 0 ? admin_url( 'user-edit.php?user_id=' . $user_id ) : '';
+					if ( $edit_link ) {
+						echo '<a href="' . esc_url( $edit_link ) . '" target="_blank" rel="noopener noreferrer" class="yoaa-user-link">' . esc_html( $user_id ) . '</a>';
+					} else {
+						echo esc_html( $user_id );
+					}
+				} elseif ( 'status' === $key ) {
+					echo '<span class="yoaa-status-badge yoaa-status-' . esc_attr( $status ) . '">' . esc_html( self::get_result_status_label( $status ) ) . '</span>';
+				} else {
+					echo esc_html( $value );
+				}
+
+				echo '</td>';
+			}
 			echo '</tr>';
 		}
 
 		echo '</tbody></table>';
+		echo '</div>';
+		echo '<div class="yoaa-results-empty yoaa-results-empty-filter" hidden>' . esc_html__( 'No rows match the current filters.', 'wc-advanced-accounts' ) . '</div>';
+		echo '<div class="yoaa-results-pagination">';
+		echo '<span class="yoaa-page-range"></span>';
+		echo '<span class="yoaa-page-buttons">';
+		echo '<button type="button" class="button yoaa-page-prev" aria-label="' . esc_attr__( 'Previous page', 'wc-advanced-accounts' ) . '">&lsaquo;</button>';
+		echo '<span class="yoaa-page-current"></span>';
+		echo '<button type="button" class="button yoaa-page-next" aria-label="' . esc_attr__( 'Next page', 'wc-advanced-accounts' ) . '">&rsaquo;</button>';
+		echo '</span>';
+		echo '</div>';
+		echo '</div>';
+	}
 
-		$filter_labels = array(
-			'filter'       => __( 'Filter:', 'wc-advanced-accounts' ),
-			'all'          => __( 'All', 'wc-advanced-accounts' ),
-			'skipped'      => __( 'Skipped', 'wc-advanced-accounts' ),
-			'conflicts'    => __( 'Conflicts', 'wc-advanced-accounts' ),
+	private static function get_result_status_label( $status ) {
+		$status = sanitize_key( (string) $status );
+
+		$labels = array(
 			'updated'      => __( 'Updated', 'wc-advanced-accounts' ),
-			'would_update' => __( 'Would Update', 'wc-advanced-accounts' ),
+			'would_update' => __( 'Would update', 'wc-advanced-accounts' ),
+			'skipped'      => __( 'Skipped', 'wc-advanced-accounts' ),
+			'conflict'     => __( 'Conflict', 'wc-advanced-accounts' ),
+			'error'        => __( 'Error', 'wc-advanced-accounts' ),
+			'unknown'      => __( 'Unknown', 'wc-advanced-accounts' ),
 		);
+
+		if ( isset( $labels[ $status ] ) ) {
+			return $labels[ $status ];
+		}
+
+		return ucwords( str_replace( '_', ' ', $status ) );
+	}
+
+	private static function render_results_assets() {
+		static $rendered = false;
+
+		if ( $rendered ) {
+			return;
+		}
+
+		$rendered = true;
 		?>
+		<style>
+		.yoaa-tool-results { margin-top: 16px; max-width: 1200px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; overflow: hidden; }
+		.yoaa-results-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 14px 16px; border-bottom: 1px solid #dcdcde; background: #f6f7f7; }
+		.yoaa-results-header h4 { margin: 0 0 4px; font-size: 14px; line-height: 1.4; }
+		.yoaa-results-header p { margin: 0; color: #646970; }
+		.yoaa-results-mode, .yoaa-status-badge { display: inline-flex; align-items: center; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 1.4; white-space: nowrap; }
+		.yoaa-results-mode { padding: 4px 9px; border: 1px solid #c3c4c7; background: #fff; color: #3c434a; }
+		.yoaa-results-mode.is-dry-run { border-color: #72aee6; color: #0a4b78; }
+		.yoaa-results-mode.is-live-run { border-color: #00a32a; color: #006b1b; }
+		.yoaa-results-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; padding: 12px 16px; border-bottom: 1px solid #dcdcde; }
+		.yoaa-result-filter { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; padding: 8px 10px; border: 1px solid #dcdcde; border-radius: 5px; background: #fff; color: #2c3338; cursor: pointer; text-align: left; }
+		.yoaa-result-filter span { color: #646970; }
+		.yoaa-result-filter strong { font-size: 16px; }
+		.yoaa-result-filter.is-active { border-color: #2271b1; box-shadow: inset 0 0 0 1px #2271b1; }
+		.yoaa-results-toolbar, .yoaa-results-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; }
+		.yoaa-results-toolbar { flex-wrap: wrap; }
+		.yoaa-filter-label, .yoaa-page-range, .yoaa-page-current { margin: 0; color: #646970; }
+		.yoaa-result-search-label, .yoaa-result-page-size-label { display: inline-flex; align-items: center; gap: 6px; color: #3c434a; }
+		.yoaa-result-search { min-width: 260px; }
+		.yoaa-results-table-wrap { overflow-x: auto; border-top: 1px solid #dcdcde; border-bottom: 1px solid #dcdcde; }
+		.yoaa-results-table { min-width: 980px; border: 0; }
+		.yoaa-results-table thead th { position: sticky; top: 0; z-index: 1; padding: 10px !important; background: #f6f7f7; white-space: nowrap; }
+		.yoaa-results-table tbody td { padding: 10px; vertical-align: top; word-break: break-word; }
+		.yoaa-col-id { width: 76px; }
+		.yoaa-col-status { width: 120px; }
+		.yoaa-col-reason { min-width: 220px; }
+		.yoaa-user-link { font-weight: 600; text-decoration: none; }
+		.yoaa-status-badge { padding: 3px 8px; background: #f0f0f1; color: #3c434a; }
+		.yoaa-status-updated { background: #edfaef; color: #006b1b; }
+		.yoaa-status-would_update { background: #eef6fc; color: #0a4b78; }
+		.yoaa-status-skipped { background: #f6f7f7; color: #646970; }
+		.yoaa-status-conflict, .yoaa-status-error { background: #fcf0f1; color: #8a2424; }
+		.yoaa-results-empty { margin: 12px 16px; padding: 12px; border: 1px dashed #c3c4c7; border-radius: 5px; color: #646970; background: #f6f7f7; }
+		.yoaa-page-buttons { display: inline-flex; align-items: center; gap: 8px; }
+		.yoaa-page-buttons .button { min-width: 32px; padding: 0 8px; }
+		@media (max-width: 782px) { .yoaa-results-header, .yoaa-results-toolbar, .yoaa-results-pagination { align-items: stretch; flex-direction: column; } .yoaa-result-search, .yoaa-result-search-label, .yoaa-result-page-size-label { width: 100%; } }
+		</style>
 		<script>
 		(function(){
-			const labels = <?php echo wp_json_encode( $filter_labels ); ?>;
-			const wrap = document.querySelector('.yoaa-tools-results');
-			if (!wrap) return;
-
-			const table = wrap.querySelector('.yoaa-results-table');
-			if (!table) return;
-
-			const label = wrap.querySelector('.yoaa-filter-label');
-			const links = wrap.querySelectorAll('.yoaa-result-filter');
-
-			function setLabel(text){
-				if (!label) return;
-				label.textContent = text ? ((labels.filter || 'Filter:') + ' ' + text) : '';
+			function initResults(wrap) {
+				if (!wrap || wrap.dataset.yoaaResultsReady === '1') return;
+				wrap.dataset.yoaaResultsReady = '1';
+				const table = wrap.querySelector('.yoaa-results-table');
+				if (!table) return;
+				const rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+				const filterButtons = Array.prototype.slice.call(wrap.querySelectorAll('.yoaa-result-filter'));
+				const searchInput = wrap.querySelector('.yoaa-result-search');
+				const pageSizeSelect = wrap.querySelector('.yoaa-result-page-size');
+				const filterLabel = wrap.querySelector('.yoaa-filter-label');
+				const emptyState = wrap.querySelector('.yoaa-results-empty-filter');
+				const pagination = wrap.querySelector('.yoaa-results-pagination');
+				const rangeLabel = wrap.querySelector('.yoaa-page-range');
+				const pageLabel = wrap.querySelector('.yoaa-page-current');
+				const prevButton = wrap.querySelector('.yoaa-page-prev');
+				const nextButton = wrap.querySelector('.yoaa-page-next');
+				let activeFilter = 'all';
+				let currentPage = 1;
+				function normalize(value) { return String(value || '').toLowerCase(); }
+				function getPageSize() { const value = pageSizeSelect ? parseInt(pageSizeSelect.value, 10) : 50; return value > 0 ? value : 50; }
+				function getFilteredRows() {
+					const query = searchInput ? normalize(searchInput.value).trim() : '';
+					return rows.filter(function(row){
+						const status = normalize(row.getAttribute('data-status'));
+						const haystack = normalize(row.getAttribute('data-search') || row.textContent);
+						if (activeFilter !== 'all' && status !== activeFilter) return false;
+						return !query || haystack.indexOf(query) !== -1;
+					});
+				}
+				function render() {
+					const pageSize = getPageSize();
+					const filteredRows = getFilteredRows();
+					const totalPages = Math.max(1, Math.ceil(filteredRows.length / pageSize));
+					if (currentPage > totalPages) currentPage = totalPages;
+					const start = (currentPage - 1) * pageSize;
+					const end = Math.min(start + pageSize, filteredRows.length);
+					const visibleRows = filteredRows.slice(start, end);
+					rows.forEach(function(row){ row.hidden = true; });
+					visibleRows.forEach(function(row){ row.hidden = false; });
+					if (emptyState) emptyState.hidden = filteredRows.length > 0;
+					if (pagination) pagination.hidden = filteredRows.length === 0;
+					if (rangeLabel) rangeLabel.textContent = filteredRows.length ? ((start + 1) + '-' + end + ' / ' + filteredRows.length) : '0 / 0';
+					if (pageLabel) pageLabel.textContent = currentPage + ' / ' + totalPages;
+					if (prevButton) prevButton.disabled = currentPage <= 1;
+					if (nextButton) nextButton.disabled = currentPage >= totalPages;
+					if (filterLabel) {
+						const activeButton = filterButtons.find(function(button){ return normalize(button.getAttribute('data-filter')) === activeFilter; });
+						const label = activeButton ? activeButton.getAttribute('data-label') : wrap.getAttribute('data-all-label');
+						filterLabel.textContent = label ? (label + ' - ' + filteredRows.length) : '';
+					}
+				}
+				filterButtons.forEach(function(button){
+					button.addEventListener('click', function(){
+						activeFilter = normalize(button.getAttribute('data-filter')) || 'all';
+						currentPage = 1;
+						filterButtons.forEach(function(item){ item.classList.toggle('is-active', item === button); });
+						render();
+					});
+				});
+				if (searchInput) searchInput.addEventListener('input', function(){ currentPage = 1; render(); });
+				if (pageSizeSelect) pageSizeSelect.addEventListener('change', function(){ currentPage = 1; render(); });
+				if (prevButton) prevButton.addEventListener('click', function(){ if (currentPage > 1) { currentPage--; render(); } });
+				if (nextButton) nextButton.addEventListener('click', function(){ currentPage++; render(); });
+				render();
 			}
-
-			function applyFilter(filter){
-				const rows = table.querySelectorAll('tbody tr');
-
-				rows.forEach(function(tr){
-					const st = (tr.getAttribute('data-status') || '').toLowerCase();
-
-					tr.classList.remove('yoaa-hide-row');
-
-					if (filter === 'all') {
-						return;
-					}
-
-					if (filter === 'conflict' && st !== 'conflict') {
-						tr.classList.add('yoaa-hide-row');
-						return;
-					}
-
-					if (filter === 'skipped' && st !== 'skipped') {
-						tr.classList.add('yoaa-hide-row');
-						return;
-					}
-
-					if (filter === 'updated' && st !== 'updated') {
-						tr.classList.add('yoaa-hide-row');
-						return;
-					}
-
-					if (filter === 'would_update' && st !== 'would_update') {
-						tr.classList.add('yoaa-hide-row');
-					}
-				});
-
-				links.forEach(function(a){
-					a.style.opacity = (a.dataset.filter === filter) ? '1' : '0.6';
-				});
-			}
-
-			links.forEach(function(a){
-				a.addEventListener('click', function(e){
-					e.preventDefault();
-					const filter = (a.dataset.filter || 'all').toLowerCase();
-					applyFilter(filter);
-
-					let labelText = labels.all || 'All';
-					if (filter === 'skipped') labelText = labels.skipped || 'Skipped';
-					else if (filter === 'conflict') labelText = labels.conflicts || 'Conflicts';
-					else if (filter === 'updated') labelText = labels.updated || 'Updated';
-					else if (filter === 'would_update') labelText = labels.would_update || 'Would Update';
-
-					setLabel(labelText);
-				});
-			});
-
-			applyFilter('all');
-			setLabel(labels.all || 'All');
+			function initAllResults() { document.querySelectorAll('.yoaa-tool-results').forEach(initResults); }
+			if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAllResults); else initAllResults();
 		})();
 		</script>
-
-		<style>
-		.yoaa-results-table tbody tr.yoaa-hide-row {
-			display: none;
-		}
-		.yoaa-results-table thead th {
-			padding-left: 10px;
-			padding-right: 10px !important;
-		}
-		</style>
 		<?php
-
-		echo '</div>';
 	}
 
 	private static function run_migration( array $args ) {
@@ -515,8 +620,20 @@ class YOAA_WC_Advanced_Accounts_Tools {
 				continue;
 			}
 
-			$raw_phone  = $phone_data['raw'];
-			$normalized = self::normalize_phone( $raw_phone );
+			$raw_phone       = $phone_data['raw'];
+			$billing_country = get_user_meta( (int) $u->ID, 'billing_country', true );
+			$billing_country = is_string( $billing_country ) ? $billing_country : '';
+
+			if ( class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+				$parsed_phone = YOAA_Phone_Username_Helper::parse_phone( $raw_phone, '', $billing_country );
+				$normalized   = array(
+					'dial'  => (string) ( $parsed_phone['dial'] ?? '' ),
+					'local' => (string) ( $parsed_phone['local'] ?? '' ),
+				);
+				$new_username = (string) ( $parsed_phone['username'] ?? '' );
+			} else {
+				$normalized = self::normalize_phone( $raw_phone );
+			}
 
 			if ( empty( $normalized['local'] ) ) {
 				$skipped++;
@@ -524,25 +641,27 @@ class YOAA_WC_Advanced_Accounts_Tools {
 				continue;
 			}
 
-			$local = $normalized['local'];
-			$dial  = '';
+			if ( ! class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+				$local = $normalized['local'];
+				$dial  = '';
 
-			$from_phone = self::extract_dial_local_from_international_phone( $raw_phone );
+				$from_phone = self::extract_dial_local_from_international_phone( $raw_phone );
 
-			if ( ! empty( $from_phone['dial'] ) && ! empty( $from_phone['local'] ) ) {
-				$local = $from_phone['local'];
-			}
-
-			if ( ! $skip_country_code ) {
 				if ( ! empty( $from_phone['dial'] ) && ! empty( $from_phone['local'] ) ) {
-					$dial  = $from_phone['dial'];
 					$local = $from_phone['local'];
-				} else {
-					$dial = self::get_dial_code_from_billing_country_conf( (int) $u->ID );
 				}
-			}
 
-			$new_username = self::build_username_by_site_rules( $skip_country_code, $dial, $local );
+				if ( ! $skip_country_code ) {
+					if ( ! empty( $from_phone['dial'] ) && ! empty( $from_phone['local'] ) ) {
+						$dial  = $from_phone['dial'];
+						$local = $from_phone['local'];
+					} else {
+						$dial = self::get_dial_code_from_billing_country_conf( (int) $u->ID );
+					}
+				}
+
+				$new_username = self::build_username_by_site_rules( $skip_country_code, $dial, $local );
+			}
 
 			if ( empty( $new_username ) ) {
 				$skipped++;
@@ -551,13 +670,22 @@ class YOAA_WC_Advanced_Accounts_Tools {
 			}
 
 			if ( $new_username === $old_username ) {
+				if ( empty( $args['dry_run'] ) && class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+					YOAA_Phone_Username_Helper::sync_user_phone_meta( (int) $u->ID, $raw_phone, '', $billing_country );
+				}
+
 				$skipped++;
 				$rows[] = self::row( $u, $old_username, $phone_data['source'], $phone_data['raw'], $new_username, 'skipped', __( 'Already matches.', 'wc-advanced-accounts' ) );
 				continue;
 			}
 
-			$existing = username_exists( $new_username );
-			if ( $existing && (int) $existing !== (int) $u->ID ) {
+			$existing      = username_exists( $new_username );
+			$existing_user = ( ! $existing && class_exists( 'YOAA_Phone_Username_Helper' ) )
+				? YOAA_Phone_Username_Helper::find_user_by_identifier( $new_username )
+				: false;
+			$existing_id   = $existing_user ? (int) $existing_user->ID : (int) $existing;
+
+			if ( $existing_id && (int) $existing_id !== (int) $u->ID ) {
 				$conflicts++;
 				$rows[] = self::row( $u, $old_username, $phone_data['source'], $phone_data['raw'], $new_username, 'conflict', __( 'Username already exists.', 'wc-advanced-accounts' ) );
 				continue;
@@ -569,6 +697,13 @@ class YOAA_WC_Advanced_Accounts_Tools {
 				continue;
 			}
 
+			update_user_meta( (int) $u->ID, '_yoaa_old_username_before_phone_migration', $old_username );
+
+			if ( class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+				YOAA_Phone_Username_Helper::add_username_alias( (int) $u->ID, $old_username );
+				YOAA_Phone_Username_Helper::sync_user_phone_meta( (int) $u->ID, $raw_phone, '', $billing_country );
+			}
+
 			$result = self::update_user_login_direct( (int) $u->ID, $new_username );
 
 			if ( is_wp_error( $result ) ) {
@@ -577,10 +712,12 @@ class YOAA_WC_Advanced_Accounts_Tools {
 				continue;
 			}
 
-			update_user_meta( (int) $u->ID, '_yoaa_old_username_before_phone_migration', $old_username );
 			update_user_meta( (int) $u->ID, 'nickname', $new_username );
 
 			$updated++;
+			if ( class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+				YOAA_Phone_Username_Helper::sync_user_phone_meta( (int) $u->ID, $new_username, '', $billing_country );
+			}
 			$rows[] = self::row( $u, $old_username, $phone_data['source'], $phone_data['raw'], $new_username, 'updated', __( 'Updated.', 'wc-advanced-accounts' ) );
 		}
 
@@ -702,9 +839,26 @@ class YOAA_WC_Advanced_Accounts_Tools {
 			return '';
 		}
 
+		$country_code = self::get_woocommerce_country_calling_code( $country );
+		if ( '' !== $country_code ) {
+			return $country_code;
+		}
+
 		$conf_file = plugin_dir_path( __FILE__ ) . '../actions/data/phone_country_codes.conf';
 
 		return self::get_phone_country_code_from_conf_fallback( $country, $conf_file );
+	}
+
+	private static function get_woocommerce_country_calling_code( $country ) {
+		$country = strtoupper( trim( (string) $country ) );
+		if ( '' === $country || ! function_exists( 'WC' ) || ! WC() || empty( WC()->countries ) ) {
+			return '';
+		}
+
+		$code = WC()->countries->get_country_calling_code( $country );
+		$code = preg_replace( '/\D+/', '', (string) $code );
+
+		return is_string( $code ) ? $code : '';
 	}
 
 	private static function get_phone_country_code_from_conf_fallback( $country, $conf_file ) {
@@ -803,18 +957,18 @@ class YOAA_WC_Advanced_Accounts_Tools {
 			return $cache[ $conf_file ];
 		}
 
+		$dials = array_fill_keys( self::get_woocommerce_dial_codes(), true );
+
 		if ( '' === $conf_file || ! file_exists( $conf_file ) ) {
-			$cache[ $conf_file ] = array();
+			$cache[ $conf_file ] = array_keys( $dials );
 			return $cache[ $conf_file ];
 		}
 
 		$lines = file( $conf_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
 		if ( ! is_array( $lines ) ) {
-			$cache[ $conf_file ] = array();
+			$cache[ $conf_file ] = array_keys( $dials );
 			return $cache[ $conf_file ];
 		}
-
-		$dials = array();
 
 		foreach ( $lines as $line ) {
 			$parts = explode( ':', $line, 2 );
@@ -840,6 +994,27 @@ class YOAA_WC_Advanced_Accounts_Tools {
 		$cache[ $conf_file ] = $dials;
 
 		return $cache[ $conf_file ];
+	}
+
+	private static function get_woocommerce_dial_codes() {
+		if ( ! function_exists( 'WC' ) || ! WC() || empty( WC()->countries ) ) {
+			return array();
+		}
+
+		$countries = WC()->countries->get_countries();
+		if ( ! is_array( $countries ) ) {
+			return array();
+		}
+
+		$dials = array();
+		foreach ( array_keys( $countries ) as $country ) {
+			$code = self::get_woocommerce_country_calling_code( $country );
+			if ( '' !== $code ) {
+				$dials[ $code ] = true;
+			}
+		}
+
+		return array_keys( $dials );
 	}
 
 	private static function extract_dial_local_from_international_phone( $raw_phone ) {

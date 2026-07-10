@@ -130,8 +130,12 @@ class YOAA_WC_Advanced_Accounts_Register_Phone_Verification {
 				wp_send_json_error(__('Phone number is required.', 'wc-advanced-accounts'));
 			}
 
-			// Check if the phone number already exists as a username
-			if (username_exists($phone_number)) {
+			$existing_user = class_exists( 'YOAA_Phone_Username_Helper' )
+				? YOAA_Phone_Username_Helper::find_user_by_identifier( $phone_number )
+				: get_user_by( 'login', $phone_number );
+			$current_user_id = get_current_user_id();
+
+			if ( $existing_user && ( ! $current_user_id || (int) $existing_user->ID !== (int) $current_user_id ) ) {
 				wp_send_json_error(__('This phone number is already registered. Please use a different one.', 'wc-advanced-accounts'));
 			}
 
@@ -202,53 +206,10 @@ class YOAA_WC_Advanced_Accounts_Register_Phone_Verification {
 				$message_template
 			);
 
-		// Extract the country code and phone number
-		if (strpos($phone_number, '-') !== false) {
-			list($country_code, $local_number) = explode('-', $phone_number, 2);
-
-			// Remove any non-numeric characters
-			$country_code = preg_replace('/\D/', '', $country_code);
-			$local_number = preg_replace('/\D/', '', $local_number);
-
-			// Reformat the phone number as +{country_code}{local_number}
-			$phone_number = '+' . $country_code . $local_number;
-		} else {
-			// No '-' in the phone number, fetch the default country code
-			$allowed_countries = get_option('woocommerce_specific_allowed_countries', '');
-
-			if (!empty($allowed_countries)) {
-				// Parse the serialized data into an array
-				$allowed_countries = maybe_unserialize($allowed_countries);
-
-				// Get the first country in the list
-				$default_country = is_array($allowed_countries) && !empty($allowed_countries) ? reset($allowed_countries) : '';
-
-				if (!empty($default_country)) {
-					// Load the country codes from the configuration file
-					$phone_country_codes_file = plugin_dir_path(__FILE__) . 'data/phone_country_codes.conf';
-					$phone_country_codes = [];
-					if (file_exists($phone_country_codes_file)) {
-						$lines = file($phone_country_codes_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-						foreach ($lines as $line) {
-							list($country, $code) = explode(':', $line);
-							$phone_country_codes[trim($country)] = trim($code);
-						}
-					}
-
-					// Get the phone country code for the default country
-					$country_code = isset($phone_country_codes[$default_country]) ? $phone_country_codes[$default_country] : '';
-
-					if (!empty($country_code)) {
-						// Remove any non-numeric characters from the phone number
-						$local_number = preg_replace('/\D/', '', $phone_number);
-
-						// Remove leading '0' from the local number
-						$local_number = ltrim($local_number, '0');
-
-						// Reformat the phone number as +{country_code}{local_number}
-						$phone_number = '+' . $country_code . $local_number;
-					}
-				}
+		if ( class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+			$parsed_phone = YOAA_Phone_Username_Helper::parse_phone( $phone_number );
+			if ( ! empty( $parsed_phone['e164'] ) ) {
+				$phone_number = $parsed_phone['e164'];
 			}
 		}
 
@@ -360,42 +321,10 @@ class YOAA_WC_Advanced_Accounts_Register_Phone_Verification {
 			WC()->session->__unset( 'phone_verification_resend_attempts' );
 			WC()->session->set( 'wc_phone_verified', true );
 
-		// Normalize phone to E.164-like format.
-		if ( strpos( $phone_number, '-' ) !== false ) {
-			list( $country_code, $local_number ) = explode( '-', $phone_number, 2 );
-
-			$country_code = preg_replace( '/\D+/', '', (string) $country_code );
-			$local_number = preg_replace( '/\D+/', '', (string) $local_number );
-
-			$phone_number = '+' . $country_code . $local_number;
-		} else {
-			$allowed_countries = get_option( 'woocommerce_specific_allowed_countries', '' );
-			if ( ! empty( $allowed_countries ) ) {
-				$allowed_countries = maybe_unserialize( $allowed_countries );
-				$default_country   = ( is_array( $allowed_countries ) && ! empty( $allowed_countries ) ) ? (string) reset( $allowed_countries ) : '';
-
-				if ( '' !== $default_country ) {
-					$phone_country_codes_file = plugin_dir_path( __FILE__ ) . 'data/phone_country_codes.conf';
-					$phone_country_codes      = array();
-
-					if ( file_exists( $phone_country_codes_file ) ) {
-						$lines = file( $phone_country_codes_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
-						foreach ( (array) $lines as $line ) {
-							$parts = explode( ':', $line, 2 );
-							if ( 2 !== count( $parts ) ) {
-								continue;
-							}
-							$phone_country_codes[ trim( $parts[0] ) ] = trim( $parts[1] );
-						}
-					}
-
-					$country_code = isset( $phone_country_codes[ $default_country ] ) ? $phone_country_codes[ $default_country ] : '';
-					if ( '' !== $country_code ) {
-						$local_number = preg_replace( '/\D+/', '', (string) $phone_number );
-						$local_number = ltrim( $local_number, '0' );
-						$phone_number = '+' . preg_replace( '/\D+/', '', (string) $country_code ) . $local_number;
-					}
-				}
+		if ( class_exists( 'YOAA_Phone_Username_Helper' ) ) {
+			$parsed_phone = YOAA_Phone_Username_Helper::parse_phone( $phone_number );
+			if ( ! empty( $parsed_phone['e164'] ) ) {
+				$phone_number = $parsed_phone['e164'];
 			}
 		}
 
@@ -501,8 +430,12 @@ class YOAA_WC_Advanced_Accounts_Register_Phone_Verification {
 
 		$username = sanitize_text_field( wp_unslash( $_POST['username'] ) );
 
-		// Check if the username exists.
-		if ( username_exists( $username ) ) {
+		$existing_user = class_exists( 'YOAA_Phone_Username_Helper' )
+			? YOAA_Phone_Username_Helper::find_user_by_identifier( $username )
+			: get_user_by( 'login', $username );
+		$current_user_id = get_current_user_id();
+
+		if ( $existing_user && ( ! $current_user_id || (int) $existing_user->ID !== (int) $current_user_id ) ) {
 			wp_send_json_error(
 				__( 'This phone number is already registered. Please use a different one.', 'wc-advanced-accounts' )
 			);
