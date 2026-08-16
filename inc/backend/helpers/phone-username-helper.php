@@ -251,7 +251,7 @@ final class YOAA_Phone_Username_Helper {
 		}
 	}
 
-	public static function get_user_sms_phone( $user, $fallback = '' ) {
+	public static function get_user_phone( $user, $fallback = '' ) {
 		$user_id = $user instanceof WP_User ? (int) $user->ID : absint( $user );
 
 		if ( $user_id > 0 ) {

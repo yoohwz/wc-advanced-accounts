@@ -372,7 +372,7 @@ class YOAA_WC_Advanced_Accounts_Register_Email_Verification {
 		$user_login = $user->user_login;
 
 		if ( class_exists( 'YOAA_Phone_Username_Helper' ) ) {
-			$phone = YOAA_Phone_Username_Helper::get_user_sms_phone( $user, $user_login );
+			$phone = YOAA_Phone_Username_Helper::get_user_phone( $user, $user_login );
 		} elseif ( preg_match( '/^\d+-\d+$/', $user_login ) ) {
 			$phone = '+' . str_replace( '-', '', $user_login );
 		} else {
@@ -503,8 +503,7 @@ class YOAA_WC_Advanced_Accounts_Register_Email_Verification {
 			if ($order) {
 				$user_id = $order->get_user_id();
 
-				if ( get_user_meta( $user_id, 'email_verification', true ) 
-					|| get_user_meta( $user_id, 'phone_verification', true ) ) {
+					if ( get_user_meta( $user_id, 'email_verification', true ) ) {
 					return;
 				}
 	
@@ -534,8 +533,7 @@ class YOAA_WC_Advanced_Accounts_Register_Email_Verification {
 		}
 
 		$user_id = get_current_user_id();
-		if ( get_user_meta( $user_id, 'email_verification', true ) 
-			|| get_user_meta( $user_id, 'phone_verification', true ) ) {
+			if ( get_user_meta( $user_id, 'email_verification', true ) ) {
 			return;
 		}
 

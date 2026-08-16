@@ -55,18 +55,17 @@ jQuery(document).ready(function ($) {
     }
 
     // Handle the Send OTP button click
-    $('#send-reset-otp').on('click', function () {
-        const identifier = $('#username').val().trim();
-		const invalidPattern = /^\d+-$/
+	    $('#send-reset-otp').on('click', function () {
+	        const identifier = $('#username').val().trim();
 
-        if (!identifier || invalidPattern.test(identifier)) {
+	        if (!identifier) {
             showNotice(reset_password_otp_params.error_message, 'error');
             return;
         }
 
-        const isPhoneOrEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier) || /^\d[\d\-]*$/.test(identifier);
+	        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
 
-        if (!isPhoneOrEmail) {
+	        if (!isEmail) {
             showNotice(reset_password_otp_params.invalid_identifier, 'error');
             return;
         }

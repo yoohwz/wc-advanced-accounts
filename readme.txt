@@ -5,17 +5,17 @@ Requires at least: 6.3
 Tested up to: 7.0
 WC tested up to: 10.8
 Requires PHP: 7.4
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Customize WooCommerce My Account, add OTP login and verification, and control member-only content with roles.
+Customize WooCommerce My Account, add email OTP and verification, support phone-based accounts, and control member-only content with roles.
 
 == Description ==
 
-Advanced Accounts for WooCommerce helps store owners improve the WooCommerce My Account experience with account verification, OTP login, password reset by OTP, and membership content access.
+Advanced Accounts for WooCommerce helps store owners improve the WooCommerce My Account experience with email verification, email OTP login and password reset, phone-based accounts, and membership content access.
 
-Use it to make customer accounts easier to manage, reduce fake registrations, verify phone or email ownership, and show selected content only to the right customers.
+Use it to make customer accounts easier to manage, verify email ownership, and show selected content only to the right customers.
 
 [Premium version](https://yoohw.com/product/woocommerce-advanced-accounts-premium/) | [Documentation](https://docs.yoohw.com/category/woocommerce-advanced-accounts-premium/) | [Support](https://yoohw.com/support/) | [Demo](https://sandbox.yoohw.com/demo/wcaa_demo.html)
 
@@ -39,20 +39,19 @@ Premium account customization features include:
 * Add profile photos and extra registration fields.
 * Block or unblock customer accounts without deleting user data.
 
-= OTP Login and Account Verification =
+= Account Verification =
 
-Add secure one-time password flows for WooCommerce customers. The plugin supports OTP login, account registration verification, and password reset verification by phone or email.
+Require new WooCommerce customers to confirm their email address before their account is fully activated.
 
-Verification features include:
+Free email verification and OTP features include:
 
-* WooCommerce OTP login by phone or email.
-* Phone verification during account registration.
 * Email verification during account registration.
-* Password reset using OTP.
+* Email activation links and verified email status for compatible checkout protection workflows.
+* WooCommerce OTP login by email.
+* Password reset using an OTP sent by email.
 * Server-side OTP expiration, failed attempt limits, resend cooldown, and resend limits.
-* Verified phone and email status for compatible checkout protection workflows.
 
-SMS delivery is available through Yo Credits in the free plugin. Twilio and Textmagic are available in the Premium version when explicitly enabled.
+Phone verification and phone OTP workflows are available in the Premium version using third-party providers such as Twilio or Textmagic. You can also request integration with another messaging provider; typical completion time is 1–2 business days.
 
 = Membership Content Access =
 
@@ -78,7 +77,7 @@ Premium membership features include:
 
 Advanced Accounts for WooCommerce works with these related tools:
 
-* [Blacklist Manager](https://wordpress.org/plugins/wc-blacklist-manager/) - Recognizes verified phone numbers and email addresses during checkout checks.
+* [Blacklist Manager](https://wordpress.org/plugins/wc-blacklist-manager/) - Recognizes verified email addresses during checkout checks; Premium phone verification can provide verified phone status.
 * [WooCommerce Subscriptions](https://woocommerce.com/products/woocommerce-subscriptions/) - Premium membership plans can work with subscription products.
 * [WooCommerce Loyalty - Points and Rewards](https://yoohw.com/product/woocommerce-loyalty/) - Premium membership roles can be used with loyalty rewards.
 
@@ -88,25 +87,21 @@ Advanced Accounts for WooCommerce works with these related tools:
 2. Activate **Advanced Accounts for WooCommerce** from **Plugins**.
 3. Make sure WooCommerce is installed and active.
 4. Go to **WooCommerce > Settings > Accounts & Privacy** and open the Advanced, Profile, Membership, Endpoints, or Tools sections.
-5. Enable only the account, OTP, verification, or membership features your store needs.
+5. Enable only the account, email verification/OTP, or membership features your store needs.
 
 == Frequently Asked Questions ==
 
 = What does Advanced Accounts for WooCommerce do? =
 
-It customizes WooCommerce customer accounts, adds OTP login and account verification, and provides role-based membership content controls.
+It customizes WooCommerce customer accounts, adds email verification and OTP, supports phone-based accounts, and provides role-based membership content controls.
 
 = Can I add OTP login to WooCommerce My Account? =
 
-Yes. Customers can log in with a one-time password sent to their phone or email, depending on the settings you enable.
+Yes. The free plugin supports OTP login and OTP password reset through email. Phone OTP is available in Premium through third-party providers such as Twilio or Textmagic.
 
 = Can customers register with a phone number instead of an email address? =
 
-Yes. You can enable phone number account login and use phone verification during registration.
-
-= Does password reset by OTP work for phone numbers? =
-
-Yes. When phone-based login is enabled, customers can request an OTP and use it to continue the WooCommerce password reset flow.
+Yes. You can use a phone number as the account username and keep the standard password-based login and password reset flow.
 
 = Can I verify email addresses during WooCommerce registration? =
 
@@ -124,9 +119,9 @@ Product restriction is available in the Premium version. The free version focuse
 
 It covers lightweight membership access using WordPress roles and shortcodes. Stores that need product restrictions, discounts, multiple memberships, and membership plan pages can use the Premium version.
 
-= Which SMS services are supported? =
+= Which messaging services are supported for phone verification and OTP? =
 
-The free plugin supports Yo Credits for SMS OTP delivery. Twilio and Textmagic are available in the Premium version when explicitly enabled.
+Twilio and Textmagic are available in the Premium version. If you need another provider, submit a request through https://yoohw.com/contact-us/; a typical provider integration takes 1–2 business days.
 
 = Does the plugin send visitor IP geolocation or product feed requests? =
 
@@ -138,21 +133,7 @@ Yes. The plugin declares compatibility with WooCommerce High-Performance Order S
 
 == External Services ==
 
-This plugin connects to third-party or external services only when the related feature is enabled or triggered by an administrator or customer action.
-
-= Yo Credits =
-
-Service: https://yoohw.com/product/sms-credits/
-
-Yo Credits is used to generate a site SMS key, send OTP messages for phone verification, OTP login, checkout verification, and password reset, and update remaining SMS quota.
-
-Requests may include:
-
-* Site domain.
-* Administrator email when generating an SMS key.
-* SMS key.
-* Destination phone number.
-* OTP message content.
+The free plugin sends email OTP messages through the site's configured WordPress mail system and does not connect to an external SMS service. The following SMS providers are available only in the Premium version when configured by the store administrator.
 
 = Twilio =
 
@@ -166,6 +147,8 @@ Service: https://www.textmagic.com/
 
 Textmagic is an SMS provider available in the Premium version when explicitly enabled by the store administrator.
 
+Other messaging providers can be requested through https://yoohw.com/contact-us/. Typical integration time is 1–2 business days.
+
 No visitor IP geolocation, product-news subscription, or catalog feed request is sent by the free plugin.
 
 == Bundled Libraries ==
@@ -174,6 +157,11 @@ No visitor IP geolocation, product-news subscription, or catalog feed request is
 * International Telephone Input 29.0.5: bundled in `js/intl-tel-input/`, including UI locale data. License and source are available at https://github.com/jackocnr/intl-tel-input.
 
 == Changelog ==
+
+= 1.4.5 (Aug 16, 2026) =
+* Change: Removed phone verification, phone OTP login, phone OTP password reset, and Yo Credits service integration from the free plugin while retaining email OTP workflows.
+* Improve: Replaced the removed settings with Premium upgrade options for Twilio, Textmagic, and custom messaging provider integrations.
+* Security: Hardened migration tool input sanitization and output escaping for WordPress.org compliance.
 
 = 1.4.4 (Jul 10, 2026) =
 * Fix: Corrected phone username generation so single-country stores use local numbers and multi-country stores use dial-local usernames consistently.

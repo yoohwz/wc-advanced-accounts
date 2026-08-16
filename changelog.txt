@@ -1,5 +1,10 @@
 === WooCommerce Advanced Accounts (Free version) ===
 
+= 1.4.5 (Aug 16, 2026) =
+* Change: Removed phone verification, phone OTP login, phone OTP password reset, and Yo Credits service integration from the free plugin while retaining email OTP workflows.
+* Improve: Replaced the removed settings with Premium upgrade options for Twilio, Textmagic, and custom messaging provider integrations.
+* Security: Hardened migration tool input sanitization and output escaping for WordPress.org compliance.
+
 = 1.4.4 (Jul 10, 2026) =
 * Fix: Corrected phone username generation so single-country stores use local numbers and multi-country stores use dial-local usernames consistently.
 * Fix: Preserved login, login OTP, reset password OTP, and phone verification compatibility for existing users with legacy phone username formats.

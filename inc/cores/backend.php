@@ -9,6 +9,7 @@ class YOAA_WC_Advanced_Accounts_Backend {
 
 	public function __construct() {
 		$this->version = YOAA_WC_ADVANCED_ACCOUNTS_VERSION;
+		$this->migrate_legacy_email_otp_setting();
 
 		$this->includes();
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
@@ -23,24 +24,31 @@ class YOAA_WC_Advanced_Accounts_Backend {
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/phone-account-username.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/email-registration-disabled.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/email-verification.php';
-		include_once plugin_dir_path(__FILE__) . '../backend/actions/phone-verification.php';
-			include_once plugin_dir_path(__FILE__) . '../backend/actions/login-otp.php';
-			include_once plugin_dir_path(__FILE__) . '../backend/actions/login-alias.php';
-			include_once plugin_dir_path(__FILE__) . '../backend/actions/reset-password.php';
-			include_once plugin_dir_path(__FILE__) . '../backend/actions/redirect-wp-login.php';
-			include_once plugin_dir_path(__FILE__) . 'api/sms/update-sms-quota.php';
-			include_once plugin_dir_path(__FILE__) . 'api/push-subscription.php';
-		}
+		include_once plugin_dir_path(__FILE__) . '../backend/actions/login-otp.php';
+		include_once plugin_dir_path(__FILE__) . '../backend/actions/login-alias.php';
+		include_once plugin_dir_path(__FILE__) . '../backend/actions/reset-password.php';
+		include_once plugin_dir_path(__FILE__) . '../backend/actions/redirect-wp-login.php';
+		include_once plugin_dir_path(__FILE__) . 'api/push-subscription.php';
+	}
 
 	public function enqueue_scripts() {
 		wp_enqueue_style('wc-advanced-accounts-css', plugin_dir_url(__FILE__) . '../../css/backend.css', '1.1.2', true);
 	}
 
-	    public function check_version() {
-			if ( get_option( 'wc_advanced_accounts_version' ) !== $this->version ) {
-				update_option( 'wc_advanced_accounts_version', $this->version );
-			}
-	    }	
+	public function check_version() {
+		if ( get_option( 'wc_advanced_accounts_version' ) !== $this->version ) {
+			update_option( 'wc_advanced_accounts_version', $this->version );
+		}
 	}
+
+	private function migrate_legacy_email_otp_setting() {
+		if ( false !== get_option( 'yoaa_wc_enable_email_login_with_otp', false ) ) {
+			return;
+		}
+
+		$legacy_email_otp = get_option( 'yoaa_wc_enable_phone_login_with_otp', 'no' );
+		update_option( 'yoaa_wc_enable_email_login_with_otp', 'yes' === $legacy_email_otp ? 'yes' : 'no' );
+	}
+}
 
 new YOAA_WC_Advanced_Accounts_Backend();

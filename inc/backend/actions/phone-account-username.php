@@ -17,9 +17,10 @@ class YOAA_WC_Advanced_Accounts_Phone_Account_Username {
 			add_filter( 'woocommerce_registration_errors', array( $this, 'validate_canonical_phone_username' ), 20, 3 );
 			add_filter( 'woocommerce_new_customer_data', array( $this, 'canonicalize_new_customer_username' ), 20, 1 );
 			add_action( 'woocommerce_created_customer', array( $this, 'sync_created_customer_phone_username_meta' ), 20, 1 );
-			if (get_option('yoaa_wc_enable_phone_login_with_otp') !== 'yes') {
-				add_filter('woocommerce_lost_password_message', [$this, 'lost_password_message']);
-			}
+				$email_otp_enabled = get_option( 'yoaa_wc_enable_email_login_with_otp', 'no' );
+				if ( 'yes' !== $email_otp_enabled ) {
+					add_filter('woocommerce_lost_password_message', [$this, 'lost_password_message']);
+				}
 
 			add_action( 'woocommerce_login_form_start', [$this, 'add_username_holder_input'] );
 			add_action( 'woocommerce_register_form_start', [$this, 'add_reg_username_holder_input'] );

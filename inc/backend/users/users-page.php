@@ -9,7 +9,7 @@ class YOAA_WC_Advanced_Accounts_Users_Page {
 		// 1) inject the “Verified” column before “Username”
 		add_filter( 'manage_users_columns', [ $this, 'add_verified_column' ], 10, 1 );
 	
-		// 2) populate it with our dashicon if either meta = 1
+		// 2) populate it with our dashicon when email verification is complete
 		add_filter( 'manage_users_custom_column', [ $this, 'render_verified_column' ], 10, 3 );
 	}
 	
@@ -32,7 +32,7 @@ class YOAA_WC_Advanced_Accounts_Users_Page {
 	}
 	
 	/**
-	 * Render our dashicon if email_verification or phone_verification = 1.
+	 * Render our dashicon if email_verification = 1.
 	 *
 	 * @param string $value
 	 * @param string $column_name
@@ -43,15 +43,14 @@ class YOAA_WC_Advanced_Accounts_Users_Page {
 		if ( 'verified' !== $column_name ) {
 			return $value;
 		}
-	
+
 		$email_verified = get_user_meta( $user_id, 'email_verification', true );
-		$phone_verified = get_user_meta( $user_id, 'phone_verification', true );
-	
-		if ( '1' === $email_verified || '1' === $phone_verified ) {
+
+		if ( '1' === $email_verified ) {
 			// f12a glyph from Dashicons
 			return '<span class="dashicons dashicons-yes-alt"></span>';
 		}
-	
+
 		return '';
 	}
 	

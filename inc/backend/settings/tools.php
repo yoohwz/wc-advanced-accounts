@@ -89,15 +89,15 @@ class YOAA_WC_Advanced_Accounts_Tools {
 					),
 				);
 			} else {
-				$dry_run          = isset( $_POST['yoaa_dry_run'] ) ? ( '1' === (string) wp_unslash( $_POST['yoaa_dry_run'] ) ) : true;
-				$limit            = isset( $_POST['yoaa_limit'] ) ? absint( $_POST['yoaa_limit'] ) : 200;
-				$offset           = isset( $_POST['yoaa_offset'] ) ? absint( $_POST['yoaa_offset'] ) : 0;
-				$only_customers   = isset( $_POST['yoaa_only_customers'] ) ? ( '1' === (string) wp_unslash( $_POST['yoaa_only_customers'] ) ) : true;
-				$skip_if_has_dash = isset( $_POST['yoaa_skip_if_has_dash'] ) ? ( '1' === (string) wp_unslash( $_POST['yoaa_skip_if_has_dash'] ) ) : false;
+				$dry_run          = isset( $_POST['yoaa_dry_run'] ) ? ( '1' === sanitize_text_field( wp_unslash( $_POST['yoaa_dry_run'] ) ) ) : true;
+				$limit            = isset( $_POST['yoaa_limit'] ) ? absint( wp_unslash( $_POST['yoaa_limit'] ) ) : 200;
+				$offset           = isset( $_POST['yoaa_offset'] ) ? absint( wp_unslash( $_POST['yoaa_offset'] ) ) : 0;
+				$only_customers   = isset( $_POST['yoaa_only_customers'] ) ? ( '1' === sanitize_text_field( wp_unslash( $_POST['yoaa_only_customers'] ) ) ) : true;
+				$skip_if_has_dash = isset( $_POST['yoaa_skip_if_has_dash'] ) ? ( '1' === sanitize_text_field( wp_unslash( $_POST['yoaa_skip_if_has_dash'] ) ) ) : false;
 
 				$roles = $only_customers ? array( 'customer' ) : array( 'customer', 'subscriber' );
 
-				if ( isset( $_POST['yoaa_run_next_batch_btn'] ) && '1' === (string) wp_unslash( $_POST['yoaa_run_next_batch_btn'] ) ) {
+				if ( isset( $_POST['yoaa_run_next_batch_btn'] ) && '1' === sanitize_text_field( wp_unslash( $_POST['yoaa_run_next_batch_btn'] ) ) ) {
 					if ( empty( $_POST['yoaa_offset'] ) ) {
 						$offset += max( 1, $limit );
 					}
@@ -246,11 +246,12 @@ class YOAA_WC_Advanced_Accounts_Tools {
 				$updated = (int) $results['updated'];
 
 				echo '<div class="notice notice-success inline" style="margin:10px 0;">';
-				echo '<p><strong>' . sprintf(
+				$success_message = sprintf(
 					/* translators: %d: Number of usernames updated by the migration tool. */
-					esc_html__( 'Migration completed successfully. %d user(s) were updated.', 'wc-advanced-accounts' ),
+					__( 'Migration completed successfully. %d user(s) were updated.', 'wc-advanced-accounts' ),
 					$updated
-				) . '</strong></p>';
+				);
+				echo '<p><strong>' . esc_html( $success_message ) . '</strong></p>';
 				echo '</div>';
 			}
 
@@ -373,8 +374,11 @@ class YOAA_WC_Advanced_Accounts_Tools {
 		echo '<table class="widefat striped ' . esc_attr( $table_class ) . ' yoaa-results-table">';
 		echo '<thead><tr>';
 		foreach ( $columns as $column ) {
-			$column_class = ! empty( $column['class'] ) ? ' class="' . esc_attr( sanitize_html_class( $column['class'] ) ) . '"' : '';
-			echo '<th' . $column_class . '>' . esc_html( $column['label'] ?? '' ) . '</th>';
+			echo '<th';
+			if ( ! empty( $column['class'] ) ) {
+				echo ' class="' . esc_attr( sanitize_html_class( $column['class'] ) ) . '"';
+			}
+			echo '>' . esc_html( $column['label'] ?? '' ) . '</th>';
 		}
 		echo '</tr></thead><tbody>';
 
@@ -393,9 +397,11 @@ class YOAA_WC_Advanced_Accounts_Tools {
 			foreach ( $columns as $column ) {
 				$key        = (string) ( $column['key'] ?? '' );
 				$value      = isset( $row[ $key ] ) ? (string) $row[ $key ] : '';
-				$cell_class = ! empty( $column['class'] ) ? ' class="' . esc_attr( sanitize_html_class( $column['class'] ) ) . '"' : '';
-
-				echo '<td' . $cell_class . '>';
+				echo '<td';
+				if ( ! empty( $column['class'] ) ) {
+					echo ' class="' . esc_attr( sanitize_html_class( $column['class'] ) ) . '"';
+				}
+				echo '>';
 
 				if ( 'user_id' === $key ) {
 					$user_id   = absint( $value );

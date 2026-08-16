@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Advanced Accounts for WooCommerce
  * Plugin URI: https://yoohw.com/docs/category/woocommerce-advanced-accounts/
- * Description: Upgrade My Account, email/phone verification, and login with OTP.
- * Version: 1.4.4
+ * Description: Upgrade WooCommerce My Account with email verification and OTP, phone-based accounts, and membership tools.
+ * Version: 1.4.5
  * Author: YoOhw.com
  * Author URI: https://yoohw.com
  * Requires at least: 6.3

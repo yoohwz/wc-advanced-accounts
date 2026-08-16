@@ -51,14 +51,14 @@ class YOAA_WC_Advanced_Accounts_Advanced_Settings {
 	}
 
 	public static function get_verification_settings() {
-		$settings = array(
+		return array(
 			array(
 				'title' => esc_html__('Verifications', 'wc-advanced-accounts'),
 				'type'  => 'title',
 				'id'    => 'yoaa_wc_verifications_settings'
 			),
 			array(
-				'title'    => esc_html__('Verification / OTP', 'wc-advanced-accounts'),
+				'title'    => esc_html__('Email verification', 'wc-advanced-accounts'),
 				'desc'     => esc_html__('Require email verification during account registration', 'wc-advanced-accounts'),
 				'desc_tip' => esc_html__('New customers receive an email to activate their account and set up password.', 'wc-advanced-accounts'),
 				'id'       => 'yoaa_wc_enable_email_verification',
@@ -67,42 +67,19 @@ class YOAA_WC_Advanced_Accounts_Advanced_Settings {
 				'checkboxgroup' => 'start',
 			),
 			array(
-				'title'    => esc_html__('Phone verification', 'wc-advanced-accounts'),
-				'desc'     => esc_html__('Require phone verification during account registration', 'wc-advanced-accounts'),
-				'desc_tip' => esc_html__('New customers receive a verification code on their phone to create an account.', 'wc-advanced-accounts'),
-				'id'       => 'yoaa_wc_enable_phone_verification',
-				'default'  => 'no',
-				'type'     => 'checkbox',
-				'checkboxgroup' => '',
-			),
-			array(
-				'title'    => esc_html__('Login with OTP', 'wc-advanced-accounts'),
-				'desc'     => esc_html__('Allow user to login with One-Time Password', 'wc-advanced-accounts'),
-				'desc_tip' => esc_html__('The user receives a passcode on their phone or email inbox to login to your site. It will use the OTP to let the user reset their password either.', 'wc-advanced-accounts'),
-				'id'       => 'yoaa_wc_enable_phone_login_with_otp',
+				'title'    => esc_html__('Email OTP', 'wc-advanced-accounts'),
+				'desc'     => esc_html__('Allow login and password reset with a one-time password sent by email', 'wc-advanced-accounts'),
+				'desc_tip' => esc_html__('Customers can request a secure email code to log in or continue the password reset flow.', 'wc-advanced-accounts'),
+				'id'       => 'yoaa_wc_enable_email_login_with_otp',
 				'default'  => 'no',
 				'type'     => 'checkbox',
 				'checkboxgroup' => 'end',
 			),
-
 			array(
-				'title'    => esc_html__('Verification options', 'wc-advanced-accounts'),
-				'desc'     => esc_html__('Code length.', 'wc-advanced-accounts'),
-				'desc_tip' => esc_html__('You may set it from 6 to 8 numbers.', 'wc-advanced-accounts'),
-				'id'       => 'yoaa_wc_phone_verification_code_length',
-				'default'  => '6',
-				'type'     => 'number',
-				'css'      => 'width:60px;',
-				'custom_attributes' => array(
-					'min' => 6,
-					'max' => 8,
-				),
-			),
-			array(
-				'title'    => '',
-				'desc'     => esc_html__('Resend in seconds.', 'wc-advanced-accounts'),
-				'desc_tip' => esc_html__('Set how many seconds that allows the customers get new code.', 'wc-advanced-accounts'),
-				'id'       => 'yoaa_wc_phone_verification_resend',
+				'title'    => esc_html__('Email OTP options', 'wc-advanced-accounts'),
+				'desc'     => esc_html__('Resend cooldown in seconds.', 'wc-advanced-accounts'),
+				'desc_tip' => esc_html__('Set how long customers must wait before requesting another email OTP.', 'wc-advanced-accounts'),
+				'id'       => 'yoaa_wc_email_otp_resend',
 				'default'  => '120',
 				'type'     => 'number',
 				'css'      => 'width:80px;',
@@ -112,9 +89,9 @@ class YOAA_WC_Advanced_Accounts_Advanced_Settings {
 			),
 			array(
 				'title'    => '',
-				'desc'     => esc_html__('Time limited.', 'wc-advanced-accounts'),
-				'desc_tip' => esc_html__('How many time the customer can request for resending.', 'wc-advanced-accounts'),
-				'id'       => 'yoaa_wc_phone_verification_resend_time',
+				'desc'     => esc_html__('Maximum resend attempts.', 'wc-advanced-accounts'),
+				'desc_tip' => esc_html__('Set how many times a customer can request another email OTP.', 'wc-advanced-accounts'),
+				'id'       => 'yoaa_wc_email_otp_resend_limit',
 				'default'  => '3',
 				'type'     => 'number',
 				'css'      => 'width:60px;',
@@ -123,53 +100,24 @@ class YOAA_WC_Advanced_Accounts_Advanced_Settings {
 				),
 			),
 			array(
-				'title'    => esc_html__('SMS content', 'wc-advanced-accounts'),
-				'desc'     => esc_html__('Type your content, {code} is required.', 'wc-advanced-accounts'),
-				'desc_tip'     => esc_html__('Add {site_name}, {code} where you want them to appear.', 'wc-advanced-accounts'),
-				'id'       => 'yoaa_wc_phone_verification_message',
-				'default'  => '{site_name}: Your verification code is {code}',
-				'type'     => 'textarea',
-			),
-			array(
-				'name' => __('SMS service', 'wc-advanced-accounts'),
-				'id' => 'yoohw_sms_service',
-				'type' => 'select',
-				'options' => array(
-					'yo_credits' => __('Yo Credits', 'wc-advanced-accounts'),
-				),
-				'default' => 'yo_credits',
-				'desc_tip' => __('Yo Credits is the SMS service available in the free plugin.', 'wc-advanced-accounts'),
-			),
-			array(
-				'title'    => esc_html__('Yo Credits key', 'wc-advanced-accounts'),
-				'desc'     => '<button type="button" id="generate_sms_key" class="button-secondary">' . esc_html__('Generate a key', 'wc-advanced-accounts') . '</button>',
-				'desc_tip' => esc_html__('Do not share or public this key in any case.', 'wc-advanced-accounts'),
-				'id'       => 'yoohw_phone_verification_sms_key',
-				'type'     => 'text',
-				'css'      => 'width:160px;',
-				'custom_attributes' => array(
-					'readonly' => 'readonly'
-				),
-			),
-			array(
 				'type'        => 'yoaa_upgrade_panel',
-				'title'       => esc_html__( 'Need more verification options?', 'wc-advanced-accounts' ),
-				'desc'        => esc_html__( 'Use optional provider and account-verification controls when your store needs a more advanced workflow.', 'wc-advanced-accounts' ),
+				'title'       => esc_html__( 'Phone verification and OTP with Premium', 'wc-advanced-accounts' ),
+				'desc'        => esc_html__( 'Upgrade to add phone verification and OTP workflows using your own third-party messaging provider.', 'wc-advanced-accounts' ),
 				'features'    => array(
 					esc_html__( 'Connect Twilio or Textmagic for SMS delivery.', 'wc-advanced-accounts' ),
-					esc_html__( 'Verify customer phone number changes.', 'wc-advanced-accounts' ),
-					esc_html__( 'Exclude selected roles from verification requirements.', 'wc-advanced-accounts' ),
+					esc_html__( 'Enable phone verification, phone OTP login, and phone OTP password reset.', 'wc-advanced-accounts' ),
+					esc_html__( 'Request integration with another messaging service; typical completion time is 1–2 business days.', 'wc-advanced-accounts' ),
 				),
-				'button_text' => esc_html__( 'View verification add-ons', 'wc-advanced-accounts' ),
+				'button_text' => esc_html__( 'Upgrade to Premium', 'wc-advanced-accounts' ),
+				'request_text' => esc_html__( 'Request a provider integration', 'wc-advanced-accounts' ),
+				'request_url'  => 'https://yoohw.com/contact-us/',
 				'id'          => 'yoaa_verification_upgrade_panel',
 			),
 			array(
 				'type' => 'sectionend',
-				'id'   => 'yoaa_wc_phone_verifications_settings'
+				'id'   => 'yoaa_wc_verifications_settings'
 			),
 		);
-
-		return $settings;
 	}
 
 	public static function get_additionals_settings() {

@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
+class YOAA_WC_Advanced_Accounts_Email_Login_OTP {
 
 	const OTP_LENGTH       = 6;
 	const OTP_TTL          = 300; // 5 minutes.
@@ -12,7 +12,9 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 	const RESEND_COOLDOWN  = 120;
 
 	public function __construct() {
-		if ( get_option( 'yoaa_wc_enable_phone_login_with_otp' ) === 'yes' ) {
+		$email_otp_enabled = get_option( 'yoaa_wc_enable_email_login_with_otp', 'no' );
+
+		if ( 'yes' === $email_otp_enabled ) {
 			add_action( 'init', [ $this, 'maybe_init_wc_session' ], 5 );
 
 			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
@@ -42,27 +44,18 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 
 	public function enqueue_scripts() {
 		wp_enqueue_script(
-			'phone-login-otp',
-			plugin_dir_url( __FILE__ ) . '../../../js/phone-login-otp.js',
+			'email-login-otp',
+			plugin_dir_url( __FILE__ ) . '../../../js/email-login-otp.js',
 			[ 'jquery' ],
 			YOAA_WC_ADVANCED_ACCOUNTS_VERSION,
 			true
 		);
 
-		$resend_time                 = max( 60, absint( get_option( 'yoaa_wc_phone_verification_resend', self::RESEND_COOLDOWN ) ) );
-		$resend_limit                = max( 1, absint( get_option( 'yoaa_wc_phone_verification_resend_time', 3 ) ) );
-		$enable_phone_number_account = get_option( 'yoaa_wc_enable_phone_number_account', 'no' ) === 'yes';
-
-		$error_message = $enable_phone_number_account
-			? __( 'Please enter your phone number or email.', 'wc-advanced-accounts' )
-			: __( 'Please enter your email address.', 'wc-advanced-accounts' );
-
-		$invalid_phone_number = $enable_phone_number_account
-			? __( 'Please enter a valid phone or email.', 'wc-advanced-accounts' )
-			: __( 'Please enter a valid email address.', 'wc-advanced-accounts' );
+		$resend_time  = max( 60, absint( get_option( 'yoaa_wc_email_otp_resend', self::RESEND_COOLDOWN ) ) );
+		$resend_limit = max( 1, absint( get_option( 'yoaa_wc_email_otp_resend_limit', 3 ) ) );
 
 		wp_localize_script(
-			'phone-login-otp',
+			'email-login-otp',
 			'wc_otp_login_params',
 			[
 				'ajax_url'                => admin_url( 'admin-ajax.php' ),
@@ -76,9 +69,9 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 				'resending_text'          => __( 'Resending...', 'wc-advanced-accounts' ),
 				'resend_time'             => $resend_time,
 				'resend_limit'            => $resend_limit,
-				'error_message'           => $error_message,
-				'invalid_phone_number'    => $invalid_phone_number,
-				'otp_sent'                => __( 'OTP sent successfully to your phone number.', 'wc-advanced-accounts' ),
+				'error_message'           => __( 'Please enter your email address.', 'wc-advanced-accounts' ),
+				'invalid_email'            => __( 'Please enter a valid email address.', 'wc-advanced-accounts' ),
+				'otp_sent'                => __( 'OTP sent successfully. Please check your email.', 'wc-advanced-accounts' ),
 				'otp_resent'              => __( 'OTP resent successfully.', 'wc-advanced-accounts' ),
 				'otp_error'               => __( 'An error occurred while sending the OTP. Please try again.', 'wc-advanced-accounts' ),
 				'otp_verification_error'  => __( 'The OTP you entered is incorrect. Please try again.', 'wc-advanced-accounts' ),
@@ -95,38 +88,26 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 		}
 
 		$identifier = isset( $_POST['identifier'] ) ? sanitize_text_field( wp_unslash( $_POST['identifier'] ) ) : '';
-		$submitted_identifier = $identifier;
-
 		if ( empty( $identifier ) ) {
-			wp_send_json_error( __( 'Phone number or email address is required.', 'wc-advanced-accounts' ) );
+			wp_send_json_error( __( 'Email address is required.', 'wc-advanced-accounts' ) );
 		}
 
-		$is_email = is_email( $identifier );
+		if ( ! is_email( $identifier ) ) {
+			wp_send_json_error( __( 'Please enter a valid email address.', 'wc-advanced-accounts' ) );
+		}
 
-		if ( $is_email ) {
-			$user = get_user_by( 'email', $identifier );
+		$user = get_user_by( 'email', $identifier );
 
-			if ( ! $user ) {
-				wp_send_json_error( __( 'No account found with this email address.', 'wc-advanced-accounts' ) );
-			}
-		} else {
-			$user = class_exists( 'YOAA_Phone_Username_Helper' )
-				? YOAA_Phone_Username_Helper::find_user_by_identifier( $identifier )
-				: get_user_by( 'login', $identifier );
-
-			if ( ! $user ) {
-				wp_send_json_error( __( 'No account found with this phone number.', 'wc-advanced-accounts' ) );
-			}
-
-			$identifier = $user->user_login;
+		if ( ! $user ) {
+			wp_send_json_error( __( 'No account found with this email address.', 'wc-advanced-accounts' ) );
 		}
 
 		WC()->session->set_customer_session_cookie( true );
 
 		$last_sent_at = (int) WC()->session->get( 'login_otp_last_sent_at', 0 );
 
-		if ( $last_sent_at && ( time() - $last_sent_at ) < max( 60, absint( get_option( 'yoaa_wc_phone_verification_resend', self::RESEND_COOLDOWN ) ) ) ) {
-			$cooldown  = max( 60, absint( get_option( 'yoaa_wc_phone_verification_resend', self::RESEND_COOLDOWN ) ) );
+		if ( $last_sent_at && ( time() - $last_sent_at ) < max( 60, absint( get_option( 'yoaa_wc_email_otp_resend', self::RESEND_COOLDOWN ) ) ) ) {
+			$cooldown  = max( 60, absint( get_option( 'yoaa_wc_email_otp_resend', self::RESEND_COOLDOWN ) ) );
 			$remaining = $cooldown - ( time() - $last_sent_at );
 
 			wp_send_json_error(
@@ -146,77 +127,32 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 		WC()->session->set( 'login_otp_attempts', 0 );
 		WC()->session->set( 'login_otp_last_sent_at', time() );
 
-		if ( $is_email ) {
-			$mailer  = WC()->mailer();
-			$subject = __( 'Your login OTP code', 'wc-advanced-accounts' );
-			$heading = __( 'Login OTP code', 'wc-advanced-accounts' );
-			$message = sprintf(
-				/* translators: %s: OTP code. */
-				__( 'Your OTP code for login is: <strong>%s</strong><br><br>If you did not request this, please ignore this email.<br><br>Thank you.', 'wc-advanced-accounts' ),
-				esc_html( $otp_code )
-			);
-
-			$wrapped_message = $mailer->wrap_message( $heading, $message );
-			$email           = new WC_Email();
-			$styled_message  = $email->style_inline( $wrapped_message );
-
-			$sent = wp_mail(
-				$identifier,
-				$subject,
-				$styled_message,
-				[ 'Content-Type: text/html; charset=UTF-8' ]
-			);
-
-			if ( ! $sent ) {
-				$this->clear_login_otp_session();
-				wp_send_json_error( __( 'Failed to send OTP to the email address. Please try again.', 'wc-advanced-accounts' ) );
-			}
-
-			wp_send_json_success( __( 'OTP sent successfully. Please check your email.', 'wc-advanced-accounts' ) );
-		}
-
-		$phone_number = class_exists( 'YOAA_Phone_Username_Helper' )
-			? YOAA_Phone_Username_Helper::get_user_sms_phone( $user, $submitted_identifier )
-			: $submitted_identifier;
-
-		$sms_key          = get_option( 'yoohw_phone_verification_sms_key', '' );
-		$message_template = get_option( 'yoaa_wc_phone_verification_message', '' );
-
-		$message = str_replace(
-			[ '{site_name}', '{code}' ],
-			[ get_bloginfo( 'name' ), $otp_code ],
-			$message_template
+		$mailer  = WC()->mailer();
+		$subject = __( 'Your login OTP code', 'wc-advanced-accounts' );
+		$heading = __( 'Login OTP code', 'wc-advanced-accounts' );
+		$message = sprintf(
+			/* translators: %s: OTP code. */
+			__( 'Your OTP code for login is: <strong>%s</strong><br><br>If you did not request this, please ignore this email.<br><br>Thank you.', 'wc-advanced-accounts' ),
+			esc_html( $otp_code )
 		);
 
-		$data = [
-			'sms_key' => $sms_key,
-			'domain'  => home_url(),
-			'phone'   => $phone_number,
-			'message' => $message,
-		];
+		$wrapped_message = $mailer->wrap_message( $heading, $message );
+		$email           = new WC_Email();
+		$styled_message  = $email->style_inline( $wrapped_message );
 
-		$response = wp_remote_post(
-			'https://bmc.yoohw.com/wp-json/sms/v1/send-sms/',
-			[
-				'body'    => wp_json_encode( $data ),
-				'headers' => [ 'Content-Type' => 'application/json' ],
-				'timeout' => 15,
-			]
+		$sent = wp_mail(
+			$identifier,
+			$subject,
+			$styled_message,
+			[ 'Content-Type: text/html; charset=UTF-8' ]
 		);
 
-		if ( is_wp_error( $response ) ) {
+		if ( ! $sent ) {
 			$this->clear_login_otp_session();
-			wp_send_json_error( __( 'Failed to send OTP via SMS. Please try again.', 'wc-advanced-accounts' ) );
+			wp_send_json_error( __( 'Failed to send OTP to the email address. Please try again.', 'wc-advanced-accounts' ) );
 		}
 
-		$response_code = (int) wp_remote_retrieve_response_code( $response );
-
-		if ( $response_code < 200 || $response_code >= 300 ) {
-			$this->clear_login_otp_session();
-			wp_send_json_error( __( 'Failed to send OTP via SMS. Please try again.', 'wc-advanced-accounts' ) );
-		}
-
-		wp_send_json_success( __( 'OTP sent successfully. Please check your phone.', 'wc-advanced-accounts' ) );
+		wp_send_json_success( __( 'OTP sent successfully. Please check your email.', 'wc-advanced-accounts' ) );
 	}
 
 	public function ajax_verify_login_otp() {
@@ -261,23 +197,7 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 			wp_send_json_error( __( 'The OTP you entered is incorrect. Please try again.', 'wc-advanced-accounts' ) );
 		}
 
-		$lookup_value    = '';
-		$lookup_type     = '';
-		$meta_key        = '';
-
-		if ( is_email( $identifier ) ) {
-			$user         = get_user_by( 'email', $identifier );
-			$meta_key     = 'email_verification';
-			$lookup_type  = 'email';
-			$lookup_value = $identifier;
-		} else {
-			$user        = class_exists( 'YOAA_Phone_Username_Helper' )
-				? YOAA_Phone_Username_Helper::find_user_by_identifier( $identifier )
-				: get_user_by( 'login', $identifier );
-			$meta_key    = 'phone_verification';
-			$lookup_type = 'phone';
-			$lookup_value = '';
-		}
+		$user = is_email( $identifier ) ? get_user_by( 'email', $identifier ) : false;
 
 		if ( ! $user ) {
 			$this->clear_login_otp_session();
@@ -286,48 +206,33 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 
 		$user_id = (int) $user->ID;
 
-		if ( ! is_email( $identifier ) ) {
-			$lookup_value = class_exists( 'YOAA_Phone_Username_Helper' )
-				? YOAA_Phone_Username_Helper::get_user_sms_phone( $user, $identifier )
-				: preg_replace( '/\D+/', '', $identifier );
-		}
-
-		if ( '1' !== get_user_meta( $user_id, $meta_key, true ) ) {
-			update_user_meta( $user_id, $meta_key, '1' );
+		if ( '1' !== get_user_meta( $user_id, 'email_verification', true ) ) {
+			update_user_meta( $user_id, 'email_verification', '1' );
 		}
 
 		delete_user_meta( $user_id, 'email_verification_key' );
 
-		if (
-			( function_exists( 'is_plugin_active' ) || require_once ABSPATH . 'wp-admin/includes/plugin.php' ) &&
-			is_plugin_active( 'wc-blacklist-manager/wc-blacklist-manager.php' )
-		) {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		if ( is_plugin_active( 'wc-blacklist-manager/wc-blacklist-manager.php' ) ) {
 			global $wpdb;
 
 			$table       = $wpdb->prefix . 'wc_whitelist';
 			$cache_group = 'yoaa_wc_whitelist';
-			$cache_key   = 'exists:' . $lookup_type . ':' . md5( (string) $lookup_value );
+			$cache_key   = 'exists:email:' . md5( $identifier );
 
 			$exists = wp_cache_get( $cache_key, $cache_group );
 
-				if ( false === $exists ) {
-					if ( 'email' === $lookup_type ) {
-						// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
-						$exists = $wpdb->get_var(
-							$wpdb->prepare(
-								"SELECT email FROM {$wpdb->prefix}wc_whitelist WHERE email = %s LIMIT 1",
-							$lookup_value
-							)
-						);
-					} else {
-						// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
-						$exists = $wpdb->get_var(
-							$wpdb->prepare(
-								"SELECT phone FROM {$wpdb->prefix}wc_whitelist WHERE phone = %s LIMIT 1",
-							$lookup_value
-						)
-					);
-				}
+			if ( false === $exists ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
+				$exists = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT email FROM {$wpdb->prefix}wc_whitelist WHERE email = %s LIMIT 1",
+						$identifier
+					)
+				);
 
 				wp_cache_set( $cache_key, ( $exists ? 1 : 0 ), $cache_group, MINUTE_IN_SECONDS * 10 );
 				$exists = ( $exists ? 1 : 0 );
@@ -335,48 +240,25 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 				$exists = (int) $exists;
 			}
 
-				if ( 'email' === $lookup_type ) {
-					if ( $exists ) {
-						// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
-						$wpdb->update(
-							$table,
-							[ 'verified_email' => 1 ],
-						[ 'email' => $lookup_value ],
-						[ '%d' ],
-							[ '%s' ]
-						);
-					} else {
-						// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
-						$wpdb->insert(
-							$table,
-							[
-							'email'          => $lookup_value,
-							'verified_email' => 1,
-						],
-						[ '%s', '%d' ]
-					);
-					}
-				} else {
-					if ( $exists ) {
-						// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
-						$wpdb->update(
-							$table,
-							[ 'verified_phone' => 1 ],
-						[ 'phone' => $lookup_value ],
-						[ '%d' ],
-							[ '%s' ]
-						);
-					} else {
-						// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
-						$wpdb->insert(
-							$table,
-							[
-							'phone'          => $lookup_value,
-							'verified_phone' => 1,
-						],
-						[ '%s', '%d' ]
-					);
-				}
+			if ( $exists ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
+				$wpdb->update(
+					$table,
+					[ 'verified_email' => 1 ],
+					[ 'email' => $identifier ],
+					[ '%d' ],
+					[ '%s' ]
+				);
+			} else {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Blacklist Manager stores verified contacts in a custom integration table.
+				$wpdb->insert(
+					$table,
+					[
+						'email'          => $identifier,
+						'verified_email' => 1,
+					],
+					[ '%s', '%d' ]
+				);
 			}
 
 			wp_cache_delete( $cache_key, $cache_group );
@@ -391,4 +273,4 @@ class YOAA_WC_Advanced_Accounts_Phone_Login_OTP {
 	}
 }
 
-new YOAA_WC_Advanced_Accounts_Phone_Login_OTP();
+new YOAA_WC_Advanced_Accounts_Email_Login_OTP();

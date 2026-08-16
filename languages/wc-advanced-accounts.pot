@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Advanced Accounts for WooCommerce 1.4.4\n"
+"Project-Id-Version: Advanced Accounts for WooCommerce 1.4.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-advanced-accounts\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-13T05:14:34+00:00\n"
+"POT-Creation-Date: 2026-08-16T04:27:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wc-advanced-accounts\n"
@@ -23,7 +23,7 @@ msgid "https://yoohw.com/docs/category/woocommerce-advanced-accounts/"
 msgstr ""
 
 #. Description of the plugin
-msgid "Upgrade My Account, email/phone verification, and login with OTP."
+msgid "Upgrade WooCommerce My Account with email verification and OTP, phone-based accounts, and membership tools."
 msgstr ""
 
 #. Author of the plugin
@@ -53,8 +53,8 @@ msgid "Invalid request."
 msgstr ""
 
 #: inc/backend/actions/email-verification.php:189
-#: inc/backend/actions/login-otp.php:318
-#: inc/backend/actions/reset-password.php:341
+#: inc/backend/actions/login-otp.php:204
+#: inc/backend/actions/reset-password.php:235
 msgid "User not found."
 msgstr ""
 
@@ -87,188 +87,153 @@ msgstr ""
 msgid "Invalid or expired email confirmation link."
 msgstr ""
 
-#: inc/backend/actions/email-verification.php:380
+#: inc/backend/actions/email-verification.php:382
 msgid "(password set during activation)"
 msgstr ""
 
-#: inc/backend/actions/email-verification.php:382
+#: inc/backend/actions/email-verification.php:384
 msgid "Welcome to our store!"
 msgstr ""
 
-#: inc/backend/actions/email-verification.php:383
+#: inc/backend/actions/email-verification.php:385
 msgid "Your account is now active"
 msgstr ""
 
 #. translators: 1: Display name, 2: Phone number, 3: Password
-#: inc/backend/actions/email-verification.php:390
+#: inc/backend/actions/email-verification.php:392
 msgid "Hi %1$s,<br><br>Your account has been successfully activated. You can now log in using your email address or phone number.<br><br>Phone number: %2$s<br>Password: %3$s<br><br>Thank you for registering!"
 msgstr ""
 
 #. translators: 1: Display name, 2: Username, 3: Password
-#: inc/backend/actions/email-verification.php:398
+#: inc/backend/actions/email-verification.php:400
 msgid "Hi %1$s,<br><br>Your account has been successfully activated. You can now log in using your email address or username.<br><br>Username: %2$s<br>Password: %3$s<br><br>Thank you for registering!"
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:57
-#: inc/backend/actions/reset-password.php:76
-msgid "Please enter your phone number or email."
-msgstr ""
-
-#: inc/backend/actions/login-otp.php:58
-msgid "Please enter your email address."
-msgstr ""
-
-#: inc/backend/actions/login-otp.php:61
-msgid "Please enter a valid phone or email."
-msgstr ""
-
-#: inc/backend/actions/login-otp.php:62
-msgid "Please enter a valid email address."
-msgstr ""
-
-#: inc/backend/actions/login-otp.php:70
-#: inc/backend/settings/advanced.php:79
+#: inc/backend/actions/login-otp.php:63
 msgid "Login with OTP"
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:71
-#: inc/backend/actions/phone-verification.php:290
-#: inc/backend/actions/reset-password.php:104
+#: inc/backend/actions/login-otp.php:64
+#: inc/backend/actions/reset-password.php:101
 msgid "Code"
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:72
-#: inc/backend/actions/phone-verification.php:292
-#: inc/backend/actions/reset-password.php:105
+#: inc/backend/actions/login-otp.php:65
+#: inc/backend/actions/reset-password.php:102
 msgid "Verify"
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:73
-#: inc/backend/actions/phone-verification.php:104
-#: inc/backend/actions/phone-verification.php:293
-#: inc/backend/actions/reset-password.php:73
-#: inc/backend/actions/reset-password.php:106
+#: inc/backend/actions/login-otp.php:66
+#: inc/backend/actions/reset-password.php:75
+#: inc/backend/actions/reset-password.php:103
 msgid "Resend"
 msgstr ""
 
 #. translators: %s: Remaining seconds before the user can resend an OTP.
-#: inc/backend/actions/login-otp.php:75
+#: inc/backend/actions/login-otp.php:68
 msgid "Resend (%s)"
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:76
-#: inc/backend/actions/reset-password.php:74
+#: inc/backend/actions/login-otp.php:69
+#: inc/backend/actions/reset-password.php:76
 msgid "Resending..."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:81
-msgid "OTP sent successfully to your phone number."
+#: inc/backend/actions/login-otp.php:72
+#: inc/backend/actions/reset-password.php:78
+msgid "Please enter your email address."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:82
-#: inc/backend/actions/reset-password.php:80
+#: inc/backend/actions/login-otp.php:73
+#: inc/backend/actions/login-otp.php:96
+#: inc/backend/actions/reset-password.php:79
+#: inc/backend/actions/reset-password.php:122
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:74
+#: inc/backend/actions/login-otp.php:155
+#: inc/backend/actions/reset-password.php:187
+msgid "OTP sent successfully. Please check your email."
+msgstr ""
+
+#: inc/backend/actions/login-otp.php:75
+#: inc/backend/actions/reset-password.php:82
 msgid "OTP resent successfully."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:83
+#: inc/backend/actions/login-otp.php:76
 msgid "An error occurred while sending the OTP. Please try again."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:84
-#: inc/backend/actions/login-otp.php:291
+#: inc/backend/actions/login-otp.php:77
+#: inc/backend/actions/login-otp.php:197
 msgid "The OTP you entered is incorrect. Please try again."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:85
-#: inc/backend/actions/phone-verification.php:105
+#: inc/backend/actions/login-otp.php:78
 msgid "Limit reached"
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:94
-#: inc/backend/actions/login-otp.php:256
-#: inc/backend/actions/phone-verification.php:120
-#: inc/backend/actions/phone-verification.php:307
-#: inc/backend/actions/reset-password.php:116
-#: inc/backend/actions/reset-password.php:299
+#: inc/backend/actions/login-otp.php:87
+#: inc/backend/actions/login-otp.php:162
+#: inc/backend/actions/reset-password.php:113
+#: inc/backend/actions/reset-password.php:195
 msgid "Session is not available. Please refresh the page and try again."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:100
-#: inc/backend/actions/reset-password.php:122
-msgid "Phone number or email address is required."
+#: inc/backend/actions/login-otp.php:92
+#: inc/backend/actions/reset-password.php:118
+msgid "Email address is required."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:109
-#: inc/backend/actions/reset-password.php:131
+#: inc/backend/actions/login-otp.php:102
+#: inc/backend/actions/reset-password.php:127
 msgid "No account found with this email address."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:115
-#: inc/backend/actions/reset-password.php:136
-msgid "No account found with this phone number."
-msgstr ""
-
 #. translators: %d: remaining seconds.
-#: inc/backend/actions/login-otp.php:130
-#: inc/backend/actions/reset-password.php:148
+#: inc/backend/actions/login-otp.php:116
+#: inc/backend/actions/reset-password.php:138
 msgid "Please wait %d seconds before requesting another OTP."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:146
+#: inc/backend/actions/login-otp.php:131
 msgid "Your login OTP code"
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:147
+#: inc/backend/actions/login-otp.php:132
 msgid "Login OTP code"
 msgstr ""
 
 #. translators: %s: OTP code.
-#: inc/backend/actions/login-otp.php:150
+#: inc/backend/actions/login-otp.php:135
 msgid "Your OTP code for login is: <strong>%s</strong><br><br>If you did not request this, please ignore this email.<br><br>Thank you."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:167
-#: inc/backend/actions/reset-password.php:195
+#: inc/backend/actions/login-otp.php:152
+#: inc/backend/actions/reset-password.php:184
 msgid "Failed to send OTP to the email address. Please try again."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:170
-#: inc/backend/actions/reset-password.php:198
-msgid "OTP sent successfully. Please check your email."
-msgstr ""
-
-#: inc/backend/actions/login-otp.php:239
-#: inc/backend/actions/login-otp.php:246
-#: inc/backend/actions/phone-verification.php:271
-#: inc/backend/actions/phone-verification.php:276
-#: inc/backend/actions/reset-password.php:281
-#: inc/backend/actions/reset-password.php:287
-msgid "Failed to send OTP via SMS. Please try again."
-msgstr ""
-
-#: inc/backend/actions/login-otp.php:249
-#: inc/backend/actions/reset-password.php:290
-msgid "OTP sent successfully. Please check your phone."
-msgstr ""
-
-#: inc/backend/actions/login-otp.php:269
-#: inc/backend/actions/reset-password.php:309
+#: inc/backend/actions/login-otp.php:175
+#: inc/backend/actions/reset-password.php:205
 msgid "Please request a new OTP."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:274
-#: inc/backend/actions/reset-password.php:314
+#: inc/backend/actions/login-otp.php:180
+#: inc/backend/actions/reset-password.php:210
 msgid "This OTP has expired. Please request a new one."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:279
-#: inc/backend/actions/login-otp.php:288
-#: inc/backend/actions/reset-password.php:319
-#: inc/backend/actions/reset-password.php:329
+#: inc/backend/actions/login-otp.php:185
+#: inc/backend/actions/login-otp.php:194
+#: inc/backend/actions/reset-password.php:215
+#: inc/backend/actions/reset-password.php:225
 msgid "Too many failed attempts. Please request a new OTP."
 msgstr ""
 
-#: inc/backend/actions/login-otp.php:418
+#: inc/backend/actions/login-otp.php:272
 msgid "You have been logged in successfully!"
 msgstr ""
 
@@ -293,337 +258,164 @@ msgstr ""
 msgid "Login to continue"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:284
+#: inc/backend/actions/phone-account-username.php:288
 msgid "The password you entered for the username"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:285
+#: inc/backend/actions/phone-account-username.php:289
 msgid "username"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:285
+#: inc/backend/actions/phone-account-username.php:289
 msgid "phone number"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:289
-#: inc/backend/actions/phone-account-username.php:290
+#: inc/backend/actions/phone-account-username.php:293
+#: inc/backend/actions/phone-account-username.php:294
 msgid "The username"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:289
+#: inc/backend/actions/phone-account-username.php:293
 msgid "is not registered on this site"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:290
+#: inc/backend/actions/phone-account-username.php:294
 msgid "The phone number"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:291
+#: inc/backend/actions/phone-account-username.php:295
 msgid "If you are unsure of your username, try your email address instead."
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:291
+#: inc/backend/actions/phone-account-username.php:295
 msgid "If you are unsure of your phone number, try your email address instead."
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:295
+#: inc/backend/actions/phone-account-username.php:299
 msgid "Unknown email address"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:295
-#: inc/backend/actions/phone-account-username.php:296
+#: inc/backend/actions/phone-account-username.php:299
+#: inc/backend/actions/phone-account-username.php:300
 msgid "try your username"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:296
+#: inc/backend/actions/phone-account-username.php:300
 msgid "try your phone number"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:304
+#: inc/backend/actions/phone-account-username.php:308
 msgid "An account is already registered with"
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:306
+#: inc/backend/actions/phone-account-username.php:310
 msgid "An account is already registered with this phone number or email address. Please log in or use a different one."
 msgstr ""
 
-#: inc/backend/actions/phone-account-username.php:312
-msgid "Lost your password? Please enter your phone number or email address. You will receive a link to create a new password via email."
-msgstr ""
-
-#: inc/backend/actions/phone-account-username.php:318
-#: inc/backend/actions/reset-password.php:91
-msgid "Phone number or email address"
-msgstr ""
-
-#: inc/backend/actions/phone-account-username.php:318
-#: inc/backend/actions/phone-account-username.php:329
-#: inc/backend/actions/reset-password.php:91
-msgid "Required"
-msgstr ""
-
-#: inc/backend/actions/phone-account-username.php:329
-msgid "Phone number"
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:76
-msgid "Your account is not verified yet. Please log in with OTP to verify it or contact support for assistance."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:100
-msgid "Please enter your phone number."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:101
-msgid "An error occurred while sending the verification code. Please try again."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:102
-#: inc/backend/actions/phone-verification.php:466
-msgid "Phone number verified successfully!"
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:103
-#: inc/backend/actions/phone-verification.php:351
-msgid "Verification failed. Please check the code and try again."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:106
-#: inc/backend/actions/phone-verification.php:156
-msgid "You have reached the maximum number of resend attempts."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:107
-msgid "A new verification code has been sent."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:108
-msgid "Please enter the verification code."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:124
-#: inc/backend/actions/phone-verification.php:130
-msgid "Phone number is required."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:135
-#: inc/backend/actions/phone-verification.php:507
+#: inc/backend/actions/phone-account-username.php:341
 msgid "This phone number is already registered. Please use a different one."
 msgstr ""
 
-#. translators: %d: remaining seconds.
-#: inc/backend/actions/phone-verification.php:146
-msgid "Please wait %d seconds before requesting another verification code."
+#: inc/backend/actions/phone-account-username.php:412
+msgid "Lost your password? Please enter your phone number or email address. You will receive a link to create a new password via email."
 msgstr ""
 
-#: inc/backend/actions/phone-verification.php:182
-msgid "Verification code sent successfully."
+#: inc/backend/actions/phone-account-username.php:418
+msgid "Phone number or email address"
 msgstr ""
 
-#: inc/backend/actions/phone-verification.php:289
-msgid "Verification code"
+#: inc/backend/actions/phone-account-username.php:418
+#: inc/backend/actions/phone-account-username.php:429
+#: inc/backend/actions/reset-password.php:92
+msgid "Required"
 msgstr ""
 
-#: inc/backend/actions/phone-verification.php:291
-#: inc/backend/actions/reset-password.php:101
-msgid "Send code"
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:311
-msgid "Verification code is required."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:323
-msgid "Please request a new verification code."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:328
-msgid "Verification failed. Please try again."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:333
-msgid "This verification code has expired. Please request a new one."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:338
-#: inc/backend/actions/phone-verification.php:348
-msgid "Too many failed attempts. Please request a new verification code."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:473
-#: inc/backend/settings/membership-add-remove-user-role.php:84
-#: inc/backend/settings/membership-add-remove-user-role.php:95
-msgid "Nonce verification failed. Please try again."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:481
-msgid "You must verify your phone number before registering."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:489
-#: inc/backend/actions/phone-verification.php:494
-msgid "Invalid nonce."
-msgstr ""
-
-#: inc/backend/actions/phone-verification.php:499
-msgid "Invalid username."
-msgstr ""
-
-#: inc/backend/actions/reset-password.php:75
-msgid "Resend limit reached"
+#: inc/backend/actions/phone-account-username.php:429
+msgid "Phone number"
 msgstr ""
 
 #: inc/backend/actions/reset-password.php:77
-msgid "Please enter a valid phone number or email."
+msgid "Resend limit reached"
 msgstr ""
 
-#: inc/backend/actions/reset-password.php:78
+#: inc/backend/actions/reset-password.php:80
 msgid "Failed to send OTP. Please try again."
 msgstr ""
 
-#: inc/backend/actions/reset-password.php:79
-#: inc/backend/actions/reset-password.php:332
+#: inc/backend/actions/reset-password.php:81
+#: inc/backend/actions/reset-password.php:228
 msgid "Invalid OTP. Please try again."
 msgstr ""
 
-#: inc/backend/actions/reset-password.php:158
+#: inc/backend/actions/reset-password.php:92
+msgid "Email address"
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:98
+msgid "Send code"
+msgstr ""
+
+#: inc/backend/actions/reset-password.php:148
 msgid "You have reached the maximum resend attempts. Please try again later."
 msgstr ""
 
-#: inc/backend/actions/reset-password.php:178
+#: inc/backend/actions/reset-password.php:167
 msgid "Your password reset OTP code"
 msgstr ""
 
-#: inc/backend/actions/reset-password.php:179
+#: inc/backend/actions/reset-password.php:168
 msgid "Reset password by OTP"
 msgstr ""
 
 #. translators: %s: OTP code
-#: inc/backend/actions/reset-password.php:182
+#: inc/backend/actions/reset-password.php:171
 msgid "Your OTP code for resetting your password is: <strong>%s</strong><br><br>If you did not request this, please ignore this email.<br><br>Thank you."
 msgstr ""
 
-#: inc/backend/actions/reset-password.php:365
-msgid "Forgot your password? Enter your email address or phone number to receive a verification code to reset your password."
+#: inc/backend/actions/reset-password.php:259
+msgid "Forgot your password? Enter your email address to receive a verification code to reset your password."
 msgstr ""
 
-#: inc/backend/settings.php:29
-#: inc/backend/settings.php:37
+#: inc/backend/settings.php:26
+#: inc/backend/settings.php:36
 #: inc/backend/settings/endpoints.php:183
 msgid "Available in Premium"
 msgstr ""
 
-#: inc/backend/settings.php:30
+#: inc/backend/settings.php:27
 msgid "These features are optional and are not required to use the free plugin."
 msgstr ""
 
-#: inc/backend/settings.php:32
+#: inc/backend/settings.php:29
 msgid "View Premium features"
 msgstr ""
 
-#: inc/backend/settings.php:56
+#: inc/backend/settings.php:59
 msgid "Accounts & Membership"
 msgstr ""
 
-#: inc/backend/settings.php:63
+#: inc/backend/settings.php:66
 msgid "Advanced"
 msgstr ""
 
-#: inc/backend/settings.php:64
+#: inc/backend/settings.php:67
 msgid "Profile"
 msgstr ""
 
-#: inc/backend/settings.php:65
+#: inc/backend/settings.php:68
 #: inc/backend/settings/membership-add-remove-user-role.php:224
 #: inc/backend/settings/membership-add-remove-user-role.php:267
 #: inc/backend/settings/membership.php:111
 msgid "Membership"
 msgstr ""
 
-#: inc/backend/settings.php:66
+#: inc/backend/settings.php:69
 msgid "Endpoints"
 msgstr ""
 
-#: inc/backend/settings.php:67
+#: inc/backend/settings.php:70
 #: inc/backend/settings/tools.php:22
 msgid "Tools"
-msgstr ""
-
-#: inc/backend/settings.php:147
-msgid "History logs"
-msgstr ""
-
-#: inc/backend/settings.php:148
-msgid "Purchase Yo Credits"
-msgstr ""
-
-#: inc/backend/settings.php:149
-msgid "Copy"
-msgstr ""
-
-#: inc/backend/settings.php:150
-msgid "Copied!"
-msgstr ""
-
-#: inc/backend/settings.php:151
-msgid "How it works?"
-msgstr ""
-
-#: inc/backend/settings.php:152
-msgid "Use this key when you purchase Yo Credits."
-msgstr ""
-
-#: inc/backend/settings.php:153
-msgid "SMS Quota"
-msgstr ""
-
-#: inc/backend/settings.php:154
-msgid "USD credits remaining."
-msgstr ""
-
-#: inc/backend/settings.php:155
-msgid "Generate a new key to start using SMS Verification."
-msgstr ""
-
-#: inc/backend/settings.php:156
-#: inc/backend/settings.php:233
-msgid "Key generated and saved successfully."
-msgstr ""
-
-#: inc/backend/settings.php:157
-msgid "Failed to generate the key. Please try again or contact support."
-msgstr ""
-
-#: inc/backend/settings.php:168
-#: inc/backend/settings/membership-add-remove-user-role.php:80
-#: inc/backend/settings/membership-add-remove-user-role.php:91
-#: inc/backend/settings/membership-add-remove-user-role.php:104
-#: inc/backend/settings/membership-add-remove-user-role.php:185
-msgid "You do not have permission to perform this action."
-msgstr ""
-
-#: inc/backend/settings.php:181
-msgid "Security check failed."
-msgstr ""
-
-#: inc/backend/settings.php:190
-msgid "Invalid or empty key provided."
-msgstr ""
-
-#: inc/backend/settings.php:214
-msgid "API call failed: "
-msgstr ""
-
-#: inc/backend/settings.php:225
-msgid "API error: "
-msgstr ""
-
-#: inc/backend/settings.php:225
-msgid "Unknown error"
-msgstr ""
-
-#: inc/backend/settings.php:237
-msgid "Failed to save the generated key. Please try again."
 msgstr ""
 
 #: inc/backend/settings/advanced.php:12
@@ -683,7 +475,7 @@ msgid "Verifications"
 msgstr ""
 
 #: inc/backend/settings/advanced.php:61
-msgid "Verification / OTP"
+msgid "Email verification"
 msgstr ""
 
 #: inc/backend/settings/advanced.php:62
@@ -695,126 +487,78 @@ msgid "New customers receive an email to activate their account and set up passw
 msgstr ""
 
 #: inc/backend/settings/advanced.php:70
-msgid "Phone verification"
+msgid "Email OTP"
 msgstr ""
 
 #: inc/backend/settings/advanced.php:71
-msgid "Require phone verification during account registration"
+msgid "Allow login and password reset with a one-time password sent by email"
 msgstr ""
 
 #: inc/backend/settings/advanced.php:72
-msgid "New customers receive a verification code on their phone to create an account."
+msgid "Customers can request a secure email code to log in or continue the password reset flow."
+msgstr ""
+
+#: inc/backend/settings/advanced.php:79
+msgid "Email OTP options"
 msgstr ""
 
 #: inc/backend/settings/advanced.php:80
-msgid "Allow user to login with One-Time Password"
+msgid "Resend cooldown in seconds."
 msgstr ""
 
 #: inc/backend/settings/advanced.php:81
-msgid "The user receives a passcode on their phone or email inbox to login to your site. It will use the OTP to let the user reset their password either."
+msgid "Set how long customers must wait before requesting another email OTP."
 msgstr ""
 
-#: inc/backend/settings/advanced.php:89
-msgid "Verification options"
+#: inc/backend/settings/advanced.php:92
+msgid "Maximum resend attempts."
 msgstr ""
 
-#: inc/backend/settings/advanced.php:90
-msgid "Code length."
-msgstr ""
-
-#: inc/backend/settings/advanced.php:91
-msgid "You may set it from 6 to 8 numbers."
-msgstr ""
-
-#: inc/backend/settings/advanced.php:103
-msgid "Resend in seconds."
+#: inc/backend/settings/advanced.php:93
+msgid "Set how many times a customer can request another email OTP."
 msgstr ""
 
 #: inc/backend/settings/advanced.php:104
-msgid "Set how many seconds that allows the customers get new code."
+msgid "Phone verification and OTP with Premium"
 msgstr ""
 
-#: inc/backend/settings/advanced.php:115
-msgid "Time limited."
+#: inc/backend/settings/advanced.php:105
+msgid "Upgrade to add phone verification and OTP workflows using your own third-party messaging provider."
 msgstr ""
 
-#: inc/backend/settings/advanced.php:116
-msgid "How many time the customer can request for resending."
-msgstr ""
-
-#: inc/backend/settings/advanced.php:126
-msgid "SMS content"
-msgstr ""
-
-#: inc/backend/settings/advanced.php:127
-msgid "Type your content, {code} is required."
-msgstr ""
-
-#: inc/backend/settings/advanced.php:128
-msgid "Add {site_name}, {code} where you want them to appear."
-msgstr ""
-
-#: inc/backend/settings/advanced.php:134
-msgid "SMS service"
-msgstr ""
-
-#: inc/backend/settings/advanced.php:138
-msgid "Yo Credits"
-msgstr ""
-
-#: inc/backend/settings/advanced.php:141
-msgid "Yo Credits is the SMS service available in the free plugin."
-msgstr ""
-
-#: inc/backend/settings/advanced.php:144
-msgid "Yo Credits key"
-msgstr ""
-
-#: inc/backend/settings/advanced.php:145
-msgid "Generate a key"
-msgstr ""
-
-#: inc/backend/settings/advanced.php:146
-msgid "Do not share or public this key in any case."
-msgstr ""
-
-#: inc/backend/settings/advanced.php:156
-msgid "Need more verification options?"
-msgstr ""
-
-#: inc/backend/settings/advanced.php:157
-msgid "Use optional provider and account-verification controls when your store needs a more advanced workflow."
-msgstr ""
-
-#: inc/backend/settings/advanced.php:159
+#: inc/backend/settings/advanced.php:107
 msgid "Connect Twilio or Textmagic for SMS delivery."
 msgstr ""
 
-#: inc/backend/settings/advanced.php:160
-msgid "Verify customer phone number changes."
+#: inc/backend/settings/advanced.php:108
+msgid "Enable phone verification, phone OTP login, and phone OTP password reset."
 msgstr ""
 
-#: inc/backend/settings/advanced.php:161
-msgid "Exclude selected roles from verification requirements."
+#: inc/backend/settings/advanced.php:109
+msgid "Request integration with another messaging service; typical completion time is 1–2 business days."
 msgstr ""
 
-#: inc/backend/settings/advanced.php:163
-msgid "View verification add-ons"
+#: inc/backend/settings/advanced.php:111
+msgid "Upgrade to Premium"
 msgstr ""
 
-#: inc/backend/settings/advanced.php:178
+#: inc/backend/settings/advanced.php:112
+msgid "Request a provider integration"
+msgstr ""
+
+#: inc/backend/settings/advanced.php:126
 msgid "Additionals"
 msgstr ""
 
-#: inc/backend/settings/advanced.php:183
+#: inc/backend/settings/advanced.php:131
 msgid "Redirect wp-login"
 msgstr ""
 
-#: inc/backend/settings/advanced.php:184
+#: inc/backend/settings/advanced.php:132
 msgid "Enable to redirect the wp-login to My account page"
 msgstr ""
 
-#: inc/backend/settings/advanced.php:185
+#: inc/backend/settings/advanced.php:133
 msgid "It will redirect the user to my account page when they access to the WordPress default login page."
 msgstr ""
 
@@ -972,6 +716,18 @@ msgstr ""
 
 #: inc/backend/settings/endpoints.php:329
 msgid "Search icons…"
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:80
+#: inc/backend/settings/membership-add-remove-user-role.php:91
+#: inc/backend/settings/membership-add-remove-user-role.php:104
+#: inc/backend/settings/membership-add-remove-user-role.php:185
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: inc/backend/settings/membership-add-remove-user-role.php:84
+#: inc/backend/settings/membership-add-remove-user-role.php:95
+msgid "Nonce verification failed. Please try again."
 msgstr ""
 
 #: inc/backend/settings/membership-add-remove-user-role.php:218
@@ -1197,6 +953,7 @@ msgid "Leading \"0\" will be removed from the local number when building the new
 msgstr ""
 
 #: inc/backend/settings/tools.php:140
+#: inc/backend/settings/tools.php:340
 msgid "Dry-run"
 msgstr ""
 
@@ -1249,141 +1006,157 @@ msgstr ""
 msgid "Migration completed successfully. %d user(s) were updated."
 msgstr ""
 
-#: inc/backend/settings/tools.php:301
-#: inc/backend/settings/tools.php:375
-msgid "Would Update"
-msgstr ""
-
-#: inc/backend/settings/tools.php:301
-#: inc/backend/settings/tools.php:374
-msgid "Updated"
-msgstr ""
-
 #: inc/backend/settings/tools.php:304
-msgid "Results"
-msgstr ""
-
-#: inc/backend/settings/tools.php:308
 msgid "Processed"
 msgstr ""
 
-#: inc/backend/settings/tools.php:316
-#: inc/backend/settings/tools.php:372
+#: inc/backend/settings/tools.php:305
+#: inc/backend/settings/tools.php:444
+msgid "Would update"
+msgstr ""
+
+#: inc/backend/settings/tools.php:305
+#: inc/backend/settings/tools.php:443
+msgid "Updated"
+msgstr ""
+
+#: inc/backend/settings/tools.php:306
+#: inc/backend/settings/tools.php:445
 msgid "Skipped"
 msgstr ""
 
-#: inc/backend/settings/tools.php:320
-#: inc/backend/settings/tools.php:373
+#: inc/backend/settings/tools.php:307
 msgid "Conflicts"
 msgstr ""
 
-#: inc/backend/settings/tools.php:333
+#: inc/backend/settings/tools.php:310
 msgid "User ID"
 msgstr ""
 
-#: inc/backend/settings/tools.php:334
+#: inc/backend/settings/tools.php:311
 msgid "Email"
 msgstr ""
 
-#: inc/backend/settings/tools.php:335
+#: inc/backend/settings/tools.php:312
 msgid "Old username"
 msgstr ""
 
-#: inc/backend/settings/tools.php:336
+#: inc/backend/settings/tools.php:313
 msgid "Phone source"
 msgstr ""
 
-#: inc/backend/settings/tools.php:337
+#: inc/backend/settings/tools.php:314
 msgid "Detected phone"
 msgstr ""
 
-#: inc/backend/settings/tools.php:338
+#: inc/backend/settings/tools.php:315
 msgid "New username"
 msgstr ""
 
-#: inc/backend/settings/tools.php:339
+#: inc/backend/settings/tools.php:316
 msgid "Status"
 msgstr ""
 
-#: inc/backend/settings/tools.php:340
+#: inc/backend/settings/tools.php:317
 msgid "Reason"
 msgstr ""
 
-#: inc/backend/settings/tools.php:370
-msgid "Filter:"
-msgstr ""
-
-#: inc/backend/settings/tools.php:371
+#: inc/backend/settings/tools.php:334
 msgid "All"
 msgstr ""
 
-#: inc/backend/settings/tools.php:506
+#: inc/backend/settings/tools.php:334
+#: inc/backend/settings/tools.php:427
+msgid "No rows match the current filters."
+msgstr ""
+
+#: inc/backend/settings/tools.php:337
+msgid "Results"
+msgstr ""
+
+#: inc/backend/settings/tools.php:338
+msgid "Showing the current processed batch. Use pagination, filters, and search to inspect rows without overloading the page."
+msgstr ""
+
+#: inc/backend/settings/tools.php:340
+msgid "Live run"
+msgstr ""
+
+#: inc/backend/settings/tools.php:358
+msgid "No rows returned for this run."
+msgstr ""
+
+#: inc/backend/settings/tools.php:365
+msgid "Search"
+msgstr ""
+
+#: inc/backend/settings/tools.php:365
+msgid "User ID, email, status, reason..."
+msgstr ""
+
+#: inc/backend/settings/tools.php:366
+msgid "Rows per page"
+msgstr ""
+
+#: inc/backend/settings/tools.php:431
+msgid "Previous page"
+msgstr ""
+
+#: inc/backend/settings/tools.php:433
+msgid "Next page"
+msgstr ""
+
+#: inc/backend/settings/tools.php:446
+msgid "Conflict"
+msgstr ""
+
+#: inc/backend/settings/tools.php:447
+msgid "Error"
+msgstr ""
+
+#: inc/backend/settings/tools.php:448
+msgid "Unknown"
+msgstr ""
+
+#: inc/backend/settings/tools.php:617
 msgid "Username already contains \"-\"."
 msgstr ""
 
-#: inc/backend/settings/tools.php:514
+#: inc/backend/settings/tools.php:625
 msgid "No phone found."
 msgstr ""
 
-#: inc/backend/settings/tools.php:523
+#: inc/backend/settings/tools.php:646
 msgid "Invalid phone after normalization."
 msgstr ""
 
-#: inc/backend/settings/tools.php:549
+#: inc/backend/settings/tools.php:674
 msgid "Could not build new username."
 msgstr ""
 
-#: inc/backend/settings/tools.php:555
+#: inc/backend/settings/tools.php:684
 msgid "Already matches."
 msgstr ""
 
-#: inc/backend/settings/tools.php:562
-#: inc/backend/settings/tools.php:770
+#: inc/backend/settings/tools.php:696
+#: inc/backend/settings/tools.php:930
 msgid "Username already exists."
 msgstr ""
 
-#: inc/backend/settings/tools.php:568
+#: inc/backend/settings/tools.php:702
 msgid "Dry-run."
 msgstr ""
 
-#: inc/backend/settings/tools.php:584
+#: inc/backend/settings/tools.php:727
 msgid "Updated."
 msgstr ""
 
-#: inc/backend/settings/tools.php:765
+#: inc/backend/settings/tools.php:925
 msgid "Invalid user or username."
 msgstr ""
 
-#: inc/backend/settings/tools.php:785
+#: inc/backend/settings/tools.php:945
 msgid "Database update failed."
-msgstr ""
-
-#: inc/cores/api/sms/update-sms-quota.php:27
-msgid "SMS key is not configured."
-msgstr ""
-
-#: inc/cores/api/sms/update-sms-quota.php:38
-msgid "Too many quota update attempts. Please try again later."
-msgstr ""
-
-#: inc/cores/api/sms/update-sms-quota.php:54
-msgid "Missing quota update signature."
-msgstr ""
-
-#: inc/cores/api/sms/update-sms-quota.php:62
-msgid "Expired quota update signature."
-msgstr ""
-
-#: inc/cores/api/sms/update-sms-quota.php:73
-msgid "Invalid quota update signature."
-msgstr ""
-
-#: inc/cores/api/sms/update-sms-quota.php:87
-msgid "Invalid SMS quota value."
-msgstr ""
-
-#: inc/cores/api/sms/update-sms-quota.php:98
-msgid "Quota updated successfully."
 msgstr ""
 
 #: inc/cores/notices.php:35

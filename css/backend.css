@@ -1,11 +1,3 @@
-.yoaa-sms-options {
-    padding: 0 10px !important;
-}
-
-.yoaa-sms-options-first {
-    padding-bottom: 6px !important;
-}
-
 #verified {
     width: 2ch;
 }
@@ -34,9 +26,9 @@
     box-sizing: border-box;
     margin: 4px 0 10px;
     padding: 16px 18px;
-    border: 1px solid #dcdcde;
-    border-left: 4px solid #2271b1;
-    background: #fff;
+    border: 1px solid rgba(var(--wp-admin-theme-color--rgb, 34, 113, 177), .28);
+    border-left: 4px solid var(--wp-admin-theme-color, #2271b1);
+    background: rgba(var(--wp-admin-theme-color--rgb, 34, 113, 177), .06);
     border-radius: 2px;
 }
 
@@ -62,9 +54,21 @@
 
 .yoaa-upgrade-eyebrow {
     margin-bottom: 4px !important;
-    color: #646970 !important;
+    color: var(--wp-admin-theme-color-darker-20, #135e96) !important;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: .02em;
     text-transform: uppercase;
+}
+
+.yoaa-upgrade-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.yoaa-upgrade-actions .button {
+    margin: 0;
+    white-space: normal;
 }

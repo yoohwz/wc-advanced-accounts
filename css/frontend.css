@@ -51,28 +51,22 @@
     margin-right: 5px;
 }
 
-#phone_verification_code, #reset_otp {
-    max-width: 90px;
-}
-
-.woocommerce-form-register__submit {
-    display: none;
-}
-
-.woocommerce-form-login__otp {
-    margin-left: 5px;
-    display: inline-block;
-}
-
-.otp-login-notice, #reset-password-otp-notice {
-    margin-bottom: 22px !important;
-    margin-top: 12px !important;
-}
-
+#reset_otp,
 .otp-login-form input {
     max-width: 90px;
 }
 
+.woocommerce-form-login__otp,
 .otp-login-form button {
     margin-left: 5px;
+}
+
+.woocommerce-form-login__otp {
+    display: inline-block;
+}
+
+.otp-login-notice,
+#reset-password-otp-notice {
+    margin-top: 12px !important;
+    margin-bottom: 22px !important;
 }

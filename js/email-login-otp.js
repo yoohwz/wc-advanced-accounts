@@ -122,19 +122,16 @@ jQuery(document).ready(function ($) {
         const usernameField = form.find('input[name="username"]');
         const identifier = usernameField.length > 0 ? usernameField.val().trim() : '';
     
-        // validation: empty or just country-code?
-        if (!identifier || identifier.match(/^\d+-$/)) {
+		if (!identifier) {
             showNotice(form, wc_otp_login_params.error_message, 'error');
             $btn.prop('disabled', false);
             return;
         }
     
-        // validation: phone-or-email format
-        const isPhoneOrEmail = /^\d[\d\-]*$/.test(identifier)
-                            || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
-    
-        if (!isPhoneOrEmail) {
-            showNotice(form, wc_otp_login_params.invalid_phone_number, 'error');
+		const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+
+		if (!isEmail) {
+			showNotice(form, wc_otp_login_params.invalid_email, 'error');
             $btn.prop('disabled', false);
             return;
         }
