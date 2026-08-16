@@ -1,8 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const skipCountryCode = yoaa_labels.skip_country_code;
   
-    // Hide all original username & reg_username fields
-    document.querySelectorAll('input[name="username"], input[name="reg_username"]').forEach(input => {
+    // Hide only the original login/registration username fields. Lost password
+    // also uses name="username", and must remain visible for the email OTP flow.
+    document.querySelectorAll(
+      '.woocommerce-form-login input[name="username"], ' +
+      '.woocommerce-form-register input[name="username"], ' +
+      '.woocommerce-form-register input[name="reg_username"]'
+    ).forEach(input => {
       const p = input.closest('p');
       if (p) p.style.display = 'none';
     });
