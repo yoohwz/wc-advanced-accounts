@@ -70,6 +70,12 @@ foreach(array('[[yoaa_membership level="unknown"]]','[[yoaa_membership level="un
 }
 
 $user=(object)array('ID'=>0,'roles'=>array());$effective=array();
+foreach(array('level="gold" level=""','level="unknown" level=""','level="unknown" level="silver" guest="yes"','level="unknown" LEVEL=""','guest="yes" guest="no"') as $attributes){
+	foreach(array('safe','the_content','widget_text_content','widget_block_content') as $pipeline){
+		$calls=0;$output=$render('BEFORE[yoaa_membership '.$attributes.']<span data-x="[probe]">protected</span>[probe][/yoaa_membership]AFTER',$pipeline);
+		expect(0===$calls && false===strpos($output,'SECRET') && false!==strpos($output,'AFTER'),'duplicate named attributes fail closed: '.$pipeline.'/'.$attributes);
+	}
+}
 foreach(array('<','\x3c','\074','\n') as $level){
 	foreach(array('safe','the_content','widget_text_content','widget_block_content') as $pipeline){
 		$calls=0;$output=$render('BEFORE[yoaa_membership level="'.$level.'"]<span data-x="[probe]">protected</span>[probe][/yoaa_membership]AFTER',$pipeline);

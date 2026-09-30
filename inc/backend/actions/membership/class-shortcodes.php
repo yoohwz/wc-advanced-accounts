@@ -435,9 +435,18 @@ if ( ! class_exists( 'YOAA_Membership_Content_Renderer' ) ) {
 			// Native parsing can erase a nonempty level (e.g. an unclosed HTML value).
 			// Inspect each explicit level before that loss; it must never become a public policy.
 			preg_match_all( get_shortcode_atts_regex(), $attributes, $matches, PREG_SET_ORDER );
+			$seen = array();
 			foreach ( $matches as $match ) {
 				$key = ! empty( $match[1] ) ? $match[1] : ( ! empty( $match[3] ) ? $match[3] : ( $match[5] ?? '' ) );
-				if ( 'level' !== strtolower( $key ) ) {
+				$key = strtolower( $key );
+				if ( '' !== $key ) {
+					// Duplicate named attributes are ambiguous; never let last-value-wins erase policy.
+					if ( isset( $seen[ $key ] ) ) {
+						return false;
+					}
+					$seen[ $key ] = true;
+				}
+				if ( 'level' !== $key ) {
 					continue;
 				}
 				$value = ! empty( $match[1] ) ? $match[2] : ( ! empty( $match[3] ) ? $match[4] : $match[6] );
