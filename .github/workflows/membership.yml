@@ -25,4 +25,6 @@ jobs:
           php -l inc/backend/actions/membership/class-shortcodes.php
           php -l tests/membership-shortcode.php
           php tests/membership-shortcode.php
+          php -l tests/membership-renderer.php
+          bash tests/run-membership-renderer.sh
           git diff --check "$AAP_BASE" "$AAP_HEAD"

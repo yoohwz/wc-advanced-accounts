@@ -12,7 +12,8 @@ class YOAA_WC_Advanced_Accounts_Membership_Roles {
 	public static function get_user_membership_roles() { global $effective; return $effective; }
 }
 function get_option( $key, $default = false ) { global $options; return $options[$key] ?? $default; }
-function add_shortcode( $tag, $cb ) { global $shortcodes; $shortcodes[$tag] = $cb; }
+function add_shortcode( $tag, $cb ) { global $shortcodes, $shortcode_tags; $shortcodes[$tag] = $cb; $shortcode_tags[$tag] = $cb; }
+function add_filter( $hook, $callback, $priority = 10 ) {}
 function shortcode_atts( $defaults, $atts, $tag ) { return array_merge( $defaults, array_intersect_key( $atts, $defaults ) ); }
 function sanitize_key( $value ) { return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( $value ) ); }
 function sanitize_text_field( $value ) { return (string) $value; }
