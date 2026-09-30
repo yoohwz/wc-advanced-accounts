@@ -10,12 +10,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 	 * Boot.
 	 */
 	public static function init() {
-		$membership_roles = get_option( 'yoaa_wc_membership_roles', array() );
-
-		if ( empty( $membership_roles ) || ! is_array( $membership_roles ) ) {
-			return;
-		}
-
+		// Always register: a deselected last role must not expose an old explicit policy.
 		add_shortcode( 'yoaa_membership', array( __CLASS__, 'render_membership_shortcode' ) );
 	}
 
@@ -23,7 +18,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 	 * Render [yoaa_membership] shortcode.
 	 *
 	 * Supported attributes:
-	 * - level="silver_member"
+	 * - level="silver_member,gold_member"
 	 * - guest="yes"
 	 * - logged_in="yes"
 	 * - hide="yes"
@@ -44,30 +39,28 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 			'yoaa_membership'
 		);
 
-		$required_level = self::parse_level( $atts['level'] );
-		$guest_only     = self::is_truthy( $atts['guest'] );
-		$logged_in_only = self::is_truthy( $atts['logged_in'] );
-		$hide           = self::is_truthy( $atts['hide'] );
+		$required_levels = self::parse_levels( $atts['level'] );
+		$guest_only      = self::is_truthy( $atts['guest'] );
+		$logged_in_only  = self::is_truthy( $atts['logged_in'] );
+		$hide            = self::is_truthy( $atts['hide'] );
 
-		$content = do_shortcode( (string) $content );
-
-		$has_access = self::user_has_access(
+		$has_access = null !== $required_levels && self::user_has_access(
 			array(
-				'level'          => $required_level,
+				'levels'         => $required_levels,
 				'guest_only'     => $guest_only,
 				'logged_in_only' => $logged_in_only,
 			)
 		);
 
 		if ( $has_access ) {
-			return $content;
+			return do_shortcode( (string) $content );
 		}
 
 		if ( $hide ) {
 			return '';
 		}
 
-		$message = self::get_default_message( $required_level, $guest_only, $logged_in_only );
+		$message = self::get_default_message( (array) $required_levels, $guest_only, $logged_in_only );
 
 		return self::get_restriction_notice_html( $message, self::get_current_url() );
 	}
@@ -79,7 +72,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 	 * @return bool
 	 */
 	private static function user_has_access( $args ) {
-		$required_level = ! empty( $args['level'] ) ? sanitize_key( $args['level'] ) : '';
+		$levels         = ! empty( $args['levels'] ) && is_array( $args['levels'] ) ? $args['levels'] : array();
 		$guest_only     = ! empty( $args['guest_only'] );
 		$logged_in_only = ! empty( $args['logged_in_only'] );
 		$is_logged_in   = is_user_logged_in();
@@ -92,7 +85,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 			return false;
 		}
 
-		if ( ! empty( $required_level ) ) {
+		if ( ! empty( $levels ) ) {
 			if ( ! $is_logged_in ) {
 				return false;
 			}
@@ -103,7 +96,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 				return false;
 			}
 
-			return in_array( $required_level, $user_levels, true );
+			return (bool) array_intersect( $levels, $user_levels );
 		}
 
 		if ( $logged_in_only ) {
@@ -114,49 +107,54 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 	}
 
 	/**
-	 * Parse a single level attribute into a valid membership role.
+	 * Parse explicit levels; null means an unresolved policy, never public access.
 	 *
-	 * @param string $level Membership level slug.
-	 * @return string
+	 * @param string $levels_csv Levels CSV.
+	 * @return array|null
 	 */
-	private static function parse_level( $level ) {
-		if ( empty( $level ) || ! is_string( $level ) ) {
-			return '';
+	private static function parse_levels( $levels_csv ) {
+		if ( ! is_string( $levels_csv ) ) {
+			return null;
 		}
-
-		$level = sanitize_key( trim( $level ) );
-
-		if ( empty( $level ) ) {
-			return '';
+		if ( '' === trim( $levels_csv ) ) {
+			return array();
 		}
 
 		$membership_roles = self::get_membership_roles();
-
-		if ( empty( $membership_roles ) ) {
-			return '';
+		$levels = array();
+		foreach ( explode( ',', $levels_csv ) as $token ) {
+			$token = trim( $token );
+			if ( '' === $token ) {
+				continue;
+			}
+			$level = sanitize_key( $token );
+			if ( '' === $level || ! in_array( $level, $membership_roles, true ) || ! get_role( $level ) ) {
+				return null;
+			}
+			$levels[] = $level;
 		}
 
-		return in_array( $level, $membership_roles, true ) ? $level : '';
+		return empty( $levels ) ? null : array_values( array_unique( $levels ) );
 	}
 
 	/**
 	 * Build default restriction message.
 	 *
-	 * @param string $required_level Required membership level.
+	 * @param array  $required_levels Required membership levels.
 	 * @param bool   $guest_only     Guests-only flag.
 	 * @param bool   $logged_in_only Logged-in-only flag.
 	 * @return string
 	 */
-	private static function get_default_message( $required_level, $guest_only, $logged_in_only ) {
+	private static function get_default_message( $required_levels, $guest_only, $logged_in_only ) {
 		if ( $guest_only ) {
 			return __( 'This content is available only for guests.', 'wc-advanced-accounts' );
 		}
 
-		if ( ! empty( $required_level ) ) {
+		if ( ! empty( $required_levels ) ) {
 			return sprintf(
 				/* translators: %s: membership role label */
 				__( 'This content is available only for the following membership level: %s.', 'wc-advanced-accounts' ),
-				self::get_role_label( $required_level )
+				implode( ', ', array_map( array( __CLASS__, 'get_role_label' ), $required_levels ) )
 			);
 		}
 
