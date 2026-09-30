@@ -333,7 +333,8 @@ if ( ! class_exists( 'YOAA_Membership_Content_Renderer' ) ) {
 			$callback = isset( $shortcode_tags['yoaa_membership'] ) ? $shortcode_tags['yoaa_membership'] : null;
 			$owner = is_array( $callback ) && isset( $callback[0], $callback[1] )
 				&& in_array( $callback[0], array( 'YOAA_WC_Advanced_Accounts_Membership_Shortcodes', 'YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free' ), true )
-				&& 'render_membership_shortcode' === $callback[1] ? $callback[0] : null;
+				&& 'render_membership_shortcode' === $callback[1]
+				&& is_callable( array( $callback[0], 'allows_membership_shortcode' ) ) ? $callback[0] : null;
 			$output = '';
 			$offset = 0;
 			while ( $token = self::next_token( $content, $offset ) ) {
@@ -428,7 +429,24 @@ if ( ! class_exists( 'YOAA_Membership_Content_Renderer' ) ) {
 			}
 			// Fully consume attributes; WP's permissive fallback can lose a malformed level policy.
 			$token = '(?:[\w-]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s\'"]+)|"[^"]*"|\'[^\']*\'|[^\s\'"=]+)';
-			return 1 === preg_match( '/\A\s*(?:' . $token . '(?:\s+' . $token . ')*)?\s*\z/', $attributes );
+			if ( 1 !== preg_match( '/\A\s*(?:' . $token . '(?:\s+' . $token . ')*)?\s*\z/', $attributes ) ) {
+				return false;
+			}
+			// Native parsing can erase a nonempty level (e.g. an unclosed HTML value).
+			// Inspect each explicit level before that loss; it must never become a public policy.
+			preg_match_all( get_shortcode_atts_regex(), $attributes, $matches, PREG_SET_ORDER );
+			foreach ( $matches as $match ) {
+				$key = ! empty( $match[1] ) ? $match[1] : ( ! empty( $match[3] ) ? $match[3] : ( $match[5] ?? '' ) );
+				if ( 'level' !== strtolower( $key ) ) {
+					continue;
+				}
+				$value = ! empty( $match[1] ) ? $match[2] : ( ! empty( $match[3] ) ? $match[4] : $match[6] );
+				$parsed = shortcode_parse_atts( $match[0] );
+				if ( '' !== trim( $value ) && ( ! isset( $parsed['level'] ) || '' === trim( $parsed['level'] ) ) ) {
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 }

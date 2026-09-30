@@ -68,7 +68,15 @@ foreach(array('[[yoaa_membership level="unknown"]]','[[yoaa_membership level="un
 	$output=yoaa_render_membership_content($input);
 	expect(0===$calls && false===strpos($output,'yoaa-membership-shortcode-restricted') && false!==strpos($output,'[yoaa_membership'),'escaped markup remains literal');
 }
+
 $user=(object)array('ID'=>0,'roles'=>array());$effective=array();
+foreach(array('<','\x3c','\074','\n') as $level){
+	foreach(array('safe','the_content','widget_text_content','widget_block_content') as $pipeline){
+		$calls=0;$output=$render('BEFORE[yoaa_membership level="'.$level.'"]<span data-x="[probe]">protected</span>[probe][/yoaa_membership]AFTER',$pipeline);
+		expect(0===$calls && false===strpos($output,'SECRET') && false!==strpos($output,'AFTER'),'nonempty native-erased level fails closed: '.$pipeline.'/'.$level);
+	}
+}
+
 $calls=0;$output=yoaa_render_membership_content('[probe][yoaa_membership level="gold"]<i data-v="[probe]">hidden</i>[/yoaa_membership][probe]');
 expect(2===$calls && false!==strpos($output,'yoaa-membership-shortcode-restricted'),'unrelated native shortcodes unaffected, restriction notice retained');
 foreach(array('gold,unknown','unknown') as $levels){$calls=0;yoaa_render_membership_content('[yoaa_membership level="'.$levels.'" guest="yes"][probe][/yoaa_membership]');expect(0===$calls,'invalid explicit policy cannot bypass through guest flag');}
