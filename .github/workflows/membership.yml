@@ -1,0 +1,30 @@
+name: Membership shortcode integrity
+on: [pull_request]
+permissions:
+  contents: read
+jobs:
+  required:
+    name: AAP Required CI
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: shivammathur/setup-php@bf6b4fbd49ca58e4608c9c89fba0b8d90bd2a39f
+        with:
+          php-version: '7.4'
+          coverage: none
+      - name: Validate exact Core shortcode candidate
+        env:
+          AAP_HEAD: ${{ github.event.pull_request.head.sha }}
+          AAP_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$AAP_HEAD"
+          php -l inc/backend/actions/membership/class-shortcodes.php
+          php -l tests/membership-shortcode.php
+          php tests/membership-shortcode.php
+          php -l tests/membership-renderer.php
+          bash tests/run-membership-renderer.sh
+          git diff --check "$AAP_BASE" "$AAP_HEAD"
