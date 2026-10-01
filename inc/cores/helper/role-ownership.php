@@ -135,10 +135,14 @@ final class YOSWC_Role_Ownership {
 	private static function option_keys( $slug ) {
 		return array_merge( array( wp_roles()->role_key, self::PREFIX . $slug ), array_column( self::$owners, 0 ), array( 'yoaa_wc_membership_roles', 'yoaa_wc_membership_role_settings', 'loyalty_levels_roles', 'loyalty_levels_rules', 'loyalty_levels_discounts_rules' ) );
 	}
+	private static function identifier_key( $key ) {
+		// PHP casts canonical decimal string array keys to integers. Do not rename stored identifiers.
+		return ( is_string( $key ) || is_int( $key ) ) && '' !== (string) $key && sanitize_key( (string) $key ) === (string) $key;
+	}
 	private static function role_map( $value ) {
 		if ( ! is_array( $value ) ) { return false; }
 		foreach ( $value as $role => $settings ) {
-			if ( ! is_string( $role ) || ! $role || sanitize_key( $role ) !== $role || ! is_array( $settings ) ) { return false; }
+			if ( ! self::identifier_key( $role ) || ! is_array( $settings ) ) { return false; }
 		}
 		return true;
 	}
@@ -155,7 +159,7 @@ final class YOSWC_Role_Ownership {
 		$data = self::role_data( $slug );
 		if ( ! is_array( $data['capabilities'] ?? null ) ) { return 'ownership'; }
 		foreach ( $data['capabilities'] as $cap => $enabled ) {
-			if ( ! is_string( $cap ) || ! is_bool( $enabled ) || ( 0 === strpos( $cap, self::PREFIX ) && $cap !== self::PREFIX . $record['generation'] ) ) { return 'ownership'; }
+			if ( ( ! is_string( $cap ) && ! is_int( $cap ) ) || ! is_bool( $enabled ) || ( 0 === strpos( (string) $cap, self::PREFIX ) && $cap !== self::PREFIX . $record['generation'] ) ) { return 'ownership'; }
 		}
 		foreach ( self::$owners as $other => $keys ) {
 			$reg = self::fresh_option( $keys[0], array() );
@@ -202,12 +206,12 @@ final class YOSWC_Role_Ownership {
 	private static function raw_claims( $value, $slug ) {
 		if ( ! is_array( $value ) ) { return false; }
 		foreach ( $value as $role => $sources ) {
-			if ( ! is_string( $role ) || sanitize_key( $role ) !== $role || ! $role || ! is_array( $sources ) ) { return false; }
+			if ( ! self::identifier_key( $role ) || ! is_array( $sources ) ) { return false; }
 			foreach ( $sources as $source => $data ) {
-				if ( ! is_string( $source ) || ! $source || sanitize_key( $source ) !== $source || ! is_array( $data ) || array_keys( $data ) !== array( 'updated_at', 'context' ) || ! is_string( $data['updated_at'] ) || ! is_array( $data['context'] ) ) { return false; }
-				foreach ( $data['context'] as $key => $value ) { if ( ! is_string( $key ) || ! $key || sanitize_key( $key ) !== $key || ( ! is_string( $value ) && ! ( 'backfilled' === $key && true === $value ) ) ) { return false; } }
+				if ( ! self::identifier_key( $source ) || ! is_array( $data ) || array_keys( $data ) !== array( 'updated_at', 'context' ) || ! is_string( $data['updated_at'] ) || ! is_array( $data['context'] ) ) { return false; }
+				foreach ( $data['context'] as $key => $value ) { if ( ! self::identifier_key( $key ) || ( ! is_string( $value ) && ! ( 'backfilled' === $key && true === $value ) ) ) { return false; } }
 			}
-			if ( $role === $slug && $sources ) { return false; }
+			if ( (string) $role === $slug && $sources ) { return false; }
 		}
 		return true;
 	}
