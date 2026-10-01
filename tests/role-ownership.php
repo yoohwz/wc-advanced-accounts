@@ -39,6 +39,9 @@ function intent_fixture($subscription=false){
  row('_yoaa_membership_source',['version'=>1,'type'=>'order','id'=>42]);return $order;
 }
 function get_user_meta($user,$key,$single=true){foreach($GLOBALS['rows'] as $r)if($r->user_id===$user&&$r->meta_key===$key)return @unserialize($r->meta_value,['allowed_classes'=>false]);return '';}
+function update_user_meta($user,$key,$value){foreach($GLOBALS['rows'] as $r)if($r->user_id===$user&&$r->meta_key===$key){$r->meta_value=serialize($value);return true;}row($key,$value);return true;}
+function do_action(...$args){}
+class WP_User {public $roles;public function __construct($id){$this->roles=$GLOBALS['user_roles']??[];}public function exists(){return true;}}
 function add_action(...$args){}
 function apply_filters($name,$value){return $GLOBALS['editable']??$value;}
 function wp_verify_nonce($nonce,$action){++$GLOBALS['nonce_checks'];return $nonce==='valid:'.$action;}
@@ -75,6 +78,8 @@ class DB {
 class wpdb extends DB {}
 $GLOBALS['wpdb']=new wpdb();
 require __DIR__.'/../inc/cores/helper/role-ownership.php';
+// Loyalty runs its unchanged production backfill API; public components use its exact persisted shape.
+if(is_file(__DIR__.'/../inc/cores/helper/role-claims.php'))require __DIR__.'/../inc/cores/helper/role-claims.php';
 $c='YOSWC_Role_Ownership';
 function reset_state(){global $options,$rows,$allowed,$seq,$fail_write,$fail_delete,$fail_active,$fail_commit,$fail_query,$nonce_checks;$options=['wp_user_roles'=>['customer'=>['name'=>'Customer','capabilities'=>['read'=>true,'yoaa_membership_role'=>true,'yowcl_loyalty_role'=>true,'yoswc_loyalty_role'=>true]]]];$rows=[];$GLOBALS['sources']=[];$GLOBALS['subs']=[];$GLOBALS['storage_rows']=[];$GLOBALS['db_reads']=0;$GLOBALS['promote']=false;unset($GLOBALS['editable']);$allowed=true;$seq=0;$fail_write=$fail_delete='';$fail_active=$fail_commit=$fail_query=false;$nonce_checks=0;wp_roles()->for_site();}
 function expect($ok,$message){if(!$ok)throw new RuntimeException($message);echo 'PASS '.$message."\n";}
@@ -96,6 +101,14 @@ try {
   foreach(['yoaa_membership_role','yoswc_loyalty_role','yowcl_loyalty_role'] as $cap){foreach([null,false] as $value){ready($o);$own=['wc-advanced-accounts-premium'=>'yoaa_membership_role','wc-advanced-accounts'=>'yoswc_loyalty_role','wc-loyalty'=>'yowcl_loyalty_role'][$o];if($cap===$own)continue;$options['wp_user_roles']['silver']['capabilities'][$cap]=$value;$before=$options;expect($c::hard_delete($o,'silver')==='ownership'&&$before===$options&&get_role('silver'),'foreign capability presence is ambiguous even null/false '.$o.' '.$cap);}}
   ready($o);$options['yoaa_wc_membership_roles']=['customer'];$options['loyalty_levels_roles']=['customer'];$options['yoaa_wc_membership_role_settings']=['gold'=>[]];$options['loyalty_levels_rules']=['customer'=>['from'=>0]];$options['loyalty_levels_discounts_rules']=['gold'=>['discount'=>'']];expect(true===$c::hard_delete($o,'silver'),'valid unrelated persisted role shapes permit negative proof '.$o);
   reset_state();$options['yowcl_loyalty_created_roles']=['silver'=>null];$before=$options;expect($c::create($o,'silver','Silver')==='ownership'&&$before===$options&&!get_role('silver'),'creation does not overwrite nullable legacy creator evidence '.$o);
+ }
+ foreach($owners as $o){
+  foreach(['gold','silver'] as $claimed){ready($o);add_role('gold','Gold',['read'=>true]);$GLOBALS['user_roles']=[$claimed];
+   if(class_exists('YOSWC_Role_Claims')){expect(YOSWC_Role_Claims::backfill_user_claims(1,'loyalty',[$claimed]),'actual production backfill writes '.$claimed);expect(get_user_meta(1,'_yoswc_role_claims',true)[$claimed]['loyalty']['context']['backfilled']===true,'producer persists boolean true');}
+   else row('_yoswc_role_claims',[$claimed=>['loyalty'=>['updated_at'=>current_time('mysql'),'context'=>['backfilled'=>true]]]]);
+   $before=$options;$result=$c::hard_delete($o,'silver');expect($claimed==='gold'?true===$result&&!get_role('silver'):$result==='claims'&&$before===$options&&get_role('silver'),'unrelated backfill permits delete and target backfill denies '.$o.' '.$claimed);
+  }
+  foreach([['backfilled'=>null],['backfilled'=>false],['backfilled'=>[]],['unknown'=>true],['backfilled'=>new stdClass()]] as $context){ready($o);row('_yoswc_role_claims',['gold'=>['loyalty'=>['updated_at'=>current_time('mysql'),'context'=>$context]]]);$before=$options;expect($c::hard_delete($o,'silver')==='claims'&&$before===$options&&get_role('silver'),'malformed/unknown context still denies '.$o);}
  }
  reset_state();add_role('manual','Manual',['read'=>true]);$options['yoaa_wc_membership_roles']=['manual'];expect(null===$c::record('manual')&&!$c::owns($owner,'manual'),'selection never creates provenance');
  expect(true===$c::retire($owner,'manual')&&get_role('manual')&&!$c::owns($owner,'manual'),'manual retirement cannot create ownership');expect($c::hard_delete($owner,'manual')==='ownership','manual role cannot hard-delete');

@@ -205,7 +205,7 @@ final class YOSWC_Role_Ownership {
 			if ( ! is_string( $role ) || sanitize_key( $role ) !== $role || ! $role || ! is_array( $sources ) ) { return false; }
 			foreach ( $sources as $source => $data ) {
 				if ( ! is_string( $source ) || ! $source || sanitize_key( $source ) !== $source || ! is_array( $data ) || array_keys( $data ) !== array( 'updated_at', 'context' ) || ! is_string( $data['updated_at'] ) || ! is_array( $data['context'] ) ) { return false; }
-				foreach ( $data['context'] as $key => $value ) { if ( ! is_string( $key ) || ! $key || sanitize_key( $key ) !== $key || ! is_string( $value ) ) { return false; } }
+				foreach ( $data['context'] as $key => $value ) { if ( ! is_string( $key ) || ! $key || sanitize_key( $key ) !== $key || ( ! is_string( $value ) && ! ( 'backfilled' === $key && true === $value ) ) ) { return false; } }
 			}
 			if ( $role === $slug && $sources ) { return false; }
 		}
