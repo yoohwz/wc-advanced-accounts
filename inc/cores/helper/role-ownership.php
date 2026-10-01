@@ -143,6 +143,8 @@ final class YOSWC_Role_Ownership {
 		if ( ! is_array( $value ) ) { return false; }
 		foreach ( $value as $role => $settings ) {
 			if ( ! self::identifier_key( $role ) || ! is_array( $settings ) ) { return false; }
+			// Registry and role-setting entries are named-field records, never nested role lists.
+			foreach ( array_keys( $settings ) as $field ) { if ( ! is_string( $field ) || '' === $field || sanitize_key( $field ) !== $field ) { return false; } }
 		}
 		return true;
 	}
