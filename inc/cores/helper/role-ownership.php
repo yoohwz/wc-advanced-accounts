@@ -41,7 +41,9 @@ final class YOSWC_Role_Ownership {
 	}
 	private static function role_data( $slug ) {
 		try { $roles = self::fresh_option( wp_roles()->role_key, null ); } catch ( Throwable $error ) { return false; }
-		return is_array( $roles ) && isset( $roles[ $slug ] ) ? $roles[ $slug ] : null;
+		if ( ! is_array( $roles ) ) { return false; }
+		if ( ! array_key_exists( $slug, $roles ) ) { return null; }
+		return is_array( $roles[ $slug ] ) ? $roles[ $slug ] : false;
 	}
 	private static function valid( $record, $slug ) {
 		return is_array( $record ) && array_keys( $record ) === array( 'version', 'owner', 'slug', 'origin', 'state', 'generation', 'created' )
@@ -83,10 +85,10 @@ final class YOSWC_Role_Ownership {
 	public static function create( $owner, $slug, $name ) {
 		return self::locked( static function () use ( $owner, $slug, $name ) {
 			if ( ! isset( self::$owners[ $owner ] ) || ! $slug || sanitize_key( $slug ) !== $slug || self::protected_role( $slug ) ) { return 'protected'; }
-			if ( self::role_data( $slug ) || null !== self::record( $slug ) ) { return 'exists'; }
+			if ( null !== self::role_data( $slug ) || null !== self::record( $slug ) ) { return 'exists'; }
 			foreach ( self::$owners as $keys ) {
 				$reg = self::fresh_option( $keys[0], array() );
-				if ( ! is_array( $reg ) || isset( $reg[ $slug ] ) ) { return 'ownership'; }
+				if ( ! self::role_map( $reg ) || array_key_exists( $slug, $reg ) ) { return 'ownership'; }
 			}
 			$customer = self::role_data( 'customer' );
 			if ( ! is_array( $customer ) || ! is_array( $customer['capabilities'] ?? null ) ) { return 'customer'; }
@@ -133,20 +135,40 @@ final class YOSWC_Role_Ownership {
 	private static function option_keys( $slug ) {
 		return array_merge( array( wp_roles()->role_key, self::PREFIX . $slug ), array_column( self::$owners, 0 ), array( 'yoaa_wc_membership_roles', 'yoaa_wc_membership_role_settings', 'loyalty_levels_roles', 'loyalty_levels_rules', 'loyalty_levels_discounts_rules' ) );
 	}
+	private static function role_map( $value ) {
+		if ( ! is_array( $value ) ) { return false; }
+		foreach ( $value as $role => $settings ) {
+			if ( ! is_string( $role ) || ! $role || sanitize_key( $role ) !== $role || ! is_array( $settings ) ) { return false; }
+		}
+		return true;
+	}
+	private static function role_list( $value ) {
+		if ( ! is_array( $value ) ) { return false; }
+		foreach ( $value as $index => $role ) {
+			if ( ! is_int( $index ) || ! is_string( $role ) || ! $role || sanitize_key( $role ) !== $role ) { return false; }
+		}
+		return true;
+	}
 	private static function dependencies( $owner, $slug ) {
 		$record = self::record( $slug );
 		if ( ! self::owns( $owner, $slug ) || 'retired' !== $record['state'] ) { return 'ownership'; }
 		$data = self::role_data( $slug );
-		foreach ( array_keys( $data['capabilities'] ) as $cap ) { if ( 0 === strpos( $cap, self::PREFIX ) && $cap !== self::PREFIX . $record['generation'] ) { return 'ownership'; } }
+		if ( ! is_array( $data['capabilities'] ?? null ) ) { return 'ownership'; }
+		foreach ( $data['capabilities'] as $cap => $enabled ) {
+			if ( ! is_string( $cap ) || ! is_bool( $enabled ) || ( 0 === strpos( $cap, self::PREFIX ) && $cap !== self::PREFIX . $record['generation'] ) ) { return 'ownership'; }
+		}
 		foreach ( self::$owners as $other => $keys ) {
 			$reg = self::fresh_option( $keys[0], array() );
-			if ( ! is_array( $reg ) || ( $other !== $owner && ( isset( $reg[ $slug ] ) || ! empty( $data['capabilities'][ $keys[1] ] ) ) )
+			if ( ! self::role_map( $reg ) || ( $other !== $owner && ( array_key_exists( $slug, $reg ) || array_key_exists( $keys[1], $data['capabilities'] ) ) )
 				|| ( $other === $owner && ( $reg[ $slug ]['r5_generation'] ?? null ) !== $record['generation'] ) ) { return 'ownership'; }
 		}
 		foreach ( array( 'yoaa_wc_membership_roles', 'yoaa_wc_membership_role_settings', 'loyalty_levels_roles', 'loyalty_levels_rules', 'loyalty_levels_discounts_rules' ) as $key ) {
 			$value = self::fresh_option( $key, array() );
 			if ( ! is_array( $value ) ) { return 'unknown'; }
-			if ( isset( $value[ $slug ] ) || in_array( $slug, $value, true ) ) { return 'configuration'; }
+			if ( array_key_exists( $slug, $value ) || in_array( $slug, $value, true ) ) { return 'configuration'; }
+			// Only known role-indexing shapes can prove the target role absent.
+			$list = in_array( $key, array( 'yoaa_wc_membership_roles', 'loyalty_levels_roles' ), true );
+			if ( $list ? ! self::role_list( $value ) : ! self::role_map( $value ) ) { return 'unknown'; }
 		}
 		return true;
 	}
@@ -158,7 +180,7 @@ final class YOSWC_Role_Ownership {
 		return is_array( $value ) ? $value : false;
 	}
 	private static function claims_terminal( $record, $source = null ) {
-		if ( ! is_array( $record ) || 1 !== ( $record['version'] ?? null ) || ! is_array( $record['claims'] ?? null ) || array_diff( array_keys( $record ), array( 'version', 'role_preexisting', 'claims' ) ) || ( isset( $record['role_preexisting'] ) && ! is_bool( $record['role_preexisting'] ) ) ) { return false; }
+		if ( ! is_array( $record ) || 1 !== ( $record['version'] ?? null ) || ! is_array( $record['claims'] ?? null ) || array_diff( array_keys( $record ), array( 'version', 'role_preexisting', 'claims' ) ) || ( array_key_exists( 'role_preexisting', $record ) && ! is_bool( $record['role_preexisting'] ) ) ) { return false; }
 		if ( null !== $source && ! isset( $record['claims'][ $source ] ) ) { return false; }
 		foreach ( $record['claims'] as $key => $claim ) {
 			if ( ! is_array( $claim ) || ! isset( $claim['type'], $claim['id'], $claim['status'], $claim['reason'], $claim['start'], $claim['end'], $claim['duration_type'] )
@@ -166,7 +188,7 @@ final class YOSWC_Role_Ownership {
 				|| ! in_array( $claim['status'], array( 'active', 'inactive' ), true ) || ! is_string( $claim['reason'] )
 				|| ( 'legacy' === $key ? 'legacy' !== $claim['type'] || 0 !== $claim['id'] : ! in_array( $claim['type'], array( 'order', 'subscription' ), true ) || $claim['id'] < 1 || $key !== $claim['type'] . ':' . $claim['id'] ) ) { return false; }
 			if ( array_diff( array_keys( $claim ), array( 'type', 'id', 'status', 'reason', 'start', 'end', 'duration_type', 'pending_role_add', 'pending_supersession', 'legacy_unlimited' ) ) ) { return false; }
-			foreach ( array( 'pending_role_add', 'pending_supersession', 'legacy_unlimited' ) as $flag ) { if ( isset( $claim[ $flag ] ) && ! is_bool( $claim[ $flag ] ) ) { return false; } }
+			foreach ( array( 'pending_role_add', 'pending_supersession', 'legacy_unlimited' ) as $flag ) { if ( array_key_exists( $flag, $claim ) && ! is_bool( $claim[ $flag ] ) ) { return false; } }
 			if ( null !== $source && $source !== $key ) { continue; }
 			if ( ! empty( $claim['pending_supersession'] ) || ! empty( $claim['pending_role_add'] ) ) { return false; }
 			if ( 'inactive' === $claim['status'] && in_array( $claim['reason'], array( 'superseded', 'expired_or_invalid', 'legacy_inactive_or_invalid' ), true ) ) { continue; }
