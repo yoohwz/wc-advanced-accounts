@@ -27,4 +27,5 @@ jobs:
           php tests/membership-shortcode.php
           php -l tests/membership-renderer.php
           bash tests/run-membership-renderer.sh
+          php tests/role-ownership.php wc-advanced-accounts
           git diff --check "$AAP_BASE" "$AAP_HEAD"
