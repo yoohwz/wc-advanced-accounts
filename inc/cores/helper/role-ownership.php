@@ -55,10 +55,12 @@ final class YOSWC_Role_Ownership {
 				|| ( 'unknown' === $record['owner'] && 'legacy-unknown' === $record['origin'] && 'retired' === $record['state'] && '' === $record['generation'] ) );
 	}
 	public static function record( $slug ) {
+		if ( is_int( $slug ) ) { $slug = (string) $slug; }
 		try { $record = self::fresh_option( self::PREFIX . $slug, null ); } catch ( Throwable $error ) { return false; }
 		return null === $record ? null : ( self::valid( $record, $slug ) ? $record : false );
 	}
 	public static function owns( $owner, $slug ) {
+		if ( is_int( $slug ) ) { $slug = (string) $slug; }
 		$record = self::record( $slug );
 		$data = self::role_data( $slug );
 		return is_array( $record ) && $owner === $record['owner'] && 'plugin-created' === $record['origin']
@@ -83,6 +85,7 @@ final class YOSWC_Role_Ownership {
 		}
 	}
 	public static function create( $owner, $slug, $name ) {
+		if ( is_int( $slug ) ) { $slug = (string) $slug; }
 		return self::locked( static function () use ( $owner, $slug, $name ) {
 			if ( ! isset( self::$owners[ $owner ] ) || ! $slug || sanitize_key( $slug ) !== $slug || self::protected_role( $slug ) ) { return 'protected'; }
 			if ( null !== self::role_data( $slug ) || null !== self::record( $slug ) ) { return 'exists'; }
@@ -112,6 +115,7 @@ final class YOSWC_Role_Ownership {
 		} );
 	}
 	public static function retire( $owner, $slug ) {
+		if ( is_int( $slug ) ) { $slug = (string) $slug; }
 		return self::locked( static function () use ( $owner, $slug ) {
 			if ( ! isset( self::$owners[ $owner ] ) || self::protected_role( $slug ) || ! self::role_data( $slug ) ) { return 'protected'; }
 			$record = self::record( $slug );
@@ -416,6 +420,7 @@ final class YOSWC_Role_Ownership {
 	}
 	/** Negative evidence is fresh and held through deletion, never a persisted scan PASS. */
 	public static function hard_delete( $owner, $slug ) {
+		if ( is_int( $slug ) ) { $slug = (string) $slug; }
 		return self::locked( static function () use ( $owner, $slug ) {
 			global $wpdb;
 			if ( self::protected_role( $slug ) ) { return 'protected'; }

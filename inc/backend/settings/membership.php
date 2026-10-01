@@ -146,6 +146,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Settings {
 		$selected = (array) get_option( 'yoaa_wc_membership_roles', array() );
 		$options = array();
 		foreach ( $all as $slug => $data ) {
+			$slug = (string) $slug; // Preserve numeric selections despite PHP integer array keys.
 			$hint = ! empty( $data['capabilities']['yoaa_membership_role'] ) || ! empty( $data['capabilities']['yoswc_loyalty_role'] ) || ! empty( $data['capabilities']['yowcl_loyalty_role'] );
 			$protected = in_array( $slug, array( 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'customer', 'shop_manager', 'translator' ), true );
 			if ( in_array( $slug, $selected, true ) || ( ! $protected && isset( $editable[ $slug ] ) && ( $hint || current_user_can( 'promote_users' ) ) ) ) { $options[ $slug ] = $data['name']; }
