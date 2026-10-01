@@ -137,37 +137,21 @@ class YOAA_WC_Advanced_Accounts_Membership_Settings {
 	}
 
 	/**
-	 * Get membership-created roles for the multiselect.
+	 * Get usable roles independently of creator ownership.
 	 */
 	public static function wc_membership_get_user_roles() {
-		$role_options = array();
-
-		$registry_key = 'yoswc_loyalty_created_roles';
-		$flag_cap     = 'yoswc_loyalty_role';
-
-		$all_roles      = wp_roles()->roles;
-		$editable_roles = apply_filters( 'editable_roles', $all_roles ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core filter.
-
-		$registry = get_option( $registry_key, array() );
-		if ( is_array( $registry ) && ! empty( $registry ) ) {
-			foreach ( $registry as $slug => $meta ) {
-				if ( isset( $editable_roles[ $slug ] ) ) {
-					$role_options[ $slug ] = $editable_roles[ $slug ]['name'];
-				} elseif ( isset( $all_roles[ $slug ] ) ) {
-					$role_options[ $slug ] = $all_roles[ $slug ]['name'];
-				}
-			}
-			return $role_options;
+		// Selection is usage, independent of creator ownership or retirement.
+		$all = wp_roles()->roles;
+		$editable = apply_filters( 'editable_roles', $all );
+		$selected = (array) get_option( 'yoaa_wc_membership_roles', array() );
+		$options = array();
+		foreach ( $all as $slug => $data ) {
+			$slug = (string) $slug; // Preserve numeric selections despite PHP integer array keys.
+			$hint = ! empty( $data['capabilities']['yoaa_membership_role'] ) || ! empty( $data['capabilities']['yoswc_loyalty_role'] ) || ! empty( $data['capabilities']['yowcl_loyalty_role'] );
+			$protected = in_array( $slug, array( 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'customer', 'shop_manager', 'translator' ), true );
+			if ( in_array( $slug, $selected, true ) || ( ! $protected && isset( $editable[ $slug ] ) && ( $hint || current_user_can( 'promote_users' ) ) ) ) { $options[ $slug ] = $data['name']; }
 		}
-
-		foreach ( $editable_roles as $role_id => $role_info ) {
-			$role = get_role( $role_id );
-			if ( $role && $role->has_cap( $flag_cap ) ) {
-				$role_options[ $role_id ] = $role_info['name'];
-			}
-		}
-
-		return $role_options;
+		return $options;
 	}
 
 	/**
