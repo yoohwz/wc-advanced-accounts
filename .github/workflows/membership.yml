@@ -1,11 +1,18 @@
-name: Membership shortcode integrity
-on: [pull_request]
+name: AAC CI
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  push:
+    branches: [main]
 permissions:
   contents: read
+  pull-requests: read
 jobs:
-  required:
-    name: AAP Required CI
+  candidate:
+    if: github.event_name == 'pull_request' && (github.event.pull_request.draft || github.event.action == 'ready_for_review')
+    name: ${{ github.event.pull_request.draft && 'AAC Draft Checks' || 'AAC Required CI' }}
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -16,18 +23,48 @@ jobs:
         with:
           php-version: '7.4'
           coverage: none
-      - name: Validate exact Core shortcode candidate
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Verify current PR before checks
         env:
-          AAP_HEAD: ${{ github.event.pull_request.head.sha }}
-          AAP_BASE: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ github.token }}
+          AAC_BASE: ${{ github.event.pull_request.base.sha }}
+        run: python3 scripts/check-ci-pr.py
+      - name: Focused Core checks
+        env:
+          AAC_BASE: ${{ github.event.pull_request.base.sha }}
+        run: bash scripts/check-source.sh focused
+      - name: Verify unchanged PR after checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AAC_BASE: ${{ github.event.pull_request.base.sha }}
+        run: python3 scripts/check-ci-pr.py
+  main:
+    if: github.event_name == 'push'
+    name: AAC Main Integrity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: shivammathur/setup-php@bf6b4fbd49ca58e4608c9c89fba0b8d90bd2a39f
+        with:
+          php-version: '7.4'
+          coverage: none
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Lightweight main checks
+        env:
+          AAC_HEAD: ${{ github.sha }}
+          AAC_BASE: ${{ github.event.before }}
         run: |
-          test "$(git rev-parse HEAD)" = "$AAP_HEAD"
-          php -l inc/backend/actions/membership/class-shortcodes.php
-          php -l tests/membership-shortcode.php
-          php tests/membership-shortcode.php
-          php -l tests/membership-renderer.php
-          bash tests/run-membership-renderer.sh
-          php -l inc/backend/settings/membership.php
-          php -l inc/backend/settings/membership-add-remove-user-role.php
-          php tests/role-ownership.php wc-advanced-accounts
-          git diff --check "$AAP_BASE" "$AAP_HEAD"
+          test "$(git rev-parse HEAD)" = "$AAC_HEAD"
+          if [[ "$AAC_BASE" =~ ^0+$ ]]; then
+            export AAC_BASE="$(git hash-object -t tree /dev/null)"
+          fi
+          bash scripts/check-source.sh
