@@ -105,3 +105,7 @@
 .yoaa-custom-link-controls input[type="url"] { width: 100% !important; }
 .yoaa-link-options { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; }
 .yoaa-link-options label { display: inline-flex; align-items: center; gap: 4px; }
+@media (max-width: 782px) {
+    .yoaa-endpoints-table-scroll { max-width: 100%; overflow-x: auto; }
+    #yoaa-endpoints-table { min-width: 780px; }
+}

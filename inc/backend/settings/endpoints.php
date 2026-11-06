@@ -199,7 +199,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 		echo '</div>';
 
 		// 5) Render the table header
-		echo '<table id="yoaa-endpoints-table" class="widefat fixed striped" style="margin-bottom: 20px;">';
+		echo '<div class="yoaa-endpoints-table-scroll"><table id="yoaa-endpoints-table" class="widefat fixed striped" style="margin-bottom: 20px;">';
 		echo '<thead><tr>';
 		echo '<th style="width:24px;"></th>';
 		echo '<th class="column-label">' . esc_html__( 'Label',         'wc-advanced-accounts' ) . '</th>';
@@ -308,7 +308,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 			);
 		}
 
-		echo '</tbody></table>';
+		echo '</tbody></table></div>';
 		echo '<div class="yoaa-link-toolbar"><p class="description">' . esc_html__( 'Add links to Support, Guides or other pages. Set their icon, order and visibility in the account menu above.', 'wc-advanced-accounts' ) . '</p><button type="button" id="yoaa-add-link" class="button button-secondary" aria-haspopup="dialog" aria-controls="yoaa-add-link-dialog" hidden>' . esc_html__( 'Add custom link', 'wc-advanced-accounts' ) . '</button></div>';
 		echo '<div id="yoaa-new-link-fields" class="yoaa-link-fields"><h2 id="yoaa-add-link-title">' . esc_html__( 'Add custom link', 'wc-advanced-accounts' ) . '</h2>';
 		echo '<p><label for="yoaa-new-link-label">' . esc_html__( 'Label', 'wc-advanced-accounts' ) . '</label><input type="text" id="yoaa-new-link-label" name="new_custom_link_title" class="widefat" /></p>';

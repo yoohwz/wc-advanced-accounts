@@ -25,11 +25,15 @@ jQuery(function($){
         $input     = $btn.siblings('input.endpoint-icon-input'),
         $container = $btn.closest('.endpoint-icon-container');
 
-    $picker.appendTo($container).css({
-      position: 'absolute',
-      top:      $input.outerHeight() + 'px',
-      left:     $input.position().left + 'px',
-      width:    $input.outerWidth() + 'px'
+    var mobile = window.matchMedia('(max-width: 782px)').matches;
+    $picker.appendTo(mobile ? document.body : $container).css({
+      position: mobile ? 'fixed' : 'absolute',
+      top: mobile ? '15vh' : ($input.outerHeight() + 'px'),
+      left: mobile ? '5vw' : ($input.position().left + 'px'),
+      width: mobile ? '90vw' : ($input.outerWidth() + 'px'),
+      maxWidth: mobile ? '360px' : '',
+      maxHeight: mobile ? '70vh' : '',
+      overflow: mobile ? 'auto' : ''
     }).data('target-input', $input).show();
 
     $overlay.show();
