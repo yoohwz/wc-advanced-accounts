@@ -107,11 +107,11 @@ $captcha->apply_blacklist_manager_overlap_rule(); expect(!$removed,'unconfigured
 $options+=['yoaa_wc_captcha_selected'=>'cloudflare','yoaa_wc_cloudflare_site_key'=>'site','yoaa_wc_cloudflare_secret_key'=>'secret'];
 $captcha->apply_blacklist_manager_overlap_rule(); expect(count($removed)===1,'configured AAC owns overlapping login CAPTCHA');
 
-$profile=new YOAA_WC_Advanced_Accounts_Profile(); $_POST=['first_name'=>[],'last_name'=>' ']; $errors=new WP_Error();
+$profile=new YOAA_WC_Advanced_Accounts_Profile(); $_POST=['register'=>'1','woocommerce-register-nonce'=>'valid-woocommerce-register','first_name'=>[],'last_name'=>' ']; $errors=new WP_Error();
 $profile->validate_name_fields('owner','owner@example.test',$errors); expect(count($errors->errors)===2,'missing/malformed names denied');
-$_POST=['first_name'=>'<b>Jane</b>','last_name'=>' Doe ']; $profile->save_name_fields(7);
+$_POST=['register'=>'1','woocommerce-register-nonce'=>'valid-woocommerce-register','first_name'=>'<b>Jane</b>','last_name'=>' Doe ']; $account_page=false; $profile->save_name_fields(7);
 expect($saved_user===['ID'=>7,'first_name'=>'Jane','last_name'=>'Doe','display_name'=>'Jane Doe'],'registration saves sanitized names');
-$saved_user=null; $account_page=false; $profile->save_name_fields(7); expect(null===$saved_user,'checkout/admin/customer API not changed');
+$saved_user=null; unset($_POST['register']); $profile->save_name_fields(7); expect(null===$saved_user,'checkout/admin/customer API not changed');
 $settings=YOAA_WC_Advanced_Accounts_Integration_Settings::get_captcha_settings();
 foreach ($settings as $setting) { if (in_array($setting['id'],['yoaa_wc_enable_captcha_login','yoaa_wc_enable_captcha_register'],true)) { expect($setting['default']==='no','CAPTCHA fresh install is opt-in'); } }
 

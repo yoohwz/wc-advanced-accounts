@@ -14,6 +14,11 @@ class YOAA_WC_Advanced_Accounts_Profile {
 		}
 	}
 
+	private function is_registration_request() {
+		$nonce = $_POST['woocommerce-register-nonce'] ?? ( $_POST['_wpnonce'] ?? '' );
+		return isset( $_POST['register'] ) && is_string( $nonce ) && wp_verify_nonce( wp_unslash( $nonce ), 'woocommerce-register' );
+	}
+
 	private function posted_name( $key ) {
 		return isset( $_POST[ $key ] ) && is_string( $_POST[ $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) : '';
 	}
@@ -27,7 +32,7 @@ class YOAA_WC_Advanced_Accounts_Profile {
 	}
 
 	public function validate_name_fields( $username, $email, $errors ) {
-		if ( ! function_exists( 'is_account_page' ) || ! is_account_page() ) {
+		if ( ! $this->is_registration_request() ) {
 			return;
 		}
 		if ( '' === $this->posted_name( 'first_name' ) ) {
@@ -39,8 +44,9 @@ class YOAA_WC_Advanced_Accounts_Profile {
 	}
 
 	public function save_name_fields( $customer_id ) {
-		// Do not change checkout, REST or administrator-created customers.
-		if ( ! function_exists( 'is_account_page' ) || ! is_account_page() ) {
+		// Woo handles this form at wp_loaded, before is_account_page() is available.
+		// Use its verified registration intent; leave checkout, REST and admin untouched.
+		if ( ! $this->is_registration_request() ) {
 			return;
 		}
 		$first = $this->posted_name( 'first_name' );
