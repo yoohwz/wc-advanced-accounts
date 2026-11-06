@@ -141,7 +141,15 @@ svn --non-interactive --no-auth-cache update --set-depth infinity -r "$AAC_SVN_R
 ```
 
 Require successful reads and target absence in that pinned revision. Do not infer
-absence from a failed `svn ls`. `assets/` and old tags remain sparse and untouched.
+absence from a failed `svn ls`. Old tags remain sparse and untouched. Keep
+`assets/` sparse and untouched unless
+Human explicitly selected directory screenshots for this release. In that case,
+update only `assets/` to infinity at the pinned revision, inspect its existing
+files, and copy the approved `.wordpress-org/screenshot-N.jpg` files into it.
+Match numbering to the readme captions and compare their bytes with the exact
+accepted Git source. Schedule only those selected assets for addition/update;
+preserve all other assets. Directory screenshots are not runtime product files
+and must remain outside the installable payload/ZIP.
 Replace only local trunk contents with the verified prepared plugin directory:
 
 ```sh
@@ -161,9 +169,11 @@ svn diff "$AAC_SVN/trunk"
 Before approval: schedule every missing tracked trunk file for deletion, reject
 conflicts/unversioned leftovers, compare **all** local trunk and target-tag file
 paths/bytes with prepared payload (ignoring only `.svn`), and inspect the complete
-SVN change set. It must contain only `trunk` and the newly added
-`tags/<version>`, including required adds/deletes. No `assets/`, existing tag,
-property/external changes or other paths may be included. Preserve a concise
+SVN change set. It must contain only `trunk`, the newly added `tags/<version>`
+and any explicitly
+approved screenshot assets, including required adds/deletes. No unrelated asset,
+existing tag, property/external change or other path may be included. Preserve a
+concise
 summary of source SHA, version, checksums, public baseline, SVN revision and delta
 for Human review. Nothing in this dry-run authorizes a commit.
 
@@ -185,7 +195,9 @@ Immediately before live commit:
 4. Reinspect local status/diff and complete trunk/tag byte equality. Do not update
    or rebuild the reviewed payload as a workaround.
 5. The authorized Human committer executes **one atomic commit**, naming only
-   trunk and the new tag. Enter the SVN-specific password at the hidden terminal
+   trunk and the new tag, plus each approved screenshot path when applicable
+   (list those files explicitly; do not commit the whole assets directory).
+   Enter the SVN-specific password at the hidden terminal
    prompt. No password env var, command argument, auth cache or debug tracing:
 
 ```sh
@@ -203,7 +215,11 @@ Human-gated production Environment, not secrets added to this CI workflow.
 ## 5. Postflight and read-only recovery
 
 Read the committed SVN revision/log, confirm expected committer, source SHA
-message and changed paths limited to trunk/new tag. Export trunk and the new tag
+message and changed paths limited to trunk/new tag and the approved screenshot
+files. When screenshots are included, export those files at that revision and
+compare their bytes with the accepted `.wordpress-org/` source; verify the public
+listing shows the matching approved captions/images after propagation.
+Export trunk and the new tag
 at that revision into separate scratch directories; compare complete paths/bytes
 with prepared payload. Confirm header, Stable tag and changelogs. Then verify
 public listing/API version and download the API's **versioned public ZIP**.

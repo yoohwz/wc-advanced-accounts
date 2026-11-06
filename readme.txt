@@ -1,6 +1,6 @@
 === Advanced Accounts for WooCommerce ===
 Contributors: yoohw
-Tags: woocommerce, my-account, otp-login, account-verification, membership
+Tags: woocommerce, my-account, email-verification, otp-login, membership
 Requires at least: 6.3
 Tested up to: 7.1
 WC tested up to: 10.8
@@ -171,6 +171,16 @@ No visitor IP geolocation, product-news subscription, or catalog feed request is
 
 * Font Awesome Free 6.7.2: bundled in `font/fontawesome/`. License details and source are available at https://fontawesome.com/license/free and https://github.com/FortAwesome/Font-Awesome.
 * International Telephone Input 29.0.5: bundled in `js/intl-tel-input/`, including UI locale data. License and source are available at https://github.com/jackocnr/intl-tel-input.
+
+== Screenshots ==
+
+1. My Account with customer avatar, display name, and custom navigation links.
+2. WooCommerce registration with first and last name fields.
+3. CAPTCHA provider settings in the existing WooCommerce Integration tab.
+4. Account endpoints with custom links, icons, ordering, and visibility controls.
+5. Administrator controls for account blocking and email verification status.
+6. Account details with a request for personal data erasure through the WordPress privacy process.
+7. Membership roles, content access shortcodes, and optional Premium features.
 
 == Changelog ==
 
