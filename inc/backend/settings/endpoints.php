@@ -68,7 +68,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 			'yoaa-endpoints-iconpicker',
 			plugin_dir_url( __FILE__ ) . '../../../js/endpoints-iconpicker.js',
 			array( 'jquery' ),
-			'1.0',
+			(string) filemtime( __DIR__ . '/../../../js/endpoints-iconpicker.js' ),
 			true
 		);
 
