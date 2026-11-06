@@ -15,7 +15,7 @@ class YOAA_WC_Advanced_Accounts_Users_Page {
 	public function add_verified_column( $columns ) {
 		$result = [];
 		foreach ( $columns as $key => $label ) {
-			if ( 'username' === $key ) { $result['verified'] = __( 'Email verification', 'wc-advanced-accounts' ); }
+			if ( 'username' === $key ) { $result['verified'] = '<span class="dashicons dashicons-yes" aria-hidden="true"></span><span class="screen-reader-text">' . esc_html__( 'Email verification', 'wc-advanced-accounts' ) . '</span>'; }
 			$result[ $key ] = $label;
 		}
 		return $result;
@@ -24,7 +24,9 @@ class YOAA_WC_Advanced_Accounts_Users_Page {
 		if ( 'verified' !== $column ) { return $value; }
 		$label = '1' === (string) get_user_meta( $user_id, 'email_verification', true ) ? __( 'Verified', 'wc-advanced-accounts' ) : __( 'Unverified', 'wc-advanced-accounts' );
 		if ( 'yes' === get_option( 'yoaa_wc_enable_user_blocking' ) && '1' === (string) get_user_meta( $user_id, 'user_blocked', true ) ) { $label .= ' / ' . __( 'Blocked', 'wc-advanced-accounts' ); }
-		return esc_html( $label );
+		$verified = '1' === (string) get_user_meta( $user_id, 'email_verification', true );
+		$blocked = 'yes' === get_option( 'yoaa_wc_enable_user_blocking' ) && '1' === (string) get_user_meta( $user_id, 'user_blocked', true );
+		return '<span class="dashicons ' . ( $blocked ? 'dashicons-lock yoaa-danger-link' : ( $verified ? 'dashicons-yes-alt' : 'dashicons-minus' ) ) . '" title="' . esc_attr( $label ) . '" aria-hidden="true"></span><span class="screen-reader-text">' . esc_html( $label ) . '</span>';
 	}
 	public function bulk_actions( $actions ) {
 		if ( ! current_user_can( 'edit_users' ) ) { return $actions; }
@@ -39,10 +41,13 @@ class YOAA_WC_Advanced_Accounts_Users_Page {
 	public function row_actions( $actions, $user ) {
 		if ( ! current_user_can( 'edit_users' ) || ! current_user_can( 'edit_user', $user->ID ) ) { return $actions; }
 		$available = $this->bulk_actions( [] );
+		$verified = '1' === (string) get_user_meta( $user->ID, 'email_verification', true );
+		$blocked = '1' === (string) get_user_meta( $user->ID, 'user_blocked', true );
+		unset( $available[ $verified ? 'yoaa_verify_user_email' : 'yoaa_unverify_user_email' ], $available[ $blocked ? 'yoaa_block_users' : 'yoaa_unblock_users' ] );
 		if ( in_array( 'administrator', (array) $user->roles, true ) || is_super_admin( $user->ID ) ) { $available = array_intersect_key( $available, [ 'yoaa_unblock_users' => true ] ); }
 		foreach ( $available as $operation => $label ) {
 			$url = wp_nonce_url( add_query_arg( [ 'action' => 'yoaa_account_action', 'user_id' => $user->ID, 'operation' => $operation ], admin_url( 'admin.php' ) ), 'yoaa_account_action_' . $user->ID );
-			$actions[ $operation ] = '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
+			$actions[ $operation ] = '<a' . ( 'yoaa_block_users' === $operation ? ' class="yoaa-danger-link"' : '' ) . ' href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
 		}
 		return $actions;
 	}

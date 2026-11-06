@@ -39,7 +39,7 @@ class YOAA_WC_Advanced_Accounts_Backend {
 	}
 
 	public function enqueue_scripts() {
-		wp_enqueue_style('wc-advanced-accounts-css', plugin_dir_url(__FILE__) . '../../css/backend.css', '1.1.2', true);
+		wp_enqueue_style( 'wc-advanced-accounts-css', plugin_dir_url( __FILE__ ) . '../../css/backend.css', [], (string) filemtime( __DIR__ . '/../../css/backend.css' ) );
 	}
 
 	public function check_version() {

@@ -314,6 +314,24 @@ class YOAA_WC_Advanced_Accounts_Tools {
 		);
 	}
 
+	public static function render_email_verification_results( array $result, $dry_run ) {
+		$rows = $result['rows'] ?? [];
+		$metrics = [ [ 'filter' => 'all', 'label' => __( 'Processed', 'wc-advanced-accounts' ), 'count' => count( $rows ) ] ];
+		$labels = [ 'would_update' => __( 'Would update', 'wc-advanced-accounts' ), 'updated' => __( 'Updated', 'wc-advanced-accounts' ), 'unchanged' => __( 'Unchanged', 'wc-advanced-accounts' ), 'skipped' => __( 'Skipped', 'wc-advanced-accounts' ), 'forbidden' => __( 'Forbidden', 'wc-advanced-accounts' ), 'error' => __( 'Errors', 'wc-advanced-accounts' ) ];
+		foreach ( $labels as $status => $label ) {
+			$metrics[] = [ 'filter' => $status, 'label' => $label, 'count' => count( array_filter( $rows, static function ( $row ) use ( $status ) { return $status === $row['status']; } ) ) ];
+		}
+		self::render_results_table( [
+			'wrap_class' => 'yoaa-verification-results', 'dry_run' => $dry_run, 'metrics' => $metrics, 'rows' => $rows,
+			'columns' => [
+				[ 'key' => 'user_id', 'label' => __( 'User ID', 'wc-advanced-accounts' ), 'class' => 'yoaa-col-id' ],
+				[ 'key' => 'email', 'label' => __( 'Email', 'wc-advanced-accounts' ), 'class' => 'yoaa-col-email' ],
+				[ 'key' => 'status', 'label' => __( 'Status', 'wc-advanced-accounts' ), 'class' => 'yoaa-col-status' ],
+				[ 'key' => 'reason', 'label' => __( 'Reason', 'wc-advanced-accounts' ), 'class' => 'yoaa-col-reason' ],
+			],
+		] );
+	}
+
 	private static function render_results_table( array $args ) {
 		$wrap_class  = sanitize_html_class( $args['wrap_class'] ?? 'yoaa-tools-results' );
 		$table_class = sanitize_html_class( $args['table_class'] ?? 'yoaa-results-table' );
@@ -1109,23 +1127,29 @@ final class YOAA_AAC_Email_Verification_Tool {
 			$only_customers = isset( $_POST['yoaa_email_batch_customers'] );
 			$result = self::run( $cursor, $limit, $dry_run, $only_customers );
 		}
-		echo '<tr><th>' . esc_html( $field['title'] ) . '</th><td><fieldset id="yoaa-email-batch">';
-		echo '<p>' . esc_html__( 'Administrator override for existing customer email verification; this does not prove email delivery or OTP verification. Dry-run previews changes without saving them.', 'wc-advanced-accounts' ) . '</p>';
+		echo '<tr><th>' . esc_html( $field['title'] ) . '</th><td>';
+		echo '<p>' . esc_html__( 'Mark existing customer email addresses as verified using an administrator override. Always run dry-run first to preview the changes.', 'wc-advanced-accounts' ) . '</p>';
+		echo '<div id="yoaa-email-batch" class="yoaa-tools-box">';
 		wp_nonce_field( 'yoaa_email_batch', 'yoaa_email_batch_nonce' );
-		echo '<p><label><input type="checkbox" name="yoaa_email_batch_dry" value="1" ' . checked( $dry_run, true, false ) . '> ' . esc_html__( 'Dry-run', 'wc-advanced-accounts' ) . '</label></p>';
-		echo '<p><label><input type="checkbox" name="yoaa_email_batch_customers" value="1" ' . checked( $only_customers, true, false ) . '> ' . esc_html__( 'Customers only (otherwise customers and subscribers)', 'wc-advanced-accounts' ) . '</label></p>';
-		echo '<p><label>' . esc_html__( 'Batch size', 'wc-advanced-accounts' ) . ' <input type="number" min="1" max="2000" name="yoaa_email_batch_limit" value="' . esc_attr( $limit ) . '"></label></p>';
-		echo '<p><label>' . esc_html__( 'Start after user ID', 'wc-advanced-accounts' ) . ' <input type="number" min="0" name="yoaa_email_batch_cursor" value="' . esc_attr( $result && ! $result['error'] ? $result['next_cursor'] : $cursor ) . '"></label></p>';
-		echo '<p>' . esc_html__( 'The next cursor is filled after each batch. Set it to 0 when switching from dry-run to applying changes, or when starting a new scan.', 'wc-advanced-accounts' ) . '</p><button class="button" name="yoaa_email_batch_run" value="1">' . esc_html__( 'Run email verification batch', 'wc-advanced-accounts' ) . '</button>';
+		echo '<label class="yoaa-tool-option"><input type="checkbox" name="yoaa_email_batch_dry" value="1" ' . checked( $dry_run, true, false ) . '> <strong>' . esc_html__( 'Dry-run', 'wc-advanced-accounts' ) . '</strong> ' . esc_html__( '(preview only, do not update verification status)', 'wc-advanced-accounts' ) . '</label>';
+		echo '<label class="yoaa-tool-option"><input type="checkbox" name="yoaa_email_batch_customers" value="1" ' . checked( $only_customers, true, false ) . '> ' . esc_html__( 'Only customers (otherwise customers and subscribers)', 'wc-advanced-accounts' ) . '</label>';
+		echo '<div class="yoaa-tool-controls"><label>' . esc_html__( 'Limit:', 'wc-advanced-accounts' ) . ' <input type="number" min="1" max="2000" name="yoaa_email_batch_limit" value="' . esc_attr( $limit ) . '"></label>';
+		echo '<label>' . esc_html__( 'After user ID:', 'wc-advanced-accounts' ) . ' <input type="number" min="0" name="yoaa_email_batch_cursor" value="' . esc_attr( $result && ! $result['error'] ? $result['next_cursor'] : $cursor ) . '"></label></div>';
+		echo '<p class="description">' . esc_html__( 'Limit controls the batch size. After user ID continues from the last processed user. Set it to 0 when starting a new scan or switching from dry-run to applying changes.', 'wc-advanced-accounts' ) . '</p>';
+		echo '<p class="yoaa-tool-actions"><button type="submit" class="button button-primary" name="yoaa_email_batch_run" value="1">' . esc_html__( 'Run tool', 'wc-advanced-accounts' ) . '</button>';
+		if ( $result && ! $result['error'] && $result['has_more'] ) {
+			echo ' <button type="submit" class="button button-secondary" name="yoaa_email_batch_run" value="1">' . esc_html__( 'Run next batch', 'wc-advanced-accounts' ) . '</button>';
+		}
+		echo '</p></div><p class="description">' . esc_html__( 'Administrator overrides do not prove email delivery or OTP verification. Phone verification is not changed.', 'wc-advanced-accounts' ) . '</p>';
 		if ( $result ) {
-			if ( $result['error'] ) { echo '<p>' . esc_html( $result['error'] ) . '</p>'; }
-			else {
-				echo '<p>' . esc_html( $result['has_more'] ? __( 'More users remain. Run the next batch using the displayed cursor.', 'wc-advanced-accounts' ) : __( 'The current scan is complete.', 'wc-advanced-accounts' ) ) . '</p><table class="widefat"><thead><tr><th>' . esc_html__( 'User ID', 'wc-advanced-accounts' ) . '</th><th>' . esc_html__( 'Email', 'wc-advanced-accounts' ) . '</th><th>' . esc_html__( 'Result', 'wc-advanced-accounts' ) . '</th><th>' . esc_html__( 'Details', 'wc-advanced-accounts' ) . '</th></tr></thead><tbody>';
-				foreach ( $result['rows'] as $row ) { echo '<tr><td>' . esc_html( $row['user_id'] ) . '</td><td>' . esc_html( $row['email'] ) . '</td><td>' . esc_html( $row['status'] ) . '</td><td>' . esc_html( $row['reason'] ) . '</td></tr>'; }
-				echo '</tbody></table>';
+			if ( $result['error'] ) {
+				echo '<div class="notice notice-error inline"><p>' . esc_html( $result['error'] ) . '</p></div>';
+			} else {
+				echo '<div class="notice notice-' . ( $dry_run ? 'info' : 'success' ) . ' inline"><p>' . esc_html( $result['has_more'] ? __( 'Batch processed. More users remain; continue with the displayed cursor.', 'wc-advanced-accounts' ) : __( 'The current scan is complete. Review the per-user results below.', 'wc-advanced-accounts' ) ) . '</p></div>';
+				YOAA_WC_Advanced_Accounts_Tools::render_email_verification_results( $result, $dry_run );
 			}
 		}
-		echo '</fieldset></td></tr>';
+		echo '</td></tr>';
 	}
 }
 add_action( 'plugins_loaded', static function () {

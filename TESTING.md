@@ -53,3 +53,15 @@ phone aliases and Free/Premium ownership where affected. Intercept mail/external
 HTTP in disposable probes; identify simulated provider results separately from
 unrun live verification. Keep runtime observations and limitations on the PR,
 including versions and exact candidate binding. Required CI remains focused.
+
+### AAC-7 settings UI refinement
+
+`node tests/account-settings-ui.js` checks inactive profile values, provider-field
+visibility without disabling/clearing saved keys, and add-link dialog cancel and
+validation behavior with a small DOM fixture. Native WooCommerce `save_fields`
+probes additionally verify that disabling Avatar retains the stored name format
+and switching/turning off CAPTCHA retains other provider keys and policy flags.
+Observe desktop/mobile settings and keyboard dialog open/cancel/Escape on the
+local preview without saving policy changes. Exercise actual writes, batch
+continuation/results and links only in the disposable runtime. UI presentation
+must keep the existing POST names, nonce/capability guards and runtime policy.

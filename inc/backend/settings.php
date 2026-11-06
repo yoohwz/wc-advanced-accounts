@@ -18,6 +18,8 @@ private $role_manager;
 		add_action( 'woocommerce_admin_field_yoaa_upgrade_panel', [ __CLASS__, 'render_upgrade_panel_field' ] );
 
 		add_action('admin_head', [$this, 'hide_save_button']);
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_account_ui' ] );
+		add_filter( 'woocommerce_admin_settings_sanitize_option_yoaa_wc_welcome_name_display', [ $this, 'preserve_inactive_profile_setting' ], 10, 3 );
 
 		$this->includes();
 	}
@@ -101,6 +103,22 @@ private $role_manager;
 			$settings = YOAA_WC_Advanced_Accounts_Tools::get_tools();
 		}
 		return $settings;
+	}
+
+	public function enqueue_account_ui( $hook ) {
+		if ( 'woocommerce_page_wc-settings' !== $hook || 'account' !== ( $_GET['tab'] ?? '' ) || ! in_array( $_GET['section'] ?? '', [ 'appearance', 'integrations', 'endpoints' ], true ) ) {
+			return;
+		}
+		$path = __DIR__ . '/../../js/account-settings.js';
+		wp_enqueue_script( 'yoaa-account-settings', plugins_url( '../../js/account-settings.js', __FILE__ ), [ 'jquery' ], (string) filemtime( $path ), true );
+	}
+
+	/** Keep the saved name format when Avatar is off and its dependent select is disabled. */
+	public function preserve_inactive_profile_setting( $value, $option, $raw_value ) {
+		if ( 'account' === ( $_GET['tab'] ?? '' ) && 'appearance' === ( $_GET['section'] ?? '' ) && empty( $_POST['yoaa_wc_enable_avatar'] ) ) {
+			return get_option( 'yoaa_wc_welcome_name_display', $option['default'] ?? 'display_name' );
+		}
+		return $value;
 	}
 
 	public function hide_save_button() {

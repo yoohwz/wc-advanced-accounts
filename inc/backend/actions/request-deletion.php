@@ -60,16 +60,16 @@ final class YOAA_AAC_Request_Deletion {
 			}
 		}
 		$request = self::request( $user_id );
-		echo '<fieldset><legend>' . esc_html__( 'Account and personal data deletion request', 'wc-advanced-accounts' ) . '</legend><p>' . esc_html__( 'This sends a privacy request to WordPress for administrator processing after email confirmation. It does not automatically delete your account or orders.', 'wc-advanced-accounts' ) . '</p>';
+		echo '<fieldset class="yoaa-account-erasure"><legend>' . esc_html__( 'Account deletion', 'wc-advanced-accounts' ) . '</legend><p>' . esc_html__( 'This sends a privacy request to WordPress for administrator processing after email confirmation. It does not automatically delete your account or orders.', 'wc-advanced-accounts' ) . '</p>';
 		if ( '1' === (string) get_user_meta( $user_id, 'account_erasure_requested', true ) || ( $request && in_array( $request->status, [ 'request-confirmed', 'request-completed' ], true ) ) ) {
-			echo '<p>' . esc_html__( 'Your request has been confirmed. Contact the administrator about processing and data retention.', 'wc-advanced-accounts' ) . '</p></fieldset>'; return;
+			echo '<p class="woocommerce-message" role="status">' . esc_html__( 'Your request has been confirmed. Contact the administrator about processing and data retention.', 'wc-advanced-accounts' ) . '</p></fieldset>'; return;
 		}
 		$pending = $request && 'request-pending' === $request->status;
-		if ( $pending ) { echo '<p>' . esc_html__( 'Awaiting email confirmation. You can still use your account until the request is confirmed.', 'wc-advanced-accounts' ) . '</p>'; }
+		if ( $pending ) { echo '<p class="woocommerce-info" role="status">' . esc_html__( 'Awaiting email confirmation. You can still use your account until the request is confirmed.', 'wc-advanced-accounts' ) . '</p>'; }
 		elseif ( metadata_exists( 'user', $user_id, 'account_erasure_requested' ) ) { echo '<p>' . esc_html__( 'The previous pending notice is no longer linked to an active request. Submitting again will use the WordPress privacy process; any existing WordPress request remains unchanged.', 'wc-advanced-accounts' ) . '</p>'; }
 		echo '<form method="post">';
 		wp_nonce_field( 'yoaa_erasure_' . $user_id, 'yoaa_erasure_nonce' );
-		echo '<button class="button" name="yoaa_erasure_action" value="' . ( $pending ? 'resend' : 'submit' ) . '">' . esc_html( $pending ? __( 'Resend confirmation email', 'wc-advanced-accounts' ) : __( 'Request account/data deletion', 'wc-advanced-accounts' ) ) . '</button></form></fieldset>';
+		echo '<button class="button" name="yoaa_erasure_action" value="' . ( $pending ? 'resend' : 'submit' ) . '">' . esc_html( $pending ? __( 'Resend confirmation email', 'wc-advanced-accounts' ) : __( 'Request account deletion', 'wc-advanced-accounts' ) ) . '</button></form></fieldset>';
 	}
 }
 add_action( 'plugins_loaded', static function () {

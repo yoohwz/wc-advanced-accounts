@@ -251,7 +251,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 			);
 
 			$slug_control = $is_link
-				? '<input type="url" name="custom_link_urls[' . esc_attr( $endpoint ) . ']" value="' . esc_attr( YOAA_AAC_Custom_Links::links()[ $endpoint ] ) . '" class="widefat" required /><label><input type="checkbox" name="custom_link_new_tab[' . esc_attr( $endpoint ) . ']" value="1" ' . checked( ! empty( ((array) get_option( 'yoaa_account_endpoints_custom_new_tab', array() ))[ $endpoint ] ), true, false ) . ' />' . esc_html__( 'Open in new tab', 'wc-advanced-accounts' ) . '</label><label><input type="checkbox" name="custom_link_delete[' . esc_attr( $endpoint ) . ']" value="1" />' . esc_html__( 'Delete link', 'wc-advanced-accounts' ) . '</label>'
+				? '<div class="yoaa-custom-link-controls"><input type="url" name="custom_link_urls[' . esc_attr( $endpoint ) . ']" value="' . esc_attr( YOAA_AAC_Custom_Links::links()[ $endpoint ] ) . '" class="widefat" required /><div class="yoaa-link-options"><label><input type="checkbox" name="custom_link_new_tab[' . esc_attr( $endpoint ) . ']" value="1" ' . checked( ! empty( ((array) get_option( 'yoaa_account_endpoints_custom_new_tab', array() ))[ $endpoint ] ), true, false ) . ' />' . esc_html__( 'Open in new tab', 'wc-advanced-accounts' ) . '</label><label class="yoaa-danger-link"><input type="checkbox" name="custom_link_delete[' . esc_attr( $endpoint ) . ']" value="1" />' . esc_html__( 'Delete link', 'wc-advanced-accounts' ) . '</label></div></div>'
 				: '<input type="text" name="endpoints_slugs[' . esc_attr( $endpoint ) . ']" value="' . esc_attr( $user_slug ) . '" class="widefat" />';
 			// Output the row
 			printf(
@@ -301,7 +301,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 				</tr>',
 				esc_attr( $endpoint ),
 				esc_attr( $user_label ),
-				wp_kses( $slug_control, array( 'input' => array( 'type' => true, 'name' => true, 'value' => true, 'class' => true, 'required' => true, 'checked' => true ), 'label' => array() ) ),
+				wp_kses( $slug_control, array( 'input' => array( 'type' => true, 'name' => true, 'value' => true, 'class' => true, 'required' => true, 'checked' => true ), 'label' => array( 'class' => true ), 'div' => array( 'class' => true ) ) ),
 				esc_attr( $user_icon ),
 				wp_kses( $order_select, $allowed_select_html ),
 				checked( $user_vis, true, false )
@@ -309,9 +309,14 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 		}
 
 		echo '</tbody></table>';
-		echo '<h3>' . esc_html__( 'Add a custom link', 'wc-advanced-accounts' ) . '</h3>';
-		echo '<p>' . esc_html__( 'Save a link, then set its icon, position and visibility in the table above.', 'wc-advanced-accounts' ) . '</p>';
-		echo '<p><label>' . esc_html__( 'Label', 'wc-advanced-accounts' ) . ' <input type="text" name="new_custom_link_title" /></label> <label>' . esc_html__( 'URL', 'wc-advanced-accounts' ) . ' <input type="url" name="new_custom_link_url" placeholder="https://" /></label> <label><input type="checkbox" name="new_custom_link_tab" value="1" /> ' . esc_html__( 'Open in new tab', 'wc-advanced-accounts' ) . '</label></p>';
+		echo '<div class="yoaa-link-toolbar"><p class="description">' . esc_html__( 'Add links to Support, Guides or other pages. Set their icon, order and visibility in the account menu above.', 'wc-advanced-accounts' ) . '</p><button type="button" id="yoaa-add-link" class="button button-secondary" aria-haspopup="dialog" aria-controls="yoaa-add-link-dialog" hidden>' . esc_html__( 'Add custom link', 'wc-advanced-accounts' ) . '</button></div>';
+		echo '<div id="yoaa-new-link-fields" class="yoaa-link-fields"><h2 id="yoaa-add-link-title">' . esc_html__( 'Add custom link', 'wc-advanced-accounts' ) . '</h2>';
+		echo '<p><label for="yoaa-new-link-label">' . esc_html__( 'Label', 'wc-advanced-accounts' ) . '</label><input type="text" id="yoaa-new-link-label" name="new_custom_link_title" class="widefat" /></p>';
+		echo '<p><label for="yoaa-new-link-url">' . esc_html__( 'Custom URL', 'wc-advanced-accounts' ) . '</label><input type="url" id="yoaa-new-link-url" name="new_custom_link_url" placeholder="https://" class="widefat" /></p>';
+		echo '<p><label><input type="checkbox" name="new_custom_link_tab" value="1" /> ' . esc_html__( 'Open in new tab', 'wc-advanced-accounts' ) . '</label></p>';
+		echo '<p class="description">' . esc_html__( 'Adding a link saves the current endpoint settings. You can then change its icon, order and visibility in the table.', 'wc-advanced-accounts' ) . '</p>';
+		echo '<p class="yoaa-dialog-actions"><button type="button" id="yoaa-cancel-link" class="button" hidden>' . esc_html__( 'Cancel', 'wc-advanced-accounts' ) . '</button><button type="submit" name="save" value="1" class="button button-primary">' . esc_html__( 'Add link', 'wc-advanced-accounts' ) . '</button></p></div>';
+		echo '<dialog id="yoaa-add-link-dialog" class="yoaa-link-dialog" aria-labelledby="yoaa-add-link-title"></dialog>';
 
 
 		// 4) Single picker container, now with search and one‐per‐line layout

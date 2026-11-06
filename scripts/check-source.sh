@@ -8,6 +8,7 @@ while IFS= read -r -d '' path; do
 done < <(git ls-files -z)
 git diff --check "$AAC_BASE" HEAD
 if [[ "${1:-}" == focused ]]; then
+  node tests/account-settings-ui.js
   php tests/profile-captcha.php
   php tests/account-administration.php
   php tests/custom-links.php

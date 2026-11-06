@@ -72,3 +72,36 @@
     margin: 0;
     white-space: normal;
 }
+
+/* AAC account controls follow the native WordPress/WooCommerce layout used by AAP. */
+.yoaa-account-actions td > p:first-child { margin-top: 0; }
+.wp-core-ui .button.yoaa-danger-button { background: #d63638; border-color: #d63638; color: #fff; }
+.wp-core-ui .button.yoaa-danger-button:hover { background: #b32d2e; border-color: #b32d2e; color: #fff; }
+.yoaa-danger-link { color: #b32d2e !important; }
+.yoaa-account-actions .button:focus-visible, .yoaa-link-dialog .button:focus-visible { outline: 2px solid #2271b1; outline-offset: 2px; }
+#yoaa-email-batch, .yoaa-link-fields { max-width: 920px; padding: 16px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; box-sizing: border-box; }
+.yoaa-tool-option { display: block; margin-bottom: 10px; }
+.yoaa-tool-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; }
+.yoaa-tool-controls input[type="number"] { width: 100px; }
+.yoaa-tool-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 0; }
+.yoaa-tool-actions .button { white-space: normal; }
+.yoaa-link-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin: 16px 0; max-width: 1100px; }
+.yoaa-link-toolbar p { margin: 0; flex: 1 1 280px; }
+.yoaa-link-fields { max-width: 520px; }
+.yoaa-link-fields h2 { margin-top: 0; }
+.yoaa-link-fields label { display: block; margin-bottom: 5px; }
+.yoaa-link-fields .widefat { width: 100% !important; }
+.yoaa-link-dialog { width: min(520px, calc(100% - 40px)); max-height: calc(100vh - 40px); overflow: auto; padding: 0; border: 1px solid #c3c4c7; border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.25); box-sizing: border-box; }
+.yoaa-link-dialog::backdrop { background: rgba(0,0,0,.4); }
+.yoaa-link-dialog .yoaa-link-fields { border: 0; border-radius: 0; }
+.yoaa-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 0; }
+@media (max-width: 782px) {
+    .yoaa-tool-controls { align-items: flex-start; }
+    .yoaa-tool-controls label { display: flex; align-items: center; gap: 6px; }
+    #yoaa-email-batch { padding: 12px; }
+    .yoaa-link-toolbar { align-items: flex-start; }
+}
+#yoaa-endpoints-table .column-slug { width: 32% !important; }
+.yoaa-custom-link-controls input[type="url"] { width: 100% !important; }
+.yoaa-link-options { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; }
+.yoaa-link-options label { display: inline-flex; align-items: center; gap: 4px; }

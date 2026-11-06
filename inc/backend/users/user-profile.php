@@ -11,18 +11,22 @@ final class YOAA_AAC_User_Profile {
 		if ( ! current_user_can( 'edit_users' ) || ! current_user_can( 'edit_user', $user->ID ) ) { return; }
 		echo '<h2>' . esc_html__( 'Account actions management', 'wc-advanced-accounts' ) . '</h2>';
 		wp_nonce_field( 'yoaa_account_actions_' . $user->ID, 'yoaa_account_actions_nonce' );
-		echo '<p>' . esc_html__( 'Email verification is an administrator override; it is not evidence of an OTP challenge.', 'wc-advanced-accounts' ) . '</p>';
-		$verified = '1' === (string) get_user_meta( $user->ID, 'email_verification', true );
-		echo '<p>' . esc_html( $verified ? __( 'Email: Verified', 'wc-advanced-accounts' ) : __( 'Email: Unverified', 'wc-advanced-accounts' ) ) . '</p>';
-		if ( ! in_array( 'administrator', (array) $user->roles, true ) && ! is_super_admin( $user->ID ) ) {
-			echo '<p><button class="button" name="yoaa_email_action" value="' . ( $verified ? '0' : '1' ) . '">' . esc_html( $verified ? __( 'Unverify email', 'wc-advanced-accounts' ) : __( 'Verify email', 'wc-advanced-accounts' ) ) . '</button></p>';
-		}
+		echo '<table class="form-table yoaa-account-actions" role="presentation">';
+		$protected = in_array( 'administrator', (array) $user->roles, true ) || is_super_admin( $user->ID );
 		if ( 'yes' === get_option( 'yoaa_wc_enable_user_blocking' ) ) {
 			$blocked = '1' === (string) get_user_meta( $user->ID, 'user_blocked', true );
-			if ( $blocked || ( ! in_array( 'administrator', (array) $user->roles, true ) && ! is_super_admin( $user->ID ) ) ) {
-				echo '<p><button class="button" name="yoaa_block_action" value="' . ( $blocked ? '0' : '1' ) . '">' . esc_html( $blocked ? __( 'Unblock user', 'wc-advanced-accounts' ) : __( 'Block user', 'wc-advanced-accounts' ) ) . '</button></p>';
+			echo '<tr><th>' . esc_html__( 'User blocking', 'wc-advanced-accounts' ) . '</th><td><p><strong>' . esc_html__( 'Current status:', 'wc-advanced-accounts' ) . ' ' . esc_html( $blocked ? __( 'Blocked', 'wc-advanced-accounts' ) : __( 'Not blocked', 'wc-advanced-accounts' ) ) . '</strong></p>';
+			if ( $blocked || ( ! $protected && (int) $user->ID !== get_current_user_id() ) ) {
+				echo '<button type="submit" class="button ' . ( $blocked ? 'button-secondary' : 'yoaa-danger-button' ) . '" name="yoaa_block_action" value="' . ( $blocked ? '0' : '1' ) . '">' . esc_html( $blocked ? __( 'Unblock this user', 'wc-advanced-accounts' ) : __( 'Block this user', 'wc-advanced-accounts' ) ) . '</button>';
 			}
+			echo '</td></tr>';
 		}
+		$verified = '1' === (string) get_user_meta( $user->ID, 'email_verification', true );
+		echo '<tr><th>' . esc_html__( 'Email verification', 'wc-advanced-accounts' ) . '</th><td><p><strong>' . esc_html__( 'Current status:', 'wc-advanced-accounts' ) . ' ' . esc_html( $verified ? __( 'Verified', 'wc-advanced-accounts' ) : __( 'Not verified', 'wc-advanced-accounts' ) ) . '</strong></p>';
+		if ( ! $protected ) {
+			echo '<button type="submit" class="button button-secondary" name="yoaa_email_action" value="' . ( $verified ? '0' : '1' ) . '">' . esc_html( $verified ? __( 'Mark as unverified', 'wc-advanced-accounts' ) : __( 'Mark as verified', 'wc-advanced-accounts' ) ) . '</button>';
+		}
+		echo '<p class="description">' . esc_html__( 'This is an administrator override, not proof of email delivery or an OTP challenge.', 'wc-advanced-accounts' ) . '</p></td></tr></table>';
 	}
 	public function save( $user_id ) {
 		if ( ! isset( $_POST['yoaa_email_action'] ) && ! isset( $_POST['yoaa_block_action'] ) ) { return; }
