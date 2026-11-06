@@ -147,8 +147,11 @@ Human explicitly selected directory screenshots for this release. In that case,
 update only `assets/` to infinity at the pinned revision, inspect its existing
 files, and copy the approved `.wordpress-org/screenshot-N.jpg` files into it.
 Match numbering to the readme captions and compare their bytes with the exact
-accepted Git source. Schedule only those selected assets for addition/update;
-preserve all other assets. Directory screenshots are not runtime product files
+accepted Git source. When replacing a screenshot set, explicitly review and
+schedule superseded `screenshot-N` files for deletion, including old extensions
+and indices beyond the new set; duplicate numbers or stale images must not remain.
+Schedule only selected screenshot additions/updates/deletions. Preserve banners,
+icons and unrelated assets. Directory screenshots are not runtime product files
 and must remain outside the installable payload/ZIP.
 Replace only local trunk contents with the verified prepared plugin directory:
 
@@ -195,7 +198,7 @@ Immediately before live commit:
 4. Reinspect local status/diff and complete trunk/tag byte equality. Do not update
    or rebuild the reviewed payload as a workaround.
 5. The authorized Human committer executes **one atomic commit**, naming only
-   trunk and the new tag, plus each approved screenshot path when applicable
+   trunk and the new tag, plus each approved added/updated/deleted screenshot path when applicable
    (list those files explicitly; do not commit the whole assets directory).
    Enter the SVN-specific password at the hidden terminal
    prompt. No password env var, command argument, auth cache or debug tracing:
