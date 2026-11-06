@@ -132,7 +132,7 @@ private $role_manager;
 
 	public function enqueue_account_ui( $hook ) {
 		$tab = $_GET['tab'] ?? '';
-		$account_screen = 'account' === $tab && in_array( $_GET['section'] ?? '', [ 'appearance', 'endpoints' ], true );
+		$account_screen = 'account' === $tab && in_array( $_GET['section'] ?? '', [ 'appearance', 'endpoints', 'tools' ], true );
 		if ( 'woocommerce_page_wc-settings' !== $hook || ( ! $account_screen && ! ( 'integration' === $tab && $this->owns_captcha_settings() ) ) ) {
 			return;
 		}

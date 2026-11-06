@@ -27,6 +27,17 @@ jQuery(function ($) {
     provider.on('change', toggleCaptcha);
   }
 
+  var form = document.getElementById('mainform');
+  if (form) {
+    // Match Woo's Save behavior only after a valid explicit action actually submits.
+    form.addEventListener('submit', function (event) {
+      var button = event.submitter;
+      if (button && (button.name === 'yoaa_email_batch_run' || button.id === 'yoaa-confirm-link')) {
+        window.onbeforeunload = null;
+      }
+    });
+  }
+
   // Enhance the inline add-link form with the same focused dialog flow as AAP.
   var fields = document.getElementById('yoaa-new-link-fields');
   var open = document.getElementById('yoaa-add-link');

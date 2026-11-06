@@ -317,7 +317,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 		echo '<p><label for="yoaa-new-link-url">' . esc_html__( 'Custom URL', 'wc-advanced-accounts' ) . '</label><input type="url" id="yoaa-new-link-url" name="new_custom_link_url" placeholder="https://" class="widefat" /></p>';
 		echo '<p><label><input type="checkbox" name="new_custom_link_tab" value="1" /> ' . esc_html__( 'Open in new tab', 'wc-advanced-accounts' ) . '</label></p>';
 		echo '<p class="description">' . esc_html__( 'Adding a link saves the current endpoint settings. You can then change its icon, order and visibility in the table.', 'wc-advanced-accounts' ) . '</p>';
-		echo '<p class="yoaa-dialog-actions"><button type="button" id="yoaa-cancel-link" class="button" hidden>' . esc_html__( 'Cancel', 'wc-advanced-accounts' ) . '</button><button type="submit" name="save" value="1" class="button button-primary">' . esc_html__( 'Add link', 'wc-advanced-accounts' ) . '</button></p></div>';
+		echo '<p class="yoaa-dialog-actions"><button type="button" id="yoaa-cancel-link" class="button" hidden>' . esc_html__( 'Cancel', 'wc-advanced-accounts' ) . '</button><button type="submit" id="yoaa-confirm-link" name="save" value="1" class="button button-primary">' . esc_html__( 'Add link', 'wc-advanced-accounts' ) . '</button></p></div>';
 		echo '<dialog id="yoaa-add-link-dialog" class="yoaa-link-dialog" aria-labelledby="yoaa-add-link-title"></dialog>';
 
 

@@ -28,7 +28,9 @@ function target(properties = {}) {
 const title = target({type: 'text', value: '', required: false, reportValidity() {this.reported = true;}});
 const url = target({type: 'url', value: '', required: false, checkValidity() {return /^https?:\/\//.test(this.value);}, reportValidity() {this.reported = true;}});
 const tab = target({type: 'checkbox', checked: false});
-const submit = target();
+const submit = target({id: 'yoaa-confirm-link'});
+const form = target();
+const window = {onbeforeunload: 'warn'};
 const fields = target({
   querySelectorAll(selector) {return selector.includes('input[type=') ? [title,url] : [title,url,tab];},
   querySelector(selector) {return selector.includes('submit') ? submit : selector.includes('title') ? title : url;}
@@ -36,8 +38,8 @@ const fields = target({
 const open = target({hidden: true});
 const cancel = target({hidden: true});
 const dialog = target({open: false, appendChild(child) {this.child = child;}, showModal() {this.open = true;}, close() {this.open = false;this.listeners.close();}});
-const document = {getElementById(id) {return {'yoaa-new-link-fields':fields,'yoaa-add-link':open,'yoaa-add-link-dialog':dialog,'yoaa-cancel-link':cancel}[id];}};
-vm.runInNewContext(fs.readFileSync('js/account-settings.js','utf8'), {jQuery:$,document});
+const document = {getElementById(id) {return {'mainform':form,'yoaa-new-link-fields':fields,'yoaa-add-link':open,'yoaa-add-link-dialog':dialog,'yoaa-cancel-link':cancel}[id];}};
+vm.runInNewContext(fs.readFileSync('js/account-settings.js','utf8'), {jQuery:$,document,window});
 assert(name.disabled && name.value === 'first_last');
 avatar.checked = true; avatar.listeners.change(); assert(!name.disabled && name.value === 'first_last');
 avatar.checked = false; avatar.listeners.change(); assert(name.disabled && name.value === 'first_last');
@@ -60,4 +62,7 @@ open.listeners.click();title.value='   ';url.value='bad';let prevented=false;
 submit.listeners.click({preventDefault() {prevented=true;}});assert(prevented && title.reported);
 title.value='Support';url.value='https://example.test/help';prevented=false;
 submit.listeners.click({preventDefault() {prevented=true;}});assert(!prevented);
+form.listeners.submit({submitter:{name:'other'}});assert.strictEqual(window.onbeforeunload,'warn');
+form.listeners.submit({submitter:submit});assert.strictEqual(window.onbeforeunload,null);
+window.onbeforeunload='warn';form.listeners.submit({submitter:{name:'yoaa_email_batch_run'}});assert.strictEqual(window.onbeforeunload,null);
 console.log('Account settings UI state regressions PASS');
