@@ -130,6 +130,13 @@ class YOAA_WC_Advanced_Accounts_Advanced_Settings {
 				'id'    => 'yoaa_wc_additionals_settings'
 			),
 			array(
+				'title' => __( 'Spam protection (CAPTCHA)', 'wc-advanced-accounts' ),
+				'type' => 'info',
+				'id' => 'yoaa_wc_captcha_guidance',
+				'is_option' => false,
+				'text' => esc_html__( 'CAPTCHA helps reduce spam and bots on login and registration forms. Configure protection in the Integration tab.', 'wc-advanced-accounts' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=integration#yoaa_wc_captcha_settings-description' ) ) . '">' . esc_html__( 'Configure CAPTCHA', 'wc-advanced-accounts' ) . '</a>',
+			),
+			array(
 				'title'    => esc_html__('Redirect wp-login', 'wc-advanced-accounts'),
 				'desc'     => esc_html__('Enable to redirect the wp-login to My account page', 'wc-advanced-accounts'),
 				'desc_tip' => esc_html__('It will redirect the user to my account page when they access to the WordPress default login page.', 'wc-advanced-accounts'),

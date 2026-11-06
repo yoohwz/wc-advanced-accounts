@@ -83,7 +83,7 @@ Premium membership features include:
 
 = Integrations =
 
-Enable Cloudflare Turnstile, reCAPTCHA v2/v3, or hCaptcha in Accounts & Membership > Integrations to protect the WordPress and WooCommerce login/registration forms. CAPTCHA is off by default and requires provider keys. Enabled protection fails when the provider rejects a token or cannot verify it; incomplete settings do not produce successful verification. This covers those forms, not every API or OTP request. Overlapping Blacklist Manager CAPTCHA is coordinated for the protected forms.
+Enable Cloudflare Turnstile, reCAPTCHA v2/v3, or hCaptcha in WooCommerce > Settings > Integration to protect the WordPress and WooCommerce login/registration forms. CAPTCHA is off by default and requires provider keys. Enabled protection fails when the provider rejects a token or cannot verify it; incomplete settings do not produce successful verification. This covers those forms, not every API or OTP request. Overlapping Blacklist Manager CAPTCHA is coordinated for the protected forms.
 
 Advanced Accounts for WooCommerce works with these related tools:
 
@@ -96,7 +96,7 @@ Advanced Accounts for WooCommerce works with these related tools:
 1. Upload the `wc-advanced-accounts` folder to `/wp-content/plugins/`.
 2. Activate **Advanced Accounts for WooCommerce** from **Plugins**.
 3. Make sure WooCommerce is installed and active.
-4. Go to **WooCommerce > Settings > Accounts & Membership** and open the Advanced, Profile, Membership, Endpoints, Integrations, or Tools sections.
+4. Go to **WooCommerce > Settings > Accounts & Membership** and open the Advanced, Profile, Membership, Endpoints, or Tools sections. CAPTCHA settings are in the existing **Integration** tab.
 5. Enable only the account, email verification/OTP, or membership features your store needs.
 
 == Frequently Asked Questions ==

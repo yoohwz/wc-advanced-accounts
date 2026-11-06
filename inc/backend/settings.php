@@ -18,6 +18,9 @@ private $role_manager;
 		add_action( 'woocommerce_admin_field_yoaa_upgrade_panel', [ __CLASS__, 'render_upgrade_panel_field' ] );
 
 		add_action('admin_head', [$this, 'hide_save_button']);
+		add_action( 'woocommerce_settings_tabs_integration', [ $this, 'output_captcha_settings' ] );
+		add_action( 'woocommerce_update_options_integration', [ $this, 'save_captcha_settings' ] );
+		add_action( 'admin_init', [ $this, 'redirect_legacy_integrations' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_account_ui' ] );
 		add_filter( 'woocommerce_admin_settings_sanitize_option_yoaa_wc_welcome_name_display', [ $this, 'preserve_inactive_profile_setting' ], 10, 3 );
 
@@ -69,7 +72,6 @@ private $role_manager;
 		$sections['appearance'] = __('Profile', 'wc-advanced-accounts');
 		$sections['membership'] = __('Membership', 'wc-advanced-accounts');
 		$sections['endpoints'] = __( 'Endpoints', 'wc-advanced-accounts' );
-		$sections['integrations'] = __( 'Integrations', 'wc-advanced-accounts' );
 		$sections['tools'] = __( 'Tools', 'wc-advanced-accounts' );
 		return $sections;
 		}
@@ -105,8 +107,33 @@ private $role_manager;
 		return $settings;
 	}
 
+	private function owns_captcha_settings() {
+		return ! ( class_exists( 'YOAA_WC_Advanced_Accounts_Integration_Settings_Premium' ) && class_exists( 'WCAAP_Runtime_Policy' ) && WCAAP_Runtime_Policy::commercial() );
+	}
+
+	public function output_captcha_settings() {
+		if ( $this->owns_captcha_settings() ) {
+			woocommerce_admin_fields( YOAA_WC_Advanced_Accounts_Integration_Settings::get_captcha_settings() );
+		}
+	}
+
+	public function save_captcha_settings() {
+		if ( $this->owns_captcha_settings() ) {
+			woocommerce_update_options( YOAA_WC_Advanced_Accounts_Integration_Settings::get_captcha_settings() );
+		}
+	}
+
+	public function redirect_legacy_integrations() {
+		if ( 'wc-settings' === ( $_GET['page'] ?? '' ) && 'account' === ( $_GET['tab'] ?? '' ) && 'integrations' === ( $_GET['section'] ?? '' ) && empty( $_POST ) ) {
+			wp_safe_redirect( admin_url( 'admin.php?page=wc-settings&tab=integration#yoaa_wc_captcha_settings-description' ) );
+			exit;
+		}
+	}
+
 	public function enqueue_account_ui( $hook ) {
-		if ( 'woocommerce_page_wc-settings' !== $hook || 'account' !== ( $_GET['tab'] ?? '' ) || ! in_array( $_GET['section'] ?? '', [ 'appearance', 'integrations', 'endpoints' ], true ) ) {
+		$tab = $_GET['tab'] ?? '';
+		$account_screen = 'account' === $tab && in_array( $_GET['section'] ?? '', [ 'appearance', 'endpoints' ], true );
+		if ( 'woocommerce_page_wc-settings' !== $hook || ( ! $account_screen && ! ( 'integration' === $tab && $this->owns_captcha_settings() ) ) ) {
 			return;
 		}
 		$path = __DIR__ . '/../../js/account-settings.js';
