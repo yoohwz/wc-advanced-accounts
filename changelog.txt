@@ -1,5 +1,19 @@
 === WooCommerce Advanced Accounts (Free version) ===
 
+= 1.5.0 (Nov 6, 2026) =
+* New: Added first and last name registration fields, customer avatar upload/replacement/removal, and profile display-name formats to Free.
+* New: Added Cloudflare Turnstile, reCAPTCHA v2/v3, and hCaptcha protection for supported WordPress and WooCommerce login and registration forms.
+* New: Added administrator single and bulk account blocking/unblocking, including active-session revocation.
+* New: Added email verification status controls and an email-only batch tool with dry-run and per-user results.
+* New: Added customer personal-data erasure requests through the WordPress confirmation and administrator-processing workflow; accounts and orders are not automatically deleted.
+* New: Added custom My Account menu links with URL, icon, order, visibility, and new-tab controls.
+* New: Added the membership shortcode message attribute for custom denied-access notices.
+* Security: Enforced login OTP resend limits on the server and checked account restrictions before OTP/reset sign-in continuation.
+* Fix: Protected custom and companion-owned membership roles with safer role removal and deletion checks.
+* Improve: Coordinated overlapping Free/Premium account controls and CAPTCHA integrations to avoid duplicate handling.
+* Improve: Refined account settings, provider fields, batch results, custom-link dialogs, and desktop/mobile layouts; added contextual Premium comparisons and upgrade links that follow the administrator color scheme.
+* Docs: Updated Free/Premium feature descriptions and external-service disclosures. New optional features remain disabled until configured by the store administrator.
+
 = 1.4.5 (Aug 16, 2026) =
 * Change: Removed phone verification, phone OTP login, phone OTP password reset, and Yo Credits service integration from the free plugin while retaining email OTP workflows.
 * Improve: Replaced the removed settings with Premium upgrade options for Twilio, Textmagic, and custom messaging provider integrations.
