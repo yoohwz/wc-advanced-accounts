@@ -12,7 +12,6 @@
 * Fix: Protected custom and companion-owned membership roles with safer role removal and deletion checks.
 * Improve: Coordinated overlapping Free/Premium account controls and CAPTCHA integrations to avoid duplicate handling.
 * Improve: Refined account settings, provider fields, batch results, custom-link dialogs, and desktop/mobile layouts; added contextual Premium comparisons and upgrade links that follow the administrator color scheme.
-* Docs: Updated Free/Premium feature descriptions and external-service disclosures. New optional features remain disabled until configured by the store administrator.
 
 = 1.4.5 (Aug 16, 2026) =
 * Change: Removed phone verification, phone OTP login, phone OTP password reset, and Yo Credits service integration from the free plugin while retaining email OTP workflows.
