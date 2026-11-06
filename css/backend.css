@@ -109,3 +109,5 @@
     .yoaa-endpoints-table-scroll { max-width: 100%; overflow-x: auto; }
     #yoaa-endpoints-table { min-width: 780px; }
 }
+.form-table td.yoaa-endpoints-manager { padding: 0; }
+.yoaa-endpoints-manager #yoaa-endpoints-table th, .yoaa-endpoints-manager #yoaa-endpoints-table td { padding: 8px 10px; }

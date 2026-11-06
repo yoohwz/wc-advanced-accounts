@@ -137,6 +137,8 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
+		echo '<tr><td colspan="2" class="yoaa-endpoints-manager">';
+
 		// 1) Your hard-coded defaults (always show these)
 		$defaults = [
 			'dashboard'       => __( 'Dashboard',        'wc-advanced-accounts' ),
@@ -416,6 +418,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 		});
 		</script>
 		<?php
+		echo '</td></tr>';
 	}
 
 	/**
