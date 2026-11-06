@@ -293,6 +293,12 @@ class YOAA_WC_Advanced_Accounts_Register_Email_Verification {
 
 	// Function to auto login the user after password reset
 	public function auto_login_after_reset_password($user) {
+		$allowed = YOAA_AAC_Account_Status::denial( $user );
+		if ( is_wp_error( $allowed ) ) {
+			wc_add_notice( $allowed->get_error_message(), 'error' );
+			wp_safe_redirect( wc_get_page_permalink( 'myaccount' ) );
+			exit;
+		}
 		wc_set_customer_auth_cookie($user->ID);
 		wp_safe_redirect(wc_get_page_permalink('myaccount'));
 	

@@ -4,6 +4,8 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
+require_once __DIR__ . '/../frontend/custom-links.php';
+
 class YOAA_WC_Advanced_Accounts_Frontend {
 
     public function __construct() {
@@ -20,7 +22,7 @@ class YOAA_WC_Advanced_Accounts_Frontend {
     public static function customize_query_vars( $vars ) {
         $slugs = (array) get_option( 'yoaa_account_endpoints_slugs', [] );
         foreach ( $slugs as $key => $slug ) {
-            if ( $slug ) {
+            if ( $slug && empty( ((array) get_option( 'yoaa_account_endpoints_custom_link_enabled', array() ))[ $key ] ) ) {
                 $vars[ $key ] = $slug;
             }
         }
@@ -123,6 +125,9 @@ class YOAA_WC_Advanced_Accounts_Frontend {
 
         $css = '';
         foreach ( $raw_icons as $endpoint => $icon_class ) {
+            if ( ! is_string( $endpoint ) || ! preg_match( '/^[a-z0-9_-]+$/D', $endpoint ) || ! is_string( $icon_class ) ) {
+                continue;
+            }
             // Expect something like "fa-solid fa-house" or "fas fa-user"
             if ( ! preg_match( '/fa[srb]? fa-([\w-]+)/', $icon_class, $m ) ) {
                 continue;

@@ -67,6 +67,7 @@ private $role_manager;
 		$sections['appearance'] = __('Profile', 'wc-advanced-accounts');
 		$sections['membership'] = __('Membership', 'wc-advanced-accounts');
 		$sections['endpoints'] = __( 'Endpoints', 'wc-advanced-accounts' );
+		$sections['integrations'] = __( 'Integrations', 'wc-advanced-accounts' );
 		$sections['tools'] = __( 'Tools', 'wc-advanced-accounts' );
 		return $sections;
 		}
@@ -94,6 +95,8 @@ private $role_manager;
 			$settings = YOAA_WC_Advanced_Accounts_Membership_Settings::get_membership_settings();
 		} elseif ( $current_section === 'endpoints' ) {
 			$settings = YOAA_WC_Advanced_Accounts_Endpoints_Settings::get_endpoint_settings();
+		} elseif ( $current_section === 'integrations' ) {
+			$settings = YOAA_WC_Advanced_Accounts_Integration_Settings::get_captcha_settings();
 		} elseif ( $current_section === 'tools' ) {
 			$settings = YOAA_WC_Advanced_Accounts_Tools::get_tools();
 		}
@@ -136,6 +139,7 @@ private $role_manager;
 		include_once plugin_dir_path(__FILE__) . 'settings/appearance.php';
 		include_once plugin_dir_path(__FILE__) . 'settings/membership.php';
 		include_once plugin_dir_path(__FILE__) . 'settings/tools.php';
+		include_once plugin_dir_path(__FILE__) . 'settings/integrations.php';
 	}
 }
 

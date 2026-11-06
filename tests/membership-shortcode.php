@@ -72,3 +72,11 @@ if ( 'YOAA_WC_Advanced_Accounts_Membership_Shortcodes' === $class ) {
 	$result = $class::render_membership_shortcode( array('level'=>'unknown','message'=>'Custom notice'), '[probe]' );
 	expect( false !== strpos($result, 'Custom notice'), 'Premium custom message remains supported' );
 }
+
+$calls = 0;
+$result = $class::render_membership_shortcode( array('level'=>'unknown','message'=>'Custom <notice> & text'), '[probe]' );
+expect( false !== strpos( $result, 'Custom &lt;notice&gt; &amp; text' ) && 0 === $calls, 'custom denial text is escaped and body never executes' );
+$result = $class::render_membership_shortcode( array('level'=>'unknown','message'=>'Custom notice','hide'=>'yes'), '[probe]' );
+expect( '' === $result && 0 === $calls, 'hide wins over custom message' );
+$result = $class::render_membership_shortcode( array('level'=>'unknown','message'=>array('bad')), '[probe]' );
+expect( $result === $class::render_membership_shortcode( array('level'=>'unknown'), '[probe]' ), 'invalid custom message falls back safely' );

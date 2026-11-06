@@ -48,6 +48,8 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 			return;
 		}
 
+		wp_enqueue_script( 'jquery-ui-sortable' );
+
 		wp_enqueue_style(
 			'yoaa-fontawesome-core',
 			plugin_dir_url( __FILE__ ) . '../../../font/fontawesome/css/fontawesome.min.css',
@@ -151,6 +153,10 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 			$defaults['my-points'] = __( 'My points', 'wc-advanced-accounts' );
 		}
 
+		foreach ( YOAA_AAC_Custom_Links::links() as $key => $url ) {
+			$defaults[ $key ] = $key;
+		}
+
 		// 2) Load saved options
 		$saved_order        = (array) get_option( 'yoaa_account_endpoints_order',        [] );
 		$saved_titles       = (array) get_option( 'yoaa_account_endpoints_titles',       [] );
@@ -184,7 +190,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 		echo '<h3>' . esc_html__( 'Need custom My Account tabs?', 'wc-advanced-accounts' ) . '</h3>';
 		echo '<p>' . esc_html__( 'Add new tabs and richer endpoint content when the default WooCommerce account menu is not enough.', 'wc-advanced-accounts' ) . '</p>';
 		echo '<ul>';
-		echo '<li>' . esc_html__( 'Add unlimited custom account endpoints.', 'wc-advanced-accounts' ) . '</li>';
+		echo '<li>' . esc_html__( 'Create custom content pages in My Account.', 'wc-advanced-accounts' ) . '</li>';
 		echo '<li>' . esc_html__( 'Edit endpoint content with custom text or shortcodes.', 'wc-advanced-accounts' ) . '</li>';
 		echo '<li>' . esc_html__( 'Upload custom endpoint icons.', 'wc-advanced-accounts' ) . '</li>';
 		echo '<li>' . esc_html__( 'Restrict account tabs by role or membership level.', 'wc-advanced-accounts' ) . '</li>';
@@ -197,7 +203,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 		echo '<thead><tr>';
 		echo '<th style="width:24px;"></th>';
 		echo '<th class="column-label">' . esc_html__( 'Label',         'wc-advanced-accounts' ) . '</th>';
-		echo '<th class="column-slug">' . esc_html__( 'Endpoint Slug','wc-advanced-accounts' ) . '</th>';
+		echo '<th class="column-slug">' . esc_html__( 'Endpoint slug / Link URL','wc-advanced-accounts' ) . '</th>';
 		echo '<th class="column-icon">' . esc_html__( 'Icon',          'wc-advanced-accounts' ) . '</th>';
 		echo '<th class="column-order">' . esc_html__( 'Order',         'wc-advanced-accounts' ) . '</th>';
 		echo '<th class="column-visible">' . esc_html__( 'Visible',       'wc-advanced-accounts' ) . '</th>';
@@ -218,6 +224,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 				$user_vis = ! empty( $saved_visible[ $endpoint ] );
 			}
 
+			$is_link = isset( YOAA_AAC_Custom_Links::links()[ $endpoint ] );
 			// Build the Order <select>
 			$order_select = '<select name="endpoints_order_num[' . esc_attr( $endpoint ) . ']" class="endpoint-order-select">';
 			for ( $n = 1; $n <= $total; $n++ ) {
@@ -243,6 +250,9 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 				),
 			);
 
+			$slug_control = $is_link
+				? '<input type="url" name="custom_link_urls[' . esc_attr( $endpoint ) . ']" value="' . esc_attr( YOAA_AAC_Custom_Links::links()[ $endpoint ] ) . '" class="widefat" required /><label><input type="checkbox" name="custom_link_new_tab[' . esc_attr( $endpoint ) . ']" value="1" ' . checked( ! empty( ((array) get_option( 'yoaa_account_endpoints_custom_new_tab', array() ))[ $endpoint ] ), true, false ) . ' />' . esc_html__( 'Open in new tab', 'wc-advanced-accounts' ) . '</label><label><input type="checkbox" name="custom_link_delete[' . esc_attr( $endpoint ) . ']" value="1" />' . esc_html__( 'Delete link', 'wc-advanced-accounts' ) . '</label>'
+				: '<input type="text" name="endpoints_slugs[' . esc_attr( $endpoint ) . ']" value="' . esc_attr( $user_slug ) . '" class="widefat" />';
 			// Output the row
 			printf(
 				'<tr data-endpoint="%1$s">
@@ -256,10 +266,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 					</td>
 
 					<td>
-					<input type="text"
-							name="endpoints_slugs[%1$s]"
-							value="%3$s"
-							class="widefat" />
+					%3$s
 					</td>
 
 					<td>
@@ -294,7 +301,7 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 				</tr>',
 				esc_attr( $endpoint ),
 				esc_attr( $user_label ),
-				esc_attr( $user_slug ),
+				wp_kses( $slug_control, array( 'input' => array( 'type' => true, 'name' => true, 'value' => true, 'class' => true, 'required' => true, 'checked' => true ), 'label' => array() ) ),
 				esc_attr( $user_icon ),
 				wp_kses( $order_select, $allowed_select_html ),
 				checked( $user_vis, true, false )
@@ -302,6 +309,10 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 		}
 
 		echo '</tbody></table>';
+		echo '<h3>' . esc_html__( 'Add a custom link', 'wc-advanced-accounts' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Save a link, then set its icon, position and visibility in the table above.', 'wc-advanced-accounts' ) . '</p>';
+		echo '<p><label>' . esc_html__( 'Label', 'wc-advanced-accounts' ) . ' <input type="text" name="new_custom_link_title" /></label> <label>' . esc_html__( 'URL', 'wc-advanced-accounts' ) . ' <input type="url" name="new_custom_link_url" placeholder="https://" /></label> <label><input type="checkbox" name="new_custom_link_tab" value="1" /> ' . esc_html__( 'Open in new tab', 'wc-advanced-accounts' ) . '</label></p>';
+
 
 		// 4) Single picker container, now with search and one‐per‐line layout
 		?>
@@ -431,29 +442,31 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 			return;
 		}
 
+		$post = self::save_custom_links( $post );
+
 		// 1) Persist the drag-order sequence.
 		$endpoints_order = array();
 		if ( ! empty( $post['endpoints_order'] ) && is_array( $post['endpoints_order'] ) ) {
-			$endpoints_order = array_map( 'sanitize_key', $post['endpoints_order'] );
+			$endpoints_order = array_map( 'sanitize_key', array_filter( $post['endpoints_order'], 'is_string' ) );
 			update_option( 'yoaa_account_endpoints_order', $endpoints_order );
 		}
 
 		// 2) Titles.
 		if ( ! empty( $post['endpoints_titles'] ) && is_array( $post['endpoints_titles'] ) ) {
-			$titles = array_map( 'sanitize_text_field', $post['endpoints_titles'] );
-			update_option( 'yoaa_account_endpoints_titles', $titles );
+			$titles = array_map( 'sanitize_text_field', array_filter( $post['endpoints_titles'], 'is_string' ) );
+			update_option( 'yoaa_account_endpoints_titles', array_replace( (array) get_option( 'yoaa_account_endpoints_titles', array() ), $titles ) );
 		}
 
 		// 3) Slugs.
 		if ( ! empty( $post['endpoints_slugs'] ) && is_array( $post['endpoints_slugs'] ) ) {
-			$slugs = array_map( 'sanitize_key', $post['endpoints_slugs'] );
-			update_option( 'yoaa_account_endpoints_slugs', $slugs );
+			$slugs = array_map( 'sanitize_key', array_filter( $post['endpoints_slugs'], 'is_string' ) );
+			update_option( 'yoaa_account_endpoints_slugs', array_replace( (array) get_option( 'yoaa_account_endpoints_slugs', array() ), $slugs ) );
 		}
 
 		// 4) Icons.
 		if ( ! empty( $post['endpoints_icons'] ) && is_array( $post['endpoints_icons'] ) ) {
-			$icons = array_map( 'sanitize_text_field', $post['endpoints_icons'] );
-			update_option( 'yoaa_account_endpoints_icons', $icons );
+			$icons = array_map( 'sanitize_text_field', array_filter( $post['endpoints_icons'], 'is_string' ) );
+			update_option( 'yoaa_account_endpoints_icons', array_replace( (array) get_option( 'yoaa_account_endpoints_icons', array() ), $icons ) );
 		}
 
 		// 5) Manual order (dropdown).
@@ -478,10 +491,63 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 				$k = sanitize_key( $key );
 				$visible[ $k ] = isset( $visible_post[ $k ] ) ? 1 : 0;
 			}
-			update_option( 'yoaa_account_endpoints_visible', $visible );
+			update_option( 'yoaa_account_endpoints_visible', array_replace( (array) get_option( 'yoaa_account_endpoints_visible', array() ), $visible ) );
 		}
 
 		flush_rewrite_rules();
+	}
+
+
+	/** Called only after the settings capability and nonce checks. */
+	private static function save_custom_links( $post ) {
+		$custom = (array) get_option( 'yoaa_account_endpoints_custom', array() );
+		$flags = (array) get_option( 'yoaa_account_endpoints_custom_link_enabled', array() );
+		$urls = (array) get_option( 'yoaa_account_endpoints_custom_url', array() );
+		$tabs = (array) get_option( 'yoaa_account_endpoints_custom_new_tab', array() );
+		foreach ( YOAA_AAC_Custom_Links::links() as $key => $url ) {
+			if ( ! empty( $post['custom_link_delete'][ $key ] ) ) {
+				$custom = array_values( array_diff( $custom, array( $key ) ) );
+				unset( $flags[ $key ], $urls[ $key ], $tabs[ $key ] );
+				foreach ( array( 'titles', 'slugs', 'icons', 'visible', 'manual_order' ) as $map ) {
+					$option = 'yoaa_account_endpoints_' . $map;
+					$values = (array) get_option( $option, array() );
+					unset( $values[ $key ] );
+					update_option( $option, $values );
+				}
+				foreach ( array( 'endpoints_titles', 'endpoints_slugs', 'endpoints_icons', 'endpoints_visible', 'endpoints_order_num' ) as $field ) {
+					unset( $post[ $field ][ $key ] );
+				}
+				$post['endpoints_order'] = array_values( array_diff( (array) ( $post['endpoints_order'] ?? array() ), array( $key ) ) );
+				continue;
+			}
+			$candidate = $post['custom_link_urls'][ $key ] ?? $url;
+			$candidate = is_string( $candidate ) ? esc_url_raw( $candidate, array( 'http', 'https' ) ) : '';
+			if ( $candidate && preg_match( '~^https?://~i', $candidate ) ) {
+				$urls[ $key ] = $candidate;
+			} else {
+				WC_Admin_Settings::add_error( __( 'A custom link needs a valid HTTP or HTTPS URL. The previous URL was retained.', 'wc-advanced-accounts' ) );
+			}
+			$tabs[ $key ] = ! empty( $post['custom_link_new_tab'][ $key ] ) ? 1 : 0;
+		}
+		$title = isset( $post['new_custom_link_title'] ) && is_string( $post['new_custom_link_title'] ) ? sanitize_text_field( $post['new_custom_link_title'] ) : '';
+		$url = isset( $post['new_custom_link_url'] ) && is_string( $post['new_custom_link_url'] ) ? esc_url_raw( $post['new_custom_link_url'], array( 'http', 'https' ) ) : '';
+		if ( $title && $url && preg_match( '~^https?://~i', $url ) ) {
+			$key = 'custom-link-' . strtolower( wp_generate_password( 12, false, false ) );
+			$custom[] = $key;
+			$flags[ $key ] = 1;
+			$urls[ $key ] = $url;
+			$tabs[ $key ] = ! empty( $post['new_custom_link_tab'] ) ? 1 : 0;
+			$post['endpoints_titles'][ $key ] = $title;
+			$post['endpoints_visible'][ $key ] = 1;
+			$post['endpoints_order'][] = $key;
+		} elseif ( $title || ! empty( $post['new_custom_link_url'] ) ) {
+			WC_Admin_Settings::add_error( __( 'Enter a label and a valid HTTP or HTTPS URL to add a custom link.', 'wc-advanced-accounts' ) );
+		}
+		update_option( 'yoaa_account_endpoints_custom', array_values( array_unique( $custom ) ) );
+		update_option( 'yoaa_account_endpoints_custom_link_enabled', $flags );
+		update_option( 'yoaa_account_endpoints_custom_url', $urls );
+		update_option( 'yoaa_account_endpoints_custom_new_tab', $tabs );
+		return $post;
 	}
 
 	/**

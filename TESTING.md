@@ -29,3 +29,27 @@ PHP/JavaScript syntax, exact-diff whitespace and every existing focused suite:
 full WordPress/WooCommerce/MySQL runtime, WCS, commercial activation, Plugin
 Check or live SVN publication. Release validation is separate: see
 [docs/releasing.md](docs/releasing.md).
+
+## AAC-7 Free account features
+
+The normal focused command also runs `tests/profile-captcha.php`,
+`tests/account-administration.php`, `tests/custom-links.php` and
+`tests/login-otp.php`. They exercise production handlers with controlled
+WordPress/WooCommerce storage, HTTP, mail and session stand-ins: provider rejection,
+malformed/transport responses and replay; profile ownership/privacy cleanup;
+per-user admin authority, email-only batch dry-run/failure and privacy confirmation;
+link CRUD/native routing separation; login OTP cooldown/destination limits,
+account restrictions, expiry/attempt cleanup and replay. They do not certify live
+CAPTCHA credentials, browser challenges, actual mail delivery or native database
+and filesystem behavior.
+
+For product outcome evidence use a disposable WordPress/WooCommerce installation,
+never automated tests against a Human-owned database. Observe registration name
+fields, My Account avatar upload/replace/remove and display format, CAPTCHA login
+and registration errors, Users/profile and Tools actions, WordPress privacy request
+pending/confirmed states, menu links/order/visibility/new-tab behavior and shortcode
+message/default/hide behavior. Include password, email OTP, reset continuation,
+phone aliases and Free/Premium ownership where affected. Intercept mail/external
+HTTP in disposable probes; identify simulated provider results separately from
+unrun live verification. Keep runtime observations and limitations on the PR,
+including versions and exact candidate binding. Required CI remains focused.

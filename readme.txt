@@ -9,11 +9,11 @@ Stable tag: 1.4.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Customize WooCommerce My Account, add email OTP and verification, support phone-based accounts, and control member-only content with roles.
+Customize customer profiles and account menus, protect sign-in, manage verification, and control member-only content.
 
 == Description ==
 
-Advanced Accounts for WooCommerce helps store owners improve the WooCommerce My Account experience with email verification, email OTP login and password reset, phone-based accounts, and membership content access.
+Advanced Accounts for WooCommerce helps store owners improve the WooCommerce My Account experience with email verification, email OTP login and password reset, phone-based accounts, customer profiles, CAPTCHA, account management, and membership content access.
 
 Use it to make customer accounts easier to manage, verify email ownership, and show selected content only to the right customers.
 
@@ -29,15 +29,20 @@ Free account features include:
 * Support phone number based account login.
 * Disable email requirement when using phone-first registration.
 * Keep checkout and account login flows connected to WooCommerce.
+* Change default account menu labels, slugs, Font Awesome icons, order, and visibility.
+* Add custom navigation links with a label, URL, icon, position, visibility, and optional new tab.
+* Require first and last names on My Account registration.
+* Let customers upload, replace, and remove avatars, and choose the name displayed below them.
+* Block or unblock customer accounts individually or in bulk, revoking existing sessions when blocked.
+* Let customers request account/personal data erasure from Account details through the WordPress privacy process. Confirmation by email is required; an administrator processes the request. Users and orders are not automatically deleted. Phone-first accounts must first save a real email address.
 * Migrate existing customer usernames to phone-number based usernames with dry-run and batch controls.
 
 Premium account customization features include:
 
-* Add custom My Account endpoints.
-* Customize endpoint labels, slugs, icons, order, and visibility.
+* Add custom content pages in My Account, with endpoint content and individual CSS.
 * Show account tabs only to selected roles or membership levels.
-* Add profile photos and extra registration fields.
-* Block or unblock customer accounts without deleting user data.
+* Build custom profile fields, conditional fields, and upload fields.
+* Add birth date fields and age requirements.
 
 = Account Verification =
 
@@ -49,7 +54,9 @@ Free email verification and OTP features include:
 * Email activation links and verified email status for compatible checkout protection workflows.
 * WooCommerce OTP login by email.
 * Password reset using an OTP sent by email.
-* Server-side OTP expiration, failed attempt limits, resend cooldown, and resend limits.
+* Server-side OTP expiration, failed attempt limits, resend cooldown, and resend limits. Email login OTP permits the initial send plus the configured resends in a 15-minute destination window; changing browser sessions does not reset it.
+* View email verification status and mark or unmark it individually or in bulk as an administrator override.
+* Preview and apply email verification batches in Tools with dry-run, bounded batches, and per-user results.
 
 Phone verification and phone OTP workflows are available in the Premium version using third-party providers such as Twilio or Textmagic. You can also request integration with another messaging provider; typical completion time is 1–2 business days.
 
@@ -63,17 +70,20 @@ Free membership features include:
 * Use the `[yoaa_membership]` shortcode to show content to selected roles.
 * Show or hide shortcode content for logged-in users or guests.
 * Build simple member-only pages without a separate membership plugin.
+* Set a custom denial message with `[yoaa_membership level="gold_member" message="Please join to view this content."]...[/yoaa_membership]`. Omit `message` for the default notice; `hide="yes"` hides the notice as well as the protected content.
 
 Premium membership features include:
 
 * Restrict posts, pages, and WooCommerce products by membership level.
 * Create a membership products page.
 * Allow customers to hold multiple membership roles.
-* Show custom access notices for restricted content.
+* Configure access notices for product and membership commerce workflows.
 * Offer membership-based product discounts.
 * Support WooCommerce Subscriptions for recurring membership plans.
 
 = Integrations =
+
+Enable Cloudflare Turnstile, reCAPTCHA v2/v3, or hCaptcha in Accounts & Membership > Integrations to protect the WordPress and WooCommerce login/registration forms. CAPTCHA is off by default and requires provider keys. Enabled protection fails when the provider rejects a token or cannot verify it; incomplete settings do not produce successful verification. This covers those forms, not every API or OTP request. Overlapping Blacklist Manager CAPTCHA is coordinated for the protected forms.
 
 Advanced Accounts for WooCommerce works with these related tools:
 
@@ -86,7 +96,7 @@ Advanced Accounts for WooCommerce works with these related tools:
 1. Upload the `wc-advanced-accounts` folder to `/wp-content/plugins/`.
 2. Activate **Advanced Accounts for WooCommerce** from **Plugins**.
 3. Make sure WooCommerce is installed and active.
-4. Go to **WooCommerce > Settings > Accounts & Privacy** and open the Advanced, Profile, Membership, Endpoints, or Tools sections.
+4. Go to **WooCommerce > Settings > Accounts & Membership** and open the Advanced, Profile, Membership, Endpoints, Integrations, or Tools sections.
 5. Enable only the account, email verification/OTP, or membership features your store needs.
 
 == Frequently Asked Questions ==
@@ -133,7 +143,30 @@ Yes. The plugin declares compatibility with WooCommerce High-Performance Order S
 
 == External Services ==
 
-The free plugin sends email OTP messages through the site's configured WordPress mail system and does not connect to an external SMS service. The following SMS providers are available only in the Premium version when configured by the store administrator.
+The free plugin sends email verification, OTP, and privacy confirmation through the site's WordPress mail system. CAPTCHA providers below are contacted only when configured and enabled for login or registration. Their scripts run in the visitor's browser and may collect device/browser and network information under the provider's policies; verification tokens and the configured secret key are sent to the provider's verification endpoint. Keys are configured by the store administrator. The free plugin does not connect to an external SMS service.
+
+= Cloudflare Turnstile =
+
+Browser script: https://challenges.cloudflare.com/turnstile/v0/api.js
+Verification: https://challenges.cloudflare.com/turnstile/v0/siteverify
+Terms: https://www.cloudflare.com/website-terms/
+Privacy: https://www.cloudflare.com/privacypolicy/
+
+= Google reCAPTCHA v2 and v3 =
+
+Browser script: https://www.google.com/recaptcha/api.js
+Verification: https://www.google.com/recaptcha/api/siteverify
+Terms: https://policies.google.com/terms
+Privacy: https://policies.google.com/privacy
+
+= hCaptcha =
+
+Browser script: https://js.hcaptcha.com/1/api.js
+Verification: https://hcaptcha.com/siteverify
+Terms: https://www.hcaptcha.com/terms
+Privacy: https://www.hcaptcha.com/privacy
+
+The following SMS providers are available only in the Premium version when configured by the store administrator.
 
 = Twilio =
 
