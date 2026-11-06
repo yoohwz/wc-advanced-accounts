@@ -70,3 +70,13 @@
     margin-top: 12px !important;
     margin-bottom: 22px !important;
 }
+/* Avatar profile header: native file input remains focusable and keyboard-operable. */
+.yo-avatar-uploader { text-align: center; margin-block-end: 30px; }
+.yo-avatar-uploader .yo-avatar-wrapper { position: relative; display: inline-block; }
+.yo-avatar-uploader .yo-avatar-wrapper > img { border-radius: 50%; inline-size: 120px; block-size: 120px; object-fit: cover; }
+.yo-avatar-uploader .yo-avatar-upload-form { margin: 0; }
+.yo-avatar-uploader .yo-avatar-change { position: absolute; inset-block-end: -4px; inset-inline-end: -4px; inline-size: 42px; block-size: 42px; border-radius: 50%; background: #fff; color: #333; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
+.yo-avatar-uploader .yo-avatar-change input { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; opacity: 0; cursor: pointer; }
+.yo-avatar-uploader .yo-avatar-change:focus-within { outline: 2px solid currentColor; outline-offset: 3px; }
+.yo-avatar-uploader .yo-avatar-screen-reader-text { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.yo-avatar-uploader .yo-avatar-remove-form, .yo-avatar-uploader .yo-welcome-wrapper { margin-block-start: 12px; }

@@ -124,6 +124,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Settings {
 		}
 
 		echo '</tbody></table>';
+		echo '<p class="description">' . esc_html__( 'Add message="Your notice" to customize the denied-access notice. Leave it empty for the default message; hide="yes" hides both content and notice.', 'wc-advanced-accounts' ) . '</p>';
 
 		echo '<br /><p class="description">' . wp_kses_post(
 			sprintf(

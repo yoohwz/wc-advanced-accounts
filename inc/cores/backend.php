@@ -20,7 +20,14 @@ class YOAA_WC_Advanced_Accounts_Backend {
 		include_once plugin_dir_path(__FILE__) . '../backend/helpers/phone-username-helper.php';
 
 		include_once plugin_dir_path(__FILE__) . '../backend/settings.php';
+		include_once plugin_dir_path(__FILE__) . '../backend/helpers/admin-verification.php';
+		include_once plugin_dir_path(__FILE__) . '../backend/actions/account-status.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/users/users-page.php';
+		include_once plugin_dir_path(__FILE__) . '../backend/users/user-profile.php';
+		include_once plugin_dir_path(__FILE__) . '../backend/actions/request-deletion.php';
+		include_once plugin_dir_path(__FILE__) . '../backend/actions/integrations-captcha.php';
+		include_once plugin_dir_path(__FILE__) . '../frontend/avatar.php';
+		include_once plugin_dir_path(__FILE__) . '../frontend/profile.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/phone-account-username.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/email-registration-disabled.php';
 		include_once plugin_dir_path(__FILE__) . '../backend/actions/email-verification.php';
@@ -32,7 +39,7 @@ class YOAA_WC_Advanced_Accounts_Backend {
 	}
 
 	public function enqueue_scripts() {
-		wp_enqueue_style('wc-advanced-accounts-css', plugin_dir_url(__FILE__) . '../../css/backend.css', '1.1.2', true);
+		wp_enqueue_style( 'wc-advanced-accounts-css', plugin_dir_url( __FILE__ ) . '../../css/backend.css', [], (string) filemtime( __DIR__ . '/../../css/backend.css' ) );
 	}
 
 	public function check_version() {

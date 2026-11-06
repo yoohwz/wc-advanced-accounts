@@ -22,6 +22,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 	 * - level="silver_member,gold_member"
 	 * - guest="yes"
 	 * - logged_in="yes"
+	 * - message="Custom fallback message"
 	 * - hide="yes"
 	 *
 	 * @param array       $atts    Shortcode attributes.
@@ -51,7 +52,10 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 			return '';
 		}
 
-		$message = self::get_default_message( (array) $required_levels, $guest_only, $logged_in_only );
+		$message = is_scalar( $atts['message'] ) ? sanitize_text_field( (string) $atts['message'] ) : '';
+		if ( '' === trim( $message ) ) {
+			$message = self::get_default_message( (array) $required_levels, $guest_only, $logged_in_only );
+		}
 
 		return self::get_restriction_notice_html( $message, self::get_current_url() );
 	}
@@ -73,6 +77,7 @@ class YOAA_WC_Advanced_Accounts_Membership_Shortcodes_Free {
 				'level'     => '',
 				'guest'     => '',
 				'logged_in' => '',
+				'message'   => '',
 				'hide'      => '',
 			),
 			(array) $atts,

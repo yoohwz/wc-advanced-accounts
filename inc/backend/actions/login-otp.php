@@ -38,7 +38,7 @@ class YOAA_WC_Advanced_Accounts_Email_Login_OTP {
 			WC()->session->__unset( 'login_otp_identifier' );
 			WC()->session->__unset( 'login_otp_expires_at' );
 			WC()->session->__unset( 'login_otp_attempts' );
-			WC()->session->__unset( 'login_otp_last_sent_at' );
+			WC()->session->__unset( 'login_otp_user_id' );
 		}
 	}
 
@@ -87,7 +87,7 @@ class YOAA_WC_Advanced_Accounts_Email_Login_OTP {
 			wp_send_json_error( __( 'Session is not available. Please refresh the page and try again.', 'wc-advanced-accounts' ) );
 		}
 
-		$identifier = isset( $_POST['identifier'] ) ? sanitize_text_field( wp_unslash( $_POST['identifier'] ) ) : '';
+		$identifier = isset( $_POST['identifier'] ) && is_string( $_POST['identifier'] ) ? sanitize_text_field( wp_unslash( $_POST['identifier'] ) ) : '';
 		if ( empty( $identifier ) ) {
 			wp_send_json_error( __( 'Email address is required.', 'wc-advanced-accounts' ) );
 		}
@@ -104,25 +104,51 @@ class YOAA_WC_Advanced_Accounts_Email_Login_OTP {
 
 		WC()->session->set_customer_session_cookie( true );
 
-		$last_sent_at = (int) WC()->session->get( 'login_otp_last_sent_at', 0 );
-
-		if ( $last_sent_at && ( time() - $last_sent_at ) < max( 60, absint( get_option( 'yoaa_wc_email_otp_resend', self::RESEND_COOLDOWN ) ) ) ) {
-			$cooldown  = max( 60, absint( get_option( 'yoaa_wc_email_otp_resend', self::RESEND_COOLDOWN ) ) );
-			$remaining = $cooldown - ( time() - $last_sent_at );
-
-			wp_send_json_error(
-				sprintf(
-					/* translators: %d: remaining seconds. */
-					__( 'Please wait %d seconds before requesting another OTP.', 'wc-advanced-accounts' ),
-					$remaining
-				)
-			);
+		$allowed = YOAA_AAC_Account_Status::denial( $user );
+		if ( is_wp_error( $allowed ) ) {
+			wp_send_json_error( $allowed->get_error_message() );
+		}
+		// Persist the rate window by destination, so a fresh browser session cannot reset it.
+		$rate_key = 'yoaa_login_otp_rate_' . hash( 'sha256', strtolower( $user->user_email ) );
+		$lock_key = $rate_key . '_lock';
+		$now = time();
+		$locked = add_option( $lock_key, (string) ( $now + 30 ), '', false );
+		if ( ! $locked ) {
+			global $wpdb;
+			$expired = (string) get_option( $lock_key, '' );
+			if ( ctype_digit( $expired ) && (int) $expired < $now ) {
+				// Delete only the expired lock observed, never a concurrent replacement.
+				$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name = %s AND option_value = %s", $lock_key, $expired ) );
+				wp_cache_delete( $lock_key, 'options' );
+				$locked = add_option( $lock_key, (string) ( $now + 30 ), '', false );
+			}
+		}
+		if ( ! $locked ) {
+			wp_send_json_error( __( 'Please wait before requesting another OTP.', 'wc-advanced-accounts' ) );
+		}
+		$rate = get_transient( $rate_key );
+		if ( ! is_array( $rate ) || empty( $rate['until'] ) || $rate['until'] <= $now ) {
+			$rate = array( 'count' => 0, 'last' => 0, 'until' => $now + 15 * MINUTE_IN_SECONDS );
+		}
+		$cooldown = max( 60, absint( get_option( 'yoaa_wc_email_otp_resend', self::RESEND_COOLDOWN ) ) );
+		$limit = 1 + max( 1, absint( get_option( 'yoaa_wc_email_otp_resend_limit', 3 ) ) );
+		if ( $rate['count'] >= $limit || $rate['last'] > $now - $cooldown ) {
+			delete_option( $lock_key );
+			wp_send_json_error( __( 'OTP request limit reached. Wait before requesting another code.', 'wc-advanced-accounts' ) );
+		}
+		$rate['count']++;
+		$rate['last'] = $now;
+		$saved = set_transient( $rate_key, $rate, max( 1, $rate['until'] - $now ) );
+		delete_option( $lock_key );
+		if ( ! $saved ) {
+			wp_send_json_error( __( 'Unable to record the OTP request. Please try again later.', 'wc-advanced-accounts' ) );
 		}
 
 		$otp_code = (string) wp_rand( 100000, 999999 );
 
 		WC()->session->set( 'login_otp_code', $otp_code );
-		WC()->session->set( 'login_otp_identifier', $identifier );
+		WC()->session->set( 'login_otp_identifier', $user->user_email );
+		WC()->session->set( 'login_otp_user_id', (int) $user->ID );
 		WC()->session->set( 'login_otp_expires_at', time() + self::OTP_TTL );
 		WC()->session->set( 'login_otp_attempts', 0 );
 		WC()->session->set( 'login_otp_last_sent_at', time() );
@@ -162,7 +188,7 @@ class YOAA_WC_Advanced_Accounts_Email_Login_OTP {
 			wp_send_json_error( __( 'Session is not available. Please refresh the page and try again.', 'wc-advanced-accounts' ) );
 		}
 
-		$otp_code = isset( $_POST['otp_code'] )
+		$otp_code = isset( $_POST['otp_code'] ) && is_string( $_POST['otp_code'] )
 			? sanitize_text_field( wp_unslash( $_POST['otp_code'] ) )
 			: '';
 
@@ -199,9 +225,15 @@ class YOAA_WC_Advanced_Accounts_Email_Login_OTP {
 
 		$user = is_email( $identifier ) ? get_user_by( 'email', $identifier ) : false;
 
-		if ( ! $user ) {
+		if ( ! $user || (int) WC()->session->get( 'login_otp_user_id', 0 ) !== (int) $user->ID ) {
 			$this->clear_login_otp_session();
 			wp_send_json_error( __( 'User not found.', 'wc-advanced-accounts' ) );
+		}
+
+		$allowed = YOAA_AAC_Account_Status::denial( $user );
+		if ( is_wp_error( $allowed ) ) {
+			$this->clear_login_otp_session();
+			wp_send_json_error( $allowed->get_error_message() );
 		}
 
 		$user_id = (int) $user->ID;

@@ -32,16 +32,18 @@ class YOAA_WC_Advanced_Accounts_Advanced_Settings {
 				'checkboxgroup' => 'end',
 			),
 			array(
-				'type'        => 'yoaa_upgrade_panel',
-				'title'       => esc_html__( 'Advanced account controls', 'wc-advanced-accounts' ),
-				'desc'        => esc_html__( 'Add optional account management tools without changing the free account creation flow.', 'wc-advanced-accounts' ),
-				'features'    => array(
-					esc_html__( 'Block or unblock customer accounts from the users page.', 'wc-advanced-accounts' ),
-					esc_html__( 'Let customers request account erasure from My Account.', 'wc-advanced-accounts' ),
-					esc_html__( 'Add profile and registration fields for richer customer accounts.', 'wc-advanced-accounts' ),
-				),
-				'button_text' => esc_html__( 'View account control features', 'wc-advanced-accounts' ),
-				'id'          => 'yoaa_advanced_account_upgrade_panel',
+				'title' => esc_html__( 'Account blocking', 'wc-advanced-accounts' ),
+				'desc' => esc_html__( 'Allow authorized administrators to block and unblock customer accounts from Users.', 'wc-advanced-accounts' ),
+				'id' => 'yoaa_wc_enable_user_blocking',
+				'default' => 'no',
+				'type' => 'checkbox',
+			),
+			array(
+				'title' => esc_html__( 'Account deletion requests', 'wc-advanced-accounts' ),
+				'desc' => esc_html__( 'Let customers request personal data erasure from Account details. WordPress emails a confirmation and administrators process the request; accounts and orders are not automatically deleted.', 'wc-advanced-accounts' ),
+				'id' => 'yoaa_wc_enable_delete_account',
+				'default' => 'no',
+				'type' => 'checkbox',
 			),
 			array(
 				'type' => 'sectionend',
@@ -126,6 +128,13 @@ class YOAA_WC_Advanced_Accounts_Advanced_Settings {
 				'title' => esc_html__('Additionals', 'wc-advanced-accounts'),
 				'type'  => 'title',
 				'id'    => 'yoaa_wc_additionals_settings'
+			),
+			array(
+				'title' => __( 'Spam protection (CAPTCHA)', 'wc-advanced-accounts' ),
+				'type' => 'info',
+				'id' => 'yoaa_wc_captcha_guidance',
+				'is_option' => false,
+				'text' => esc_html__( 'CAPTCHA helps reduce spam and bots on login and registration forms. Configure protection in the Integration tab.', 'wc-advanced-accounts' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=integration#yoaa_wc_captcha_settings-description' ) ) . '">' . esc_html__( 'Configure CAPTCHA', 'wc-advanced-accounts' ) . '</a>',
 			),
 			array(
 				'title'    => esc_html__('Redirect wp-login', 'wc-advanced-accounts'),

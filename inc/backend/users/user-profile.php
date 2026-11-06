@@ -1,0 +1,65 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) { exit; }
+require_once __DIR__ . '/../helpers/admin-verification.php';
+
+final class YOAA_AAC_User_Profile {
+	public static function init() {
+		if ( class_exists( 'YOAA_WC_Advanced_Accounts_User_Profile_Actions' ) && class_exists( 'WCAAP_Runtime_Policy' ) && WCAAP_Runtime_Policy::commercial() ) { return; }
+		// Inactive AAP keeps recovery presenters registered. AAC owns the complete Free UI.
+		// Remove only overlapping presentation; legacy recovery handlers/auth checks stay active.
+		global $wp_filter;
+		$presenters = [
+			'edit_user_profile' => [ 'YOAA_WC_Advanced_Accounts_User_Profile_Actions', 'show_user_account_actions' ],
+			'user_row_actions' => [ 'YOAA_WC_Advanced_Accounts_Users_Page_Premium', 'add_block_user_action' ],
+		];
+		foreach ( $presenters as $hook => $presenter ) {
+			foreach ( $wp_filter[ $hook ]->callbacks ?? [] as $priority => $callbacks ) {
+				foreach ( $callbacks as $entry ) {
+					$callback = $entry['function'];
+					if ( is_array( $callback ) && isset( $callback[0], $callback[1] ) && is_object( $callback[0] ) && is_a( $callback[0], $presenter[0] ) && $callback[1] === $presenter[1] ) {
+						remove_filter( $hook, $callback, $priority );
+					}
+				}
+			}
+		}
+		new self();
+	}
+
+	public function __construct() {
+		add_action( 'edit_user_profile', [ $this, 'render' ] );
+		add_action( 'edit_user_profile_update', [ $this, 'save' ] );
+	}
+	public function render( $user ) {
+		if ( ! current_user_can( 'edit_users' ) || ! current_user_can( 'edit_user', $user->ID ) ) { return; }
+		echo '<h2>' . esc_html__( 'Account actions management', 'wc-advanced-accounts' ) . '</h2>';
+		wp_nonce_field( 'yoaa_account_actions_' . $user->ID, 'yoaa_account_actions_nonce' );
+		echo '<table class="form-table yoaa-account-actions" role="presentation">';
+		$protected = in_array( 'administrator', (array) $user->roles, true ) || is_super_admin( $user->ID );
+		if ( 'yes' === get_option( 'yoaa_wc_enable_user_blocking' ) ) {
+			$blocked = '1' === (string) get_user_meta( $user->ID, 'user_blocked', true );
+			echo '<tr><th>' . esc_html__( 'User blocking', 'wc-advanced-accounts' ) . '</th><td><p><strong>' . esc_html__( 'Current status:', 'wc-advanced-accounts' ) . ' ' . esc_html( $blocked ? __( 'Blocked', 'wc-advanced-accounts' ) : __( 'Not blocked', 'wc-advanced-accounts' ) ) . '</strong></p>';
+			if ( $blocked || ( ! $protected && (int) $user->ID !== get_current_user_id() ) ) {
+				echo '<button type="submit" class="button ' . ( $blocked ? 'button-secondary' : 'yoaa-danger-button' ) . '" name="yoaa_block_action" value="' . ( $blocked ? '0' : '1' ) . '">' . esc_html( $blocked ? __( 'Unblock this user', 'wc-advanced-accounts' ) : __( 'Block this user', 'wc-advanced-accounts' ) ) . '</button>';
+			}
+			echo '</td></tr>';
+		}
+		$verified = '1' === (string) get_user_meta( $user->ID, 'email_verification', true );
+		echo '<tr><th>' . esc_html__( 'Email verification', 'wc-advanced-accounts' ) . '</th><td><p><strong>' . esc_html__( 'Current status:', 'wc-advanced-accounts' ) . ' ' . esc_html( $verified ? __( 'Verified', 'wc-advanced-accounts' ) : __( 'Not verified', 'wc-advanced-accounts' ) ) . '</strong></p>';
+		if ( ! $protected ) {
+			echo '<button type="submit" class="button button-secondary" name="yoaa_email_action" value="' . ( $verified ? '0' : '1' ) . '">' . esc_html( $verified ? __( 'Mark as unverified', 'wc-advanced-accounts' ) : __( 'Mark as verified', 'wc-advanced-accounts' ) ) . '</button>';
+		}
+		echo '<p class="description">' . esc_html__( 'This is an administrator override, not proof of email delivery or an OTP challenge.', 'wc-advanced-accounts' ) . '</p></td></tr></table>';
+	}
+	public function save( $user_id ) {
+		if ( ! isset( $_POST['yoaa_email_action'] ) && ! isset( $_POST['yoaa_block_action'] ) ) { return; }
+		if ( ! current_user_can( 'edit_users' ) || ! current_user_can( 'edit_user', $user_id ) || ! isset( $_POST['yoaa_account_actions_nonce'] ) || ! is_scalar( $_POST['yoaa_account_actions_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['yoaa_account_actions_nonce'] ) ), 'yoaa_account_actions_' . $user_id ) ) { return; }
+		if ( isset( $_POST['yoaa_email_action'] ) ) {
+			$result = YOAA_AAC_Admin_Verification::mutate( $user_id, [ 'email_verification' => wp_unslash( $_POST['yoaa_email_action'] ) ] );
+			$status = $result['status'];
+		} elseif ( 'yes' === get_option( 'yoaa_wc_enable_user_blocking' ) && in_array( $_POST['yoaa_block_action'], [ '0', '1' ], true ) ) {
+			$status = YOAA_AAC_Account_Status::set_blocked( $user_id, '1' === $_POST['yoaa_block_action'] );
+		} else { return; }
+		if ( ! in_array( $status, [ 'updated', 'unchanged' ], true ) ) { wp_die( esc_html__( 'The account action was not saved. Check your permissions and the account status.', 'wc-advanced-accounts' ) ); }
+	}
+}
+add_action( 'plugins_loaded', [ 'YOAA_AAC_User_Profile', 'init' ], 110 );
