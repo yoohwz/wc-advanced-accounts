@@ -17,7 +17,7 @@ class YOAA_WC_Advanced_Accounts_Tools {
 	}
 
 	public static function get_tools() {
-		return array(
+		$settings = array(
 			array(
 				'title' => __( 'Tools', 'wc-advanced-accounts' ),
 				'type'  => 'title',
@@ -39,6 +39,16 @@ class YOAA_WC_Advanced_Accounts_Tools {
 				'id'   => 'yoaa_wc_tools_section_end',
 			),
 		);
+		if ( 'yes' === get_option( 'yoaa_wc_enable_phone_number_account', 'no' ) ) {
+			array_splice( $settings, 2, 0, [ [
+				'type' => 'yoaa_upgrade_panel',
+				'title' => __( 'Add phone verification to phone accounts', 'wc-advanced-accounts' ),
+				'desc' => __( 'Using phone numbers as usernames does not verify ownership of those numbers. Premium adds phone verification and SMS OTP with your own messaging provider.', 'wc-advanced-accounts' ),
+				'button_text' => __( 'Explore phone verification', 'wc-advanced-accounts' ),
+				'id' => 'yoaa_tools_phone_upgrade',
+			] ] );
+		}
+		return $settings;
 	}
 
 	public static function render_phone_username_migration_field( $field ) {

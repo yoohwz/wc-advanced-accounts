@@ -43,7 +43,11 @@ class YOAA_WC_Advanced_Accounts {
 			esc_url( admin_url( 'admin.php?page=wc-settings&tab=account&section=advanced' ) ),
 			esc_html__( 'Settings', 'wc-advanced-accounts' )
 		);
-		array_unshift($links, $settings_link);
+		$custom_links = [ 'settings' => $settings_link ];
+		if ( YOAA_WC_Advanced_Accounts_Add_Sub_Tab::show_upgrade_promotions() ) {
+			$custom_links['yoaa_upgrade'] = '<a href="https://yoohw.com/product/woocommerce-advanced-accounts-premium/" target="_blank" rel="noopener noreferrer"><strong>' . esc_html__( 'Upgrade Premium', 'wc-advanced-accounts' ) . ' <span aria-hidden="true">↗</span></strong></a>';
+		}
+		$links = array_merge( $custom_links, $links );
 		return $links;
 	}
 

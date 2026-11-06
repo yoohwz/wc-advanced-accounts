@@ -16,6 +16,7 @@ private $role_manager;
 		add_filter('woocommerce_get_sections_account', [$this, 'add_subsections']);
 		add_filter('woocommerce_get_settings_account', [$this, 'add_subsection_settings'], 10, 2);
 		add_action( 'woocommerce_admin_field_yoaa_upgrade_panel', [ __CLASS__, 'render_upgrade_panel_field' ] );
+		add_action( 'woocommerce_sections_account', [ __CLASS__, 'render_upgrade_comparison' ], 20 );
 
 		add_action('admin_head', [$this, 'hide_save_button']);
 		add_action( 'woocommerce_settings_tabs_integration', [ $this, 'output_captcha_settings' ] );
@@ -27,7 +28,30 @@ private $role_manager;
 		$this->includes();
 	}
 
+	public static function show_upgrade_promotions() {
+		return ( current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' ) )
+			&& ! ( class_exists( 'WCAAP_Runtime_Policy' ) && WCAAP_Runtime_Policy::commercial() );
+	}
+
+	public static function render_upgrade_comparison() {
+		if ( ! self::show_upgrade_promotions() || ! in_array( $_GET['section'] ?? '', [ 'advanced', 'appearance', 'membership', 'endpoints', 'tools' ], true ) ) { return; }
+		$rows = [
+			[ __( 'Customer profiles', 'wc-advanced-accounts' ), __( 'Names, avatar and display format', 'wc-advanced-accounts' ), __( 'Custom fields, conditional fields, birthday and age requirements', 'wc-advanced-accounts' ) ],
+			[ __( 'Account protection', 'wc-advanced-accounts' ), __( 'CAPTCHA, email verification, email OTP and account blocking', 'wc-advanced-accounts' ), __( 'Phone verification and SMS OTP with your messaging provider', 'wc-advanced-accounts' ) ],
+			[ __( 'My Account menu', 'wc-advanced-accounts' ), __( 'Default endpoint customization and custom links', 'wc-advanced-accounts' ), __( 'Custom content tabs, role access, uploaded icons and endpoint CSS', 'wc-advanced-accounts' ) ],
+			[ __( 'Membership', 'wc-advanced-accounts' ), __( 'Membership roles and shortcode content visibility', 'wc-advanced-accounts' ), __( 'Paid plans, multiple memberships, product access and member discounts', 'wc-advanced-accounts' ) ],
+		];
+		echo '<details class="yoaa-upgrade-comparison"><summary>' . esc_html__( 'Compare Free & Premium', 'wc-advanced-accounts' ) . '</summary><div class="yoaa-comparison-content">';
+		echo '<h2>' . esc_html__( 'Choose the features your store needs', 'wc-advanced-accounts' ) . '</h2><p>' . esc_html__( 'Premium adds the features below to the Free account tools. Third-party SMS delivery requires your own provider account and may incur separate charges.', 'wc-advanced-accounts' ) . '</p>';
+		echo '<div class="yoaa-comparison-scroll"><table class="widefat striped"><caption class="screen-reader-text">' . esc_html__( 'Free features and additional Premium features', 'wc-advanced-accounts' ) . '</caption><thead><tr><th scope="col">' . esc_html__( 'Feature', 'wc-advanced-accounts' ) . '</th><th scope="col">' . esc_html__( 'Included in Free', 'wc-advanced-accounts' ) . '</th><th scope="col">' . esc_html__( 'Added in Premium', 'wc-advanced-accounts' ) . '</th></tr></thead><tbody>';
+		foreach ( $rows as $row ) {
+			echo '<tr><th scope="row">' . esc_html( $row[0] ) . '</th><td>' . esc_html( $row[1] ) . '</td><td>' . esc_html( $row[2] ) . '</td></tr>';
+		}
+		echo '</tbody></table></div><p><a class="button button-secondary" href="https://yoohw.com/product/woocommerce-advanced-accounts-premium/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Explore Premium', 'wc-advanced-accounts' ) . ' <span aria-hidden="true">↗</span></a></p></div></details>';
+	}
+
 	public static function render_upgrade_panel_field( $field ) {
+		if ( ! self::show_upgrade_promotions() ) { return; }
 		$title       = isset( $field['title'] ) ? (string) $field['title'] : __( 'Available in Premium', 'wc-advanced-accounts' );
 		$description = isset( $field['desc'] ) ? (string) $field['desc'] : __( 'These features are optional and are not required to use the free plugin.', 'wc-advanced-accounts' );
 		$features    = isset( $field['features'] ) && is_array( $field['features'] ) ? $field['features'] : array();
