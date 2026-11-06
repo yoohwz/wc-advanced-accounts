@@ -55,7 +55,7 @@ Notice when action/compatibility warrants it. Do not advance Tested up to or
 support versions beyond executed evidence.
 
 Complete focused checks, applicable independent Technical Review, exact-head
-`AAC Required CI`, SHA-bound ChatGPT Acceptance and separate Human Merge of the
+`AAC Required CI`, SHA-bound Codex Main final technical Acceptance and separate Human Merge of the
 final versioned candidate. No metadata edits after Acceptance. With a squash or
 merge commit, compare the entire accepted head tree with the selected merged
 source tree; unequal trees need an explained reviewed boundary and refreshed
