@@ -102,6 +102,8 @@
     .yoaa-link-toolbar { align-items: flex-start; }
 }
 #yoaa-endpoints-table .column-slug { width: 32% !important; }
+#yoaa-endpoints-table input[type="text"], #yoaa-endpoints-table input[type="url"] { width: 100% !important; min-width: 0; max-width: 100%; box-sizing: border-box; }
+#yoaa-endpoints-table .endpoint-icon-picker { flex-shrink: 0; }
 .yoaa-custom-link-controls input[type="url"] { width: 100% !important; }
 .yoaa-link-options { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; }
 .yoaa-link-options label { display: inline-flex; align-items: center; gap: 4px; }
