@@ -40,7 +40,9 @@ class YOAA_WC_Advanced_Accounts_Captcha_Integration {
 
 		if ( $this->is_register_enabled() ) {
 			add_action( 'woocommerce_register_form', array( $this, 'add_captcha_to_woocommerce_register' ), 20 );
-			add_filter( 'woocommerce_registration_errors', array( $this, 'validate_captcha_woocommerce_register' ), 10, 3 );
+			// The form handler has verified its registration nonce before this hook.
+			// The generic customer-creation hook also serves checkout and APIs without widgets.
+			add_filter( 'woocommerce_process_registration_errors', array( $this, 'validate_captcha_woocommerce_register' ), 10, 3 );
 			add_action( 'register_form', array( $this, 'add_captcha_to_wp_register_form' ) );
 			add_filter( 'registration_errors', array( $this, 'validate_captcha_wp_register' ), 10, 3 );
 		}

@@ -107,6 +107,18 @@ $captcha->apply_blacklist_manager_overlap_rule(); expect(!$removed,'unconfigured
 $options+=['yoaa_wc_captcha_selected'=>'cloudflare','yoaa_wc_cloudflare_site_key'=>'site','yoaa_wc_cloudflare_secret_key'=>'secret'];
 $captcha->apply_blacklist_manager_overlap_rule(); expect(count($removed)===1,'configured AAC owns overlapping login CAPTCHA');
 
+// Match Woo's separate form-handler and generic customer-creation pipelines.
+$options = ['yoaa_wc_captcha_selected'=>'cloudflare','yoaa_wc_cloudflare_site_key'=>'site','yoaa_wc_cloudflare_secret_key'=>'secret','yoaa_wc_enable_captcha_register'=>'yes'];
+$hooks=[]; new YOAA_WC_Advanced_Accounts_Captcha_Integration();
+$_POST=[]; $errors=new WP_Error();
+foreach ($hooks['woocommerce_registration_errors'] ?? [] as $entry) { $errors=call_user_func($entry[0],$errors,'checkout-customer','checkout@example.test'); }
+expect(!$errors->get_error_code(),'Classic/Blocks/API generic customer creation is not gated by a form-only CAPTCHA');
+foreach ($hooks['woocommerce_process_registration_errors'] ?? [] as $entry) { $errors=call_user_func($entry[0],$errors,'form-customer','password'); }
+expect($errors->get_error_code()==='yoaa_captcha_failed','protected Woo registration form still rejects missing CAPTCHA');
+$_POST=['cf-turnstile-response'=>'new-form-token']; $response=['success'=>true,'hostname'=>'example.test','action'=>'register']; $errors=new WP_Error();
+foreach ($hooks['woocommerce_process_registration_errors'] ?? [] as $entry) { $errors=call_user_func($entry[0],$errors,'form-customer','password'); }
+expect(!$errors->get_error_code(),'protected Woo registration form accepts verified context token');
+
 $profile=new YOAA_WC_Advanced_Accounts_Profile(); $_POST=['register'=>'1','woocommerce-register-nonce'=>'valid-woocommerce-register','first_name'=>[],'last_name'=>' ']; $errors=new WP_Error();
 $profile->validate_name_fields('owner','owner@example.test',$errors); expect(count($errors->errors)===2,'missing/malformed names denied');
 $_POST=['register'=>'1','woocommerce-register-nonce'=>'valid-woocommerce-register','first_name'=>'<b>Jane</b>','last_name'=>' Doe ']; $account_page=false; $profile->save_name_fields(7);
