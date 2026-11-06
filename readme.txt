@@ -143,28 +143,11 @@ Yes. The plugin declares compatibility with WooCommerce High-Performance Order S
 
 == External Services ==
 
-The free plugin sends email verification, OTP, and privacy confirmation through the site's WordPress mail system. CAPTCHA providers below are contacted only when configured and enabled for login or registration. Their scripts run in the visitor's browser and may collect device/browser and network information under the provider's policies; verification tokens and the configured secret key are sent to the provider's verification endpoint. Keys are configured by the store administrator. The free plugin does not connect to an external SMS service.
+The free plugin sends email verification, OTP, and privacy confirmation through the site's WordPress mail system. Cloudflare Turnstile, Google reCAPTCHA v2/v3, and hCaptcha are contacted only when configured and enabled for login or registration. Their scripts run in the visitor's browser and may collect device/browser and network information under the provider's policies; verification tokens and the configured secret key are sent to the provider's verification endpoint. Keys are configured by the store administrator. The free plugin does not connect to an external SMS service.
 
-= Cloudflare Turnstile =
-
-Browser script: https://challenges.cloudflare.com/turnstile/v0/api.js
-Verification: https://challenges.cloudflare.com/turnstile/v0/siteverify
-Terms: https://www.cloudflare.com/website-terms/
-Privacy: https://www.cloudflare.com/privacypolicy/
-
-= Google reCAPTCHA v2 and v3 =
-
-Browser script: https://www.google.com/recaptcha/api.js
-Verification: https://www.google.com/recaptcha/api/siteverify
-Terms: https://policies.google.com/terms
-Privacy: https://policies.google.com/privacy
-
-= hCaptcha =
-
-Browser script: https://js.hcaptcha.com/1/api.js
-Verification: https://hcaptcha.com/siteverify
-Terms: https://www.hcaptcha.com/terms
-Privacy: https://www.hcaptcha.com/privacy
+* [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) — [Privacy policy](https://www.cloudflare.com/privacypolicy/).
+* [Google reCAPTCHA v2 and v3](https://www.google.com/recaptcha/about/) — [Privacy policy](https://policies.google.com/privacy).
+* [hCaptcha](https://www.hcaptcha.com/) — [Privacy policy](https://www.hcaptcha.com/privacy).
 
 The following SMS providers are available only in the Premium version when configured by the store administrator.
 
@@ -203,6 +186,5 @@ No visitor IP geolocation, product-news subscription, or catalog feed request is
 * Fix: Protected custom and companion-owned membership roles with safer role removal and deletion checks.
 * Improve: Coordinated overlapping Free/Premium account controls and CAPTCHA integrations to avoid duplicate handling.
 * Improve: Refined account settings, provider fields, batch results, custom-link dialogs, and desktop/mobile layouts; added contextual Premium comparisons and upgrade links that follow the administrator color scheme.
-* Docs: Updated Free/Premium feature descriptions and external-service disclosures. New optional features remain disabled until configured by the store administrator.
 
 For previous releases, see `changelog.txt`.
