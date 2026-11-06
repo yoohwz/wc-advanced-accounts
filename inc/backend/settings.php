@@ -41,7 +41,7 @@ private $role_manager;
 			[ __( 'My Account menu', 'wc-advanced-accounts' ), __( 'Default endpoint customization and custom links', 'wc-advanced-accounts' ), __( 'Custom content tabs, role access, uploaded icons and endpoint CSS', 'wc-advanced-accounts' ) ],
 			[ __( 'Membership', 'wc-advanced-accounts' ), __( 'Membership roles and shortcode content visibility', 'wc-advanced-accounts' ), __( 'Paid plans, multiple memberships, product access and member discounts', 'wc-advanced-accounts' ) ],
 		];
-		echo '<details class="yoaa-upgrade-comparison"><summary>' . esc_html__( 'Compare Free & Premium', 'wc-advanced-accounts' ) . '</summary><div class="yoaa-comparison-content">';
+		echo '<details class="yoaa-upgrade-comparison"><summary class="button button-secondary">' . esc_html__( 'Compare Free & Premium', 'wc-advanced-accounts' ) . '</summary><div class="yoaa-comparison-content">';
 		echo '<h2>' . esc_html__( 'Choose the features your store needs', 'wc-advanced-accounts' ) . '</h2><p>' . esc_html__( 'Premium adds the features below to the Free account tools. Third-party SMS delivery requires your own provider account and may incur separate charges.', 'wc-advanced-accounts' ) . '</p>';
 		echo '<div class="yoaa-comparison-scroll"><table class="widefat striped"><caption class="screen-reader-text">' . esc_html__( 'Free features and additional Premium features', 'wc-advanced-accounts' ) . '</caption><thead><tr><th scope="col">' . esc_html__( 'Feature', 'wc-advanced-accounts' ) . '</th><th scope="col">' . esc_html__( 'Included in Free', 'wc-advanced-accounts' ) . '</th><th scope="col">' . esc_html__( 'Added in Premium', 'wc-advanced-accounts' ) . '</th></tr></thead><tbody>';
 		foreach ( $rows as $row ) {
