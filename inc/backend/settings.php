@@ -16,6 +16,7 @@ private $role_manager;
 		add_filter('woocommerce_get_sections_account', [$this, 'add_subsections']);
 		add_filter('woocommerce_get_settings_account', [$this, 'add_subsection_settings'], 10, 2);
 		add_action( 'woocommerce_admin_field_yoaa_upgrade_panel', [ __CLASS__, 'render_upgrade_panel_field' ] );
+		add_action( 'woocommerce_sections_account', [ __CLASS__, 'open_upgrade_navigation' ], 5 );
 		add_action( 'woocommerce_sections_account', [ __CLASS__, 'render_upgrade_comparison' ], 20 );
 
 		add_action('admin_head', [$this, 'hide_save_button']);
@@ -33,8 +34,16 @@ private $role_manager;
 			&& ! ( class_exists( 'WCAAP_Runtime_Policy' ) && WCAAP_Runtime_Policy::commercial() );
 	}
 
+	private static function has_upgrade_comparison() {
+		return self::show_upgrade_promotions() && in_array( $_GET['section'] ?? '', [ 'advanced', 'appearance', 'membership', 'endpoints', 'tools' ], true );
+	}
+
+	public static function open_upgrade_navigation() {
+		if ( self::has_upgrade_comparison() ) { echo '<div class="yoaa-settings-navigation">'; }
+	}
+
 	public static function render_upgrade_comparison() {
-		if ( ! self::show_upgrade_promotions() || ! in_array( $_GET['section'] ?? '', [ 'advanced', 'appearance', 'membership', 'endpoints', 'tools' ], true ) ) { return; }
+		if ( ! self::has_upgrade_comparison() ) { return; }
 		$rows = [
 			[ __( 'Customer profiles', 'wc-advanced-accounts' ), __( 'Names, avatar and display format', 'wc-advanced-accounts' ), __( 'Custom fields, conditional fields, birthday and age requirements', 'wc-advanced-accounts' ) ],
 			[ __( 'Account protection', 'wc-advanced-accounts' ), __( 'CAPTCHA, email verification, email OTP and account blocking', 'wc-advanced-accounts' ), __( 'Phone verification and SMS OTP with your messaging provider', 'wc-advanced-accounts' ) ],
@@ -47,7 +56,7 @@ private $role_manager;
 		foreach ( $rows as $row ) {
 			echo '<tr><th scope="row">' . esc_html( $row[0] ) . '</th><td>' . esc_html( $row[1] ) . '</td><td>' . esc_html( $row[2] ) . '</td></tr>';
 		}
-		echo '</tbody></table></div><p><a class="button button-secondary" href="https://yoohw.com/product/woocommerce-advanced-accounts-premium/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Explore Premium', 'wc-advanced-accounts' ) . ' <span aria-hidden="true">↗</span></a></p></div></details>';
+		echo '</tbody></table></div><p><a class="button button-secondary" href="https://yoohw.com/product/woocommerce-advanced-accounts-premium/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Explore Premium', 'wc-advanced-accounts' ) . ' <span aria-hidden="true">↗</span></a></p></div></details></div>';
 	}
 
 	public static function render_upgrade_panel_field( $field ) {
