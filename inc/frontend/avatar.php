@@ -75,8 +75,8 @@ class YOAA_WC_Advanced_Accounts_Avatar {
                         $name = $user->user_login;
                     }
 
-                    /* translators: %s: user name based on setting */
                     printf(
+                        /* translators: %s: user name based on setting. */
                         esc_html__( 'Welcome, %s', 'wc-advanced-accounts' ),
                         esc_html( $name )
                     );
@@ -278,6 +278,8 @@ class YOAA_WC_Advanced_Accounts_Avatar {
         if ( is_link( $path ) || ! is_file( $path ) || realpath( $path ) !== $path ) {
             return false;
         }
+        // Keep the validated path and boolean failure result: wp_delete_file() can filter
+        // the target path and returns no status on supported WordPress versions before 6.7.
         return @unlink( $path );
     }
 

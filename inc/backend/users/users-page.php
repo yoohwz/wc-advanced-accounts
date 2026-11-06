@@ -76,7 +76,9 @@ class YOAA_WC_Advanced_Accounts_Users_Page {
 	}
 	public function notice() {
 		if ( 'users.php' !== ( $GLOBALS['pagenow'] ?? '' ) || ! current_user_can( 'edit_users' ) || empty( $_GET['yoaa_account_result'] ) ) { return; }
-		echo '<div class="notice notice-info"><p>' . esc_html( sprintf( __( 'Account actions — updated: %1$d; unchanged: %2$d; skipped: %3$d; forbidden: %4$d; failed: %5$d.', 'wc-advanced-accounts' ), absint( $_GET['yoaa_account_updated'] ?? 0 ), absint( $_GET['yoaa_account_unchanged'] ?? 0 ), absint( $_GET['yoaa_account_skipped'] ?? 0 ), absint( $_GET['yoaa_account_forbidden'] ?? 0 ), absint( $_GET['yoaa_account_error'] ?? 0 ) ) ) . '</p></div>';
+		echo '<div class="notice notice-info"><p>' . esc_html( sprintf(
+			/* translators: 1: updated accounts, 2: unchanged accounts, 3: skipped accounts, 4: forbidden accounts, 5: failed accounts. */
+			__( 'Account actions — updated: %1$d; unchanged: %2$d; skipped: %3$d; forbidden: %4$d; failed: %5$d.', 'wc-advanced-accounts' ), absint( $_GET['yoaa_account_updated'] ?? 0 ), absint( $_GET['yoaa_account_unchanged'] ?? 0 ), absint( $_GET['yoaa_account_skipped'] ?? 0 ), absint( $_GET['yoaa_account_forbidden'] ?? 0 ), absint( $_GET['yoaa_account_error'] ?? 0 ) ) ) . '</p></div>';
 	}
 }
 add_action( 'plugins_loaded', static function () {

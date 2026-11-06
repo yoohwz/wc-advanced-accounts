@@ -2,10 +2,10 @@
 Contributors: yoohw
 Tags: woocommerce, my-account, otp-login, account-verification, membership
 Requires at least: 6.3
-Tested up to: 7.0
+Tested up to: 7.1
 WC tested up to: 10.8
 Requires PHP: 7.4
-Stable tag: 1.4.5
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,17 +191,18 @@ No visitor IP geolocation, product-news subscription, or catalog feed request is
 
 == Changelog ==
 
-= 1.4.5 (Aug 16, 2026) =
-* Change: Removed phone verification, phone OTP login, phone OTP password reset, and Yo Credits service integration from the free plugin while retaining email OTP workflows.
-* Improve: Replaced the removed settings with Premium upgrade options for Twilio, Textmagic, and custom messaging provider integrations.
-* Security: Hardened migration tool input sanitization and output escaping for WordPress.org compliance.
-
-= 1.4.4 (Jul 10, 2026) =
-* Fix: Corrected phone username generation so single-country stores use local numbers and multi-country stores use dial-local usernames consistently.
-* Fix: Preserved login, login OTP, reset password OTP, and phone verification compatibility for existing users with legacy phone username formats.
-* Improve: Added canonical phone username lookup and alias metadata so migrated users can still use previous phone usernames.
-* Improve: Updated the username migration tool to use the shared phone normalization logic, store old usernames as aliases, and sync normalized phone metadata.
-* Improve: Added searchable, filterable, paginated migration result tables for safer inspection on stores with larger user databases.
-* Fix: Checkout and login phone username JavaScript now removes leading local trunk zeros consistently and avoids malformed hidden usernames.
+= 1.5.0 (Nov 6, 2026) =
+* New: Added first and last name registration fields, customer avatar upload/replacement/removal, and profile display-name formats to Free.
+* New: Added Cloudflare Turnstile, reCAPTCHA v2/v3, and hCaptcha protection for supported WordPress and WooCommerce login and registration forms.
+* New: Added administrator single and bulk account blocking/unblocking, including active-session revocation.
+* New: Added email verification status controls and an email-only batch tool with dry-run and per-user results.
+* New: Added customer personal-data erasure requests through the WordPress confirmation and administrator-processing workflow; accounts and orders are not automatically deleted.
+* New: Added custom My Account menu links with URL, icon, order, visibility, and new-tab controls.
+* New: Added the membership shortcode message attribute for custom denied-access notices.
+* Security: Enforced login OTP resend limits on the server and checked account restrictions before OTP/reset sign-in continuation.
+* Fix: Protected custom and companion-owned membership roles with safer role removal and deletion checks.
+* Improve: Coordinated overlapping Free/Premium account controls and CAPTCHA integrations to avoid duplicate handling.
+* Improve: Refined account settings, provider fields, batch results, custom-link dialogs, and desktop/mobile layouts; added contextual Premium comparisons and upgrade links that follow the administrator color scheme.
+* Docs: Updated Free/Premium feature descriptions and external-service disclosures. New optional features remain disabled until configured by the store administrator.
 
 For previous releases, see `changelog.txt`.
