@@ -187,19 +187,6 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 		// Add nonce field for saving endpoints settings (submitted with the WC settings form).
 		wp_nonce_field( 'yoaa_save_endpoints_settings', 'yoaa_endpoints_nonce' );
 
-		echo '<div class="yoaa-upgrade-panel">';
-		echo '<p class="yoaa-upgrade-eyebrow">' . esc_html__( 'Available in Premium', 'wc-advanced-accounts' ) . '</p>';
-		echo '<h3>' . esc_html__( 'Need custom My Account tabs?', 'wc-advanced-accounts' ) . '</h3>';
-		echo '<p>' . esc_html__( 'Add new tabs and richer endpoint content when the default WooCommerce account menu is not enough.', 'wc-advanced-accounts' ) . '</p>';
-		echo '<ul>';
-		echo '<li>' . esc_html__( 'Create custom content pages in My Account.', 'wc-advanced-accounts' ) . '</li>';
-		echo '<li>' . esc_html__( 'Edit endpoint content with custom text or shortcodes.', 'wc-advanced-accounts' ) . '</li>';
-		echo '<li>' . esc_html__( 'Upload custom endpoint icons.', 'wc-advanced-accounts' ) . '</li>';
-		echo '<li>' . esc_html__( 'Restrict account tabs by role or membership level.', 'wc-advanced-accounts' ) . '</li>';
-		echo '</ul>';
-		echo '<p><a class="button button-secondary" href="https://yoohw.com/product/woocommerce-advanced-accounts-premium/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'View endpoint features', 'wc-advanced-accounts' ) . '</a></p>';
-		echo '</div>';
-
 		// 5) Render the table header
 		echo '<div class="yoaa-endpoints-table-scroll"><table id="yoaa-endpoints-table" class="widefat fixed striped" style="margin-bottom: 20px;">';
 		echo '<thead><tr>';
@@ -312,6 +299,9 @@ class YOAA_WC_Advanced_Accounts_Endpoints_Settings {
 
 		echo '</tbody></table></div>';
 		echo '<div class="yoaa-link-toolbar"><p class="description">' . esc_html__( 'Add links to Support, Guides or other pages. Set their icon, order and visibility in the account menu above.', 'wc-advanced-accounts' ) . '</p><button type="button" id="yoaa-add-link" class="button button-secondary" aria-haspopup="dialog" aria-controls="yoaa-add-link-dialog" hidden>' . esc_html__( 'Add custom link', 'wc-advanced-accounts' ) . '</button></div>';
+		if ( YOAA_WC_Advanced_Accounts_Add_Sub_Tab::show_upgrade_promotions() ) {
+			echo '<p class="description yoaa-endpoint-upgrade">' . esc_html__( 'Need a tab with its own content?', 'wc-advanced-accounts' ) . ' <a href="https://yoohw.com/product/woocommerce-advanced-accounts-premium/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Explore custom account tabs', 'wc-advanced-accounts' ) . ' <span aria-hidden="true">↗</span></a></p>';
+		}
 		echo '<div id="yoaa-new-link-fields" class="yoaa-link-fields"><h2 id="yoaa-add-link-title">' . esc_html__( 'Add custom link', 'wc-advanced-accounts' ) . '</h2>';
 		echo '<p><label for="yoaa-new-link-label">' . esc_html__( 'Label', 'wc-advanced-accounts' ) . '</label><input type="text" id="yoaa-new-link-label" name="new_custom_link_title" class="widefat" /></p>';
 		echo '<p><label for="yoaa-new-link-url">' . esc_html__( 'Custom URL', 'wc-advanced-accounts' ) . '</label><input type="url" id="yoaa-new-link-url" name="new_custom_link_url" placeholder="https://" class="widefat" /></p>';

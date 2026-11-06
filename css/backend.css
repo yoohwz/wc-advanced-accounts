@@ -118,3 +118,22 @@
     /* WordPress stacks settings fields; keep the nested endpoint editor a scrollable table. */
     #yoaa-endpoints-table th, #yoaa-endpoints-table td { display: table-cell; }
 }
+
+/* Native disclosure keeps the comparison available without JavaScript. */
+.yoaa-settings-navigation { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 16px; margin: 8px 0 12px; }
+.yoaa-settings-navigation > .subsubsub { float: none; margin: 0; }
+.yoaa-settings-navigation > br.clear { display: none; }
+.yoaa-upgrade-comparison { display: contents; }
+.yoaa-upgrade-comparison > summary.button { display: list-item; grid-column: 2; width: fit-content; margin: 0; padding: 0 8px; min-height: 28px; line-height: 26px; font-size: 13px; }
+.yoaa-upgrade-comparison > .yoaa-comparison-content { grid-column: 1 / -1; }
+.yoaa-comparison-content { margin-top: 12px; padding: 16px; border: 1px solid #c3c4c7; background: #fff; }
+.yoaa-comparison-content > h2 { margin-top: 0; }
+.yoaa-comparison-scroll { overflow-x: auto; }
+.yoaa-comparison-scroll table { min-width: 580px; }
+.yoaa-comparison-scroll th, .yoaa-comparison-scroll td { padding: 12px; vertical-align: top; }
+.yoaa-endpoint-upgrade { margin: -4px 0 20px; }
+@media (max-width: 782px) {
+    .yoaa-settings-navigation { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .yoaa-upgrade-comparison > summary.button { grid-column: 1; }
+    .yoaa-comparison-content { padding: 12px; }
+}
