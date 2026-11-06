@@ -61,6 +61,7 @@ class YOAA_WC_Advanced_Accounts_Captcha_Integration {
 				array(
 					'woocommerce_login_form'    => array( 'add_captcha_to_woocommerce_login' ),
 					'woocommerce_login_process' => array( 'validate_captcha_woocommerce_login' ),
+					'woocommerce_process_login_errors' => array( 'validate_captcha_woocommerce_login' ),
 					'login_form'                => array( 'add_captcha_to_wp_login_form' ),
 					'authenticate'              => array( 'validate_captcha_wp_login' ),
 				)

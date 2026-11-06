@@ -17,7 +17,7 @@ function get_option( $key, $default = false ) { global $options; return $options
 function __( $text, $domain = '' ) { return $text; }
 function add_action( $hook, $callback, $priority = 10, $accepted = 1 ) { global $hooks; $hooks[$hook][] = [$callback, $priority]; }
 function add_filter( $hook, $callback, $priority = 10, $accepted = 1 ) { add_action( $hook, $callback, $priority, $accepted ); }
-function remove_filter( $hook, $callback, $priority = 10 ) { global $removed; $removed[] = [$hook, $callback, $priority]; }
+function remove_filter( $hook, $callback, $priority = 10 ) { global $removed, $wp_filter; $removed[] = [$hook, $callback, $priority]; foreach ($wp_filter[$hook]->callbacks[$priority] ?? [] as $key=>$item) { if ($item['function']===$callback) unset($wp_filter[$hook]->callbacks[$priority][$key]); } }
 function is_wp_error( $value ) { return $value instanceof WP_Error; }
 function wp_unslash( $value ) { return $value; }
 function sanitize_text_field( $value ) { return trim( strip_tags( $value ) ); }
@@ -99,13 +99,21 @@ $request_count=count($requests);
 expect(false === $validate->invoke($captcha,'recaptcha_v3',['g-recaptcha-response'=>'unique-token'],'login') && count($requests)===$request_count,'session token replay denies before provider call');
 $wc=null;
 
-class WC_Blacklist_Manager_Premium_Checkout_Captcha { public function add_captcha_to_woocommerce_login() {} }
+class WC_Blacklist_Manager_Premium_Checkout_Captcha { public function add_captcha_to_woocommerce_login() {} public function validate_captcha_woocommerce_login($errors){$errors->add('bm_missing_token','Missing hCaptcha token');return $errors;} public function validate_captcha_checkout(){} public function validate_captcha_woocommerce_lostpassword(){} }
 $wp_filter=[]; $wp_filter['woocommerce_login_form']=new WP_Hook(); $bm=new WC_Blacklist_Manager_Premium_Checkout_Captcha();
 $wp_filter['woocommerce_login_form']->callbacks=[20=>[['function'=>[$bm,'add_captcha_to_woocommerce_login']]]]; $removed=[];
+$wp_filter['woocommerce_process_login_errors']=new WP_Hook();
+$wp_filter['woocommerce_process_login_errors']->callbacks=[10=>[['function'=>[$bm,'validate_captcha_woocommerce_login']]]];
+foreach(['woocommerce_checkout_process'=>'validate_captcha_checkout','woocommerce_lostpassword_errors'=>'validate_captcha_woocommerce_lostpassword'] as $hook=>$method){$wp_filter[$hook]=new WP_Hook();$wp_filter[$hook]->callbacks=[10=>[['function'=>[$bm,$method]]]];}
 $options=['yoaa_wc_enable_captcha_login'=>'yes','wc_blacklist_manager_enable_captcha_login'=>'1'];
 $captcha->apply_blacklist_manager_overlap_rule(); expect(!$removed,'unconfigured AAC never removes Blacklist protection');
 $options+=['yoaa_wc_captcha_selected'=>'cloudflare','yoaa_wc_cloudflare_site_key'=>'site','yoaa_wc_cloudflare_secret_key'=>'secret'];
-$captcha->apply_blacklist_manager_overlap_rule(); expect(count($removed)===1,'configured AAC owns overlapping login CAPTCHA');
+$captcha->apply_blacklist_manager_overlap_rule(); expect(count($removed)===2,'configured AAC owns both overlapping widget and current login validator');
+$_POST=['cf-turnstile-response'=>'only-aac-token'];$response=['success'=>true,'hostname'=>'example.test','action'=>'login'];$errors=new WP_Error();
+foreach($wp_filter['woocommerce_process_login_errors']->callbacks as $callbacks){foreach($callbacks as $entry){$errors=call_user_func($entry['function'],$errors,'owner','password');}}
+$errors=$captcha->validate_captcha_woocommerce_login($errors,'owner','password');
+expect(!$errors->get_error_code(),'different-provider BM validator no longer denies valid AAC login');
+expect(count($wp_filter['woocommerce_checkout_process']->callbacks[10])===1 && count($wp_filter['woocommerce_lostpassword_errors']->callbacks[10])===1,'overlap does not remove BM checkout or lost-password protection');
 
 // Match Woo's separate form-handler and generic customer-creation pipelines.
 $options = ['yoaa_wc_captcha_selected'=>'cloudflare','yoaa_wc_cloudflare_site_key'=>'site','yoaa_wc_cloudflare_secret_key'=>'secret','yoaa_wc_enable_captcha_register'=>'yes'];
