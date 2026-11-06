@@ -8,6 +8,10 @@ See `docs/ROLE-OWNERSHIP-RETIREMENT.md` for the installed-helper byte compatibil
 
 ## Core workflow checks
 
+Follow [docs/workflow.md](docs/workflow.md) for Main-owned review, precheck, CI,
+final technical Acceptance and separate Human Merge. This file defines validation
+and its limits; checks do not grant merge or publication authority.
+
 Run `AAC_BASE=<base-sha> bash scripts/check-source.sh focused` with PHP, Node.js,
 Python 3 and curl available. CI uses PHP 7.4 and Node.js 22. This checks all tracked
 PHP/JavaScript syntax, exact-diff whitespace and every existing focused suite:
