@@ -3,6 +3,28 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 require_once __DIR__ . '/../helpers/admin-verification.php';
 
 final class YOAA_AAC_User_Profile {
+	public static function init() {
+		if ( class_exists( 'YOAA_WC_Advanced_Accounts_User_Profile_Actions' ) && class_exists( 'WCAAP_Runtime_Policy' ) && WCAAP_Runtime_Policy::commercial() ) { return; }
+		// Inactive AAP keeps recovery presenters registered. AAC owns the complete Free UI.
+		// Remove only overlapping presentation; legacy recovery handlers/auth checks stay active.
+		global $wp_filter;
+		$presenters = [
+			'edit_user_profile' => [ 'YOAA_WC_Advanced_Accounts_User_Profile_Actions', 'show_user_account_actions' ],
+			'user_row_actions' => [ 'YOAA_WC_Advanced_Accounts_Users_Page_Premium', 'add_block_user_action' ],
+		];
+		foreach ( $presenters as $hook => $presenter ) {
+			foreach ( $wp_filter[ $hook ]->callbacks ?? [] as $priority => $callbacks ) {
+				foreach ( $callbacks as $entry ) {
+					$callback = $entry['function'];
+					if ( is_array( $callback ) && isset( $callback[0], $callback[1] ) && is_object( $callback[0] ) && is_a( $callback[0], $presenter[0] ) && $callback[1] === $presenter[1] ) {
+						remove_filter( $hook, $callback, $priority );
+					}
+				}
+			}
+		}
+		new self();
+	}
+
 	public function __construct() {
 		add_action( 'edit_user_profile', [ $this, 'render' ] );
 		add_action( 'edit_user_profile_update', [ $this, 'save' ] );
@@ -40,7 +62,4 @@ final class YOAA_AAC_User_Profile {
 		if ( ! in_array( $status, [ 'updated', 'unchanged' ], true ) ) { wp_die( esc_html__( 'The account action was not saved. Check your permissions and the account status.', 'wc-advanced-accounts' ) ); }
 	}
 }
-add_action( 'plugins_loaded', static function () {
-	if ( class_exists( 'YOAA_WC_Advanced_Accounts_User_Profile_Actions' ) && class_exists( 'WCAAP_Runtime_Policy' ) && WCAAP_Runtime_Policy::commercial() ) { return; }
-	new YOAA_AAC_User_Profile();
-}, 110 );
+add_action( 'plugins_loaded', [ 'YOAA_AAC_User_Profile', 'init' ], 110 );
