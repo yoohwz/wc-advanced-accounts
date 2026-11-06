@@ -2,7 +2,7 @@
 Contributors: yoohw
 Tags: woocommerce, my-account, otp-login, account-verification, membership
 Requires at least: 6.3
-Tested up to: 7.0
+Tested up to: 7.1
 WC tested up to: 10.8
 Requires PHP: 7.4
 Stable tag: 1.5.0
