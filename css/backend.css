@@ -112,3 +112,7 @@
 .form-table td.yoaa-endpoints-manager { padding: 0; }
 .yoaa-endpoints-manager #yoaa-endpoints-table th, .yoaa-endpoints-manager #yoaa-endpoints-table td { padding: 8px 10px; }
 #yoaa-icon-picker { box-sizing: border-box; }
+@media (max-width: 782px) {
+    /* WordPress stacks settings fields; keep the nested endpoint editor a scrollable table. */
+    #yoaa-endpoints-table th, #yoaa-endpoints-table td { display: table-cell; }
+}
