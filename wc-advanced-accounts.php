@@ -45,7 +45,7 @@ class YOAA_WC_Advanced_Accounts {
 		);
 		$custom_links = [ 'settings' => $settings_link ];
 		if ( YOAA_WC_Advanced_Accounts_Add_Sub_Tab::show_upgrade_promotions() ) {
-			$custom_links['yoaa_upgrade'] = '<a href="https://yoohw.com/product/woocommerce-advanced-accounts-premium/" target="_blank" rel="noopener noreferrer"><strong>' . esc_html__( 'Upgrade Premium', 'wc-advanced-accounts' ) . ' <span aria-hidden="true">↗</span></strong></a>';
+			$custom_links['yoaa_upgrade'] = '<a href="https://yoohw.com/product/woocommerce-advanced-accounts-premium/" target="_blank" rel="noopener noreferrer" style="font-weight:700;">' . esc_html__( 'Upgrade Premium', 'wc-advanced-accounts' ) . ' <span aria-hidden="true">↗</span></a>';
 		}
 		$links = array_merge( $custom_links, $links );
 		return $links;
