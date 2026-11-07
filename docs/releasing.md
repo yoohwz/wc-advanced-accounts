@@ -150,6 +150,8 @@ Match numbering to the readme captions and compare their bytes with the exact
 accepted Git source. When replacing a screenshot set, explicitly review and
 schedule superseded `screenshot-N` files for deletion, including old extensions
 and indices beyond the new set; duplicate numbers or stale images must not remain.
+Set `svn:mime-type` to `image/jpeg` on each new JPEG so it displays correctly
+when opened from WordPress.org. Review that property together with the file.
 Schedule only selected screenshot additions/updates/deletions. Preserve banners,
 icons and unrelated assets. Directory screenshots are not runtime product files
 and must remain outside the installable payload/ZIP.
@@ -175,7 +177,7 @@ paths/bytes with prepared payload (ignoring only `.svn`), and inspect the comple
 SVN change set. It must contain only `trunk`, the newly added `tags/<version>`
 and any explicitly
 approved screenshot assets, including required adds/deletes. No unrelated asset,
-existing tag, property/external change or other path may be included. Preserve a
+existing tag, unrelated property/external change or other path may be included. Preserve a
 concise
 summary of source SHA, version, checksums, public baseline, SVN revision and delta
 for Human review. Nothing in this dry-run authorizes a commit.
