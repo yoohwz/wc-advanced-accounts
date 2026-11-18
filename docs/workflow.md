@@ -74,9 +74,9 @@ One Codex Main remains accountable for the result. Use subagents when useful for
 
 Prefer one writer. Multiple writers require separate files/checkouts and non-conflicting test state. Independent reviewers must not have implemented any part of the candidate and must use the fresh context and isolated source-read-only environment in section 8. A discovery agent cannot substitute for that reviewer. No mandatory discovery delegation precedes an ordinary technical choice or Human question. Do not create swarms, voting panels, persistent agent state or a generic planning framework.
 
-- Main orchestration, Fast work and deterministic Controlled implementation/correction: GPT-6.1 Sol / MEDIUM.
-- Focused difficult discovery/architecture when evidence warrants it: GPT-6.1 Sol / HIGH; delegation is optional.
-- Every fresh independent Technical Reviewer and re-reviewer: GPT-6.1 Sol / HIGH.
+- Main orchestration, Fast work and deterministic Controlled implementation/correction: GPT-6.2 Sol / MEDIUM.
+- Focused difficult discovery/architecture when evidence warrants it: GPT-6.2 Sol / HIGH; delegation is optional.
+- Every fresh independent Technical Reviewer and re-reviewer: GPT-6.2 Sol / HIGH.
 - XHIGH requires a specific exceptional unresolved architecture/security reason.
 
 Reduce irrelevant context before increasing compute. Record factual findings, decisions and validation, never raw hidden reasoning or model/effort history as task state.
